@@ -1,0 +1,22 @@
+version: '3'
+services:
+  confor:
+    image: api-medlocalgpt:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-medlocalgpt
+    container_name: medlocalgpt
+    restart: unless-stopped
+    volumes:
+      - "./:/app"
+  nginx:
+    image: reverse-proxy-nginx:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    depends_on:
+      - medlocalgpt

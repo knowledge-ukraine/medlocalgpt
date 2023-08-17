@@ -183,11 +183,12 @@ def save_document_route():
         return "File saved successfully", 200
 
 
-@app.route("/medlocalgpt/api/v1/run_ingest", methods=["GET"])
+@app.route("/medlocalgpt/api/v1/ingest", methods=["GET"])
 def run_ingest_route():
     global DB
     global RETRIEVER
     global QA
+
     try:
         if os.path.exists(PERSIST_DIRECTORY):
             try:
