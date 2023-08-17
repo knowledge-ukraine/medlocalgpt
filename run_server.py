@@ -136,7 +136,7 @@ DB = Chroma(
 RETRIEVER = DB.as_retriever(search_kwargs={"k": 5})
 
 LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
-LLM_OPENAI = OpenAI(openai_api_key="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", openai_organization="org-xokiXqu8d1TITFQ9rv0PS7zT")
+LLM_OPENAI = OpenAI(openai_api_key=" ", openai_organization=" ")
 
 QA = RetrievalQA.from_chain_type(
     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
