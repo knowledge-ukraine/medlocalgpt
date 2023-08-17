@@ -1,6 +1,6 @@
 version: '3'
 services:
-  confor:
+  medlocalgpt:
     image: api-medlocalgpt:latest
     build:
       context: .
