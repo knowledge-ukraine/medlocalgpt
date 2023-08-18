@@ -1,7 +1,17 @@
+import errno
 import logging
 import os, json
 import shutil
 import subprocess
+
+if not os.path.exists('/var/tmp/hf_cache'):
+    try:
+        os.makedirs('/var/tmp/hf_cache')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+os.environ['TRANSFORMERS_CACHE'] = '/var/tmp/hf_cache'
 
 import torch
 from auto_gptq import AutoGPTQForCausalLM

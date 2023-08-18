@@ -25,8 +25,8 @@ RUN apt-get -y clean \
     # empty directory named “.cache”
     && rm -rf /root/.cache/* \
     && apt-get -y clean \
-    && apt-get -y autoremove \
-    && chmod 777 /var/run/docker.sock
+    && apt-get -y autoremove
+    # && chmod 777 /var/run/docker.sock
     # && chmod 777 /root/.cache
 
 RUN chmod +x ./start.sh
