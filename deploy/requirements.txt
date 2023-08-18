@@ -24,7 +24,9 @@ bitsandbytes ; sys_platform != 'win32'
 bitsandbytes-windows ; sys_platform == 'win32'
 click
 flask
+flask-cors
 requests
+uWSGI
 
 # Streamlit related
 streamlit

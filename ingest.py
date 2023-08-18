@@ -123,9 +123,9 @@ def main(device_type):
             shutil.rmtree(PERSIST_DIRECTORY)
             logging.info(PERSIST_DIRECTORY + ' - Chroma index deleted')
         except OSError as e:
-            print(f"Error: {e.filename} - {e.strerror}.")
+            logging.error(f"Error: {e.filename} - {e.strerror}.")
     else:
-        print("The directory does not exist")
+        logging.info(PERSIST_DIRECTORY + " directory does not exist")
 
     # Load documents and split in chunks
     logging.info(f"Loading documents from {SOURCE_DIRECTORY}")

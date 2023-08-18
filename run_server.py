@@ -194,9 +194,9 @@ def run_ingest_route():
             try:
                 shutil.rmtree(PERSIST_DIRECTORY)
             except OSError as e:
-                print(f"Error: {e.filename} - {e.strerror}.")
+                logging.error(f"Error: {e.filename} - {e.strerror}.")
         else:
-            print("The directory does not exist")
+            logging.info(PERSIST_DIRECTORY + " directory does not exist")
 
         run_langest_commands = ["python", "ingest.py"]
         if DEVICE_TYPE == "cpu":
@@ -237,7 +237,6 @@ def prompt_route():
 
     user_prompt = request.form.get("prompt")
     if user_prompt:
-        # print(f'User Prompt: {user_prompt}')
         # Get the answer from the chain
         res = QA(user_prompt)
         answer, docs = res["result"], res["source_documents"]
