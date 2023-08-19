@@ -1,40 +1,10 @@
-import errno
 import os, logging
+from langchain.llms import OpenAI
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-# if not os.path.exists('/var/tmp/hf/models'):
-#     try:
-#         os.makedirs('/var/tmp/hf/models')
-#     except OSError as e:
-#         if e.errno != errno.EEXIST:
-#             raise
-
-# if not os.path.exists('/var/tmp/hf/misc'):
-#     try:
-#         os.makedirs('/var/tmp/hf/misc')
-#     except OSError as e:
-#         if e.errno != errno.EEXIST:
-#             raise
-
-# if not os.path.exists('/var/tmp/hf/datasets'):
-#     try:
-#         os.makedirs('/var/tmp/hf/datasets')
-#     except OSError as e:
-#         if e.errno != errno.EEXIST:
-#             raise
-
-# if not os.path.exists('/var/tmp/hf/sentence'):
-#     try:
-#         os.makedirs('/var/tmp/hf/sentence')
-#     except OSError as e:
-#         if e.errno != errno.EEXIST:
-#             raise
-
-# os.environ['TRANSFORMERS_CACHE'] = '/var/tmp/hf/models'
-# os.environ['HF_HOME'] = '/var/tmp/hf/misc'
-# os.environ['HF_DATASETS_CACHE'] = '/var/tmp/hf/datasets'
-# os.environ['SENTENCE_TRANSFORMERS_HOME'] = '/var/tmp/hf/sentence'
+openai_api_key = os.environ['OPENAI_API_KEY']
+openai_organization = os.environ['OPENAI_ORGANIZATION']
 
 import torch
 from auto_gptq import AutoGPTQForCausalLM
@@ -219,3 +189,4 @@ def load_model(device_type, model_id, model_basename=None):
     return local_llm
 
 LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
+LLM_OPENAI = OpenAI(openai_api_key=openai_api_key, openai_organization=openai_organization)

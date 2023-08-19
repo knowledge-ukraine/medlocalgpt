@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     volumes:
       - "./:/app"
+    env_file: .env
   nginx:
     image: reverse-proxy-nginx:latest
     build:
