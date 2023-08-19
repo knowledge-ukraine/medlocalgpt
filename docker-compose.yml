@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     volumes:
       - "./:/app"
-    env_file: .env
+    env_file: medlocalgpt.env
   nginx:
     image: reverse-proxy-nginx:latest
     build:
