@@ -1,41 +1,40 @@
-import errno
 import logging
 import os, json
 import shutil
 import subprocess
 
-if not os.path.exists('/var/tmp/hf/models'):
-    try:
-        os.makedirs('/var/tmp/hf/models')
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
+# if not os.path.exists('/var/tmp/hf/models'):
+#     try:
+#         os.makedirs('/var/tmp/hf/models')
+#     except OSError as e:
+#         if e.errno != errno.EEXIST:
+#             raise
 
-if not os.path.exists('/var/tmp/hf/misc'):
-    try:
-        os.makedirs('/var/tmp/hf/misc')
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
+# if not os.path.exists('/var/tmp/hf/misc'):
+#     try:
+#         os.makedirs('/var/tmp/hf/misc')
+#     except OSError as e:
+#         if e.errno != errno.EEXIST:
+#             raise
 
-if not os.path.exists('/var/tmp/hf/datasets'):
-    try:
-        os.makedirs('/var/tmp/hf/datasets')
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
+# if not os.path.exists('/var/tmp/hf/datasets'):
+#     try:
+#         os.makedirs('/var/tmp/hf/datasets')
+#     except OSError as e:
+#         if e.errno != errno.EEXIST:
+#             raise
 
-if not os.path.exists('/var/tmp/hf/sentence'):
-    try:
-        os.makedirs('/var/tmp/hf/sentence')
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
+# if not os.path.exists('/var/tmp/hf/sentence'):
+#     try:
+#         os.makedirs('/var/tmp/hf/sentence')
+#     except OSError as e:
+#         if e.errno != errno.EEXIST:
+#             raise
 
-os.environ['TRANSFORMERS_CACHE'] = '/var/tmp/hf/models'
-os.environ['HF_HOME'] = '/var/tmp/hf/misc'
-os.environ['HF_DATASETS_CACHE'] = '/var/tmp/hf/datasets'
-os.environ['SENTENCE_TRANSFORMERS_HOME'] = '/var/tmp/hf/sentence'
+# os.environ['TRANSFORMERS_CACHE'] = '/var/tmp/hf/models'
+# os.environ['HF_HOME'] = '/var/tmp/hf/misc'
+# os.environ['HF_DATASETS_CACHE'] = '/var/tmp/hf/datasets'
+# os.environ['SENTENCE_TRANSFORMERS_HOME'] = '/var/tmp/hf/sentence'
 
 
 import torch
@@ -67,8 +66,9 @@ from constants import (
     CHROMA_SETTINGS,
     # EMBEDDING_MODEL_NAME,
     PERSIST_DIRECTORY,
-    MODEL_ID,
-    MODEL_BASENAME,
+    # MODEL_ID,
+    # MODEL_BASENAME,
+    LLM_LOCAL,
     EMBEDDINGS)
 
 from googletrans import Translator
@@ -176,7 +176,7 @@ DB = Chroma(
 
 RETRIEVER = DB.as_retriever(search_kwargs={"k": 5})
 
-LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
+# LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
 LLM_OPENAI = OpenAI(openai_api_key=" ", openai_organization=" ")
 
 QA = RetrievalQA.from_chain_type(
