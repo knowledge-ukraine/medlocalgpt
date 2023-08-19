@@ -119,39 +119,44 @@ def split_documents(documents: list[Document]) -> tuple[list[Document], list[Doc
 )
 def main(device_type):
     # Remove Chroma index
+    # if os.path.exists(PERSIST_DIRECTORY):
+    #     try:
+    #         shutil.rmtree(PERSIST_DIRECTORY)
+    #         logging.info(PERSIST_DIRECTORY + ' - Chroma index deleted')
+    #     except OSError as e:
+    #         logging.error(f"Error: {e.filename} - {e.strerror}.")
+    # else:
+    #     logging.info(PERSIST_DIRECTORY + " directory does not exist")
+
     if os.path.exists(PERSIST_DIRECTORY):
-        try:
-            shutil.rmtree(PERSIST_DIRECTORY)
-            logging.info(PERSIST_DIRECTORY + ' - Chroma index deleted')
-        except OSError as e:
-            logging.error(f"Error: {e.filename} - {e.strerror}.")
+        logging.info(PERSIST_DIRECTORY + ' - Chroma index exists')
     else:
-        logging.info(PERSIST_DIRECTORY + " directory does not exist")
+        logging.info(PERSIST_DIRECTORY + " Chroma index does not exist. Let's create it!")
 
-    # Load documents and split in chunks
-    logging.info(f"Loading documents from {SOURCE_DIRECTORY}")
-    documents = load_documents(SOURCE_DIRECTORY)
-    text_documents, python_documents = split_documents(documents)
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    python_splitter = RecursiveCharacterTextSplitter.from_language(
-        language=Language.PYTHON, chunk_size=1000, chunk_overlap=200
-    )
-    texts = text_splitter.split_documents(text_documents)
-    texts.extend(python_splitter.split_documents(python_documents))
-    logging.info(f"Loaded {len(documents)} documents from {SOURCE_DIRECTORY}")
-    logging.info(f"Split into {len(texts)} chunks of text")
+        # Load documents and split in chunks
+        logging.info(f"Loading documents from {SOURCE_DIRECTORY}")
+        documents = load_documents(SOURCE_DIRECTORY)
+        text_documents, python_documents = split_documents(documents)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        python_splitter = RecursiveCharacterTextSplitter.from_language(
+            language=Language.PYTHON, chunk_size=1000, chunk_overlap=200
+        )
+        texts = text_splitter.split_documents(text_documents)
+        texts.extend(python_splitter.split_documents(python_documents))
+        logging.info(f"Loaded {len(documents)} documents from {SOURCE_DIRECTORY}")
+        logging.info(f"Split into {len(texts)} chunks of text")
 
-    # Create embeddings
-    # embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+        # Create embeddings
+        # embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
 
-    db = Chroma.from_documents(
-        texts,
-        EMBEDDINGS,
-        persist_directory=PERSIST_DIRECTORY,
-        client_settings=CHROMA_SETTINGS,
-    )
-    db.persist()
-    db = None
+        db = Chroma.from_documents(
+            texts,
+            EMBEDDINGS,
+            persist_directory=PERSIST_DIRECTORY,
+            client_settings=CHROMA_SETTINGS,
+        )
+        db.persist()
+        db = None
 
 
 if __name__ == "__main__":

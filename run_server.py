@@ -166,6 +166,7 @@ def delete_source_route():
 
     return jsonify({"message": f"Folder '{folder_name}' successfully deleted and recreated."})
 
+# add route to delete PERSIST_DIRECTORY
 
 @app.route("/medlocalgpt/api/v1/save_document", methods=["GET", "POST"])
 def save_document_route():
