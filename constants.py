@@ -1,4 +1,38 @@
+import errno
 import os
+
+if not os.path.exists('/var/tmp/hf/models'):
+    try:
+        os.makedirs('/var/tmp/hf/models')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+if not os.path.exists('/var/tmp/hf/misc'):
+    try:
+        os.makedirs('/var/tmp/hf/misc')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+if not os.path.exists('/var/tmp/hf/datasets'):
+    try:
+        os.makedirs('/var/tmp/hf/datasets')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+if not os.path.exists('/var/tmp/hf/sentence'):
+    try:
+        os.makedirs('/var/tmp/hf/sentence')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+os.environ['TRANSFORMERS_CACHE'] = '/var/tmp/hf/models'
+os.environ['HF_HOME'] = '/var/tmp/hf/misc'
+os.environ['HF_DATASETS_CACHE'] = '/var/tmp/hf/datasets'
+os.environ['SENTENCE_TRANSFORMERS_HOME'] = '/var/tmp/hf/sentence'
 
 # from dotenv import load_dotenv
 from chromadb.config import Settings
@@ -6,6 +40,7 @@ from chromadb.config import Settings
 # https://python.langchain.com/en/latest/modules/indexes/document_loaders/examples/excel.html?highlight=xlsx#microsoft-excel
 from langchain.document_loaders import CSVLoader, PDFMinerLoader, TextLoader, UnstructuredExcelLoader, Docx2txtLoader
 
+from langchain.embeddings import HuggingFaceInstructEmbeddings
 # load_dotenv()
 ROOT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
@@ -35,12 +70,13 @@ DOCUMENT_MAP = {
     ".doc": Docx2txtLoader,
 }
 
+DEVICE_TYPE = "cpu"
 # Default Instructor Model
 EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"
 # You can also choose a smaller model, don't forget to change HuggingFaceInstructEmbeddings
 # to HuggingFaceEmbeddings in both ingest.py and run_localGPT.py
 # EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
-
+EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 # Select the Model ID and model_basename
 # load the LLM for generating Natural Language responses
 

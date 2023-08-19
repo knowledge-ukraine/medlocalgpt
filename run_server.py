@@ -63,7 +63,13 @@ from transformers import (
 )
 from werkzeug.utils import secure_filename
 
-from constants import CHROMA_SETTINGS, EMBEDDING_MODEL_NAME, PERSIST_DIRECTORY, MODEL_ID, MODEL_BASENAME
+from constants import (
+    CHROMA_SETTINGS,
+    # EMBEDDING_MODEL_NAME,
+    PERSIST_DIRECTORY,
+    MODEL_ID,
+    MODEL_BASENAME,
+    EMBEDDINGS)
 
 from googletrans import Translator
 
@@ -73,7 +79,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
-EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
+# EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 
 def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
