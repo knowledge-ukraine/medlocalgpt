@@ -4,14 +4,31 @@ import os, json
 import shutil
 import subprocess
 
-if not os.path.exists('/var/tmp/hf_cache'):
+if not os.path.exists('/var/tmp/hf/models'):
     try:
-        os.makedirs('/var/tmp/hf_cache')
+        os.makedirs('/var/tmp/hf/models')
     except OSError as e:
         if e.errno != errno.EEXIST:
             raise
 
-os.environ['TRANSFORMERS_CACHE'] = '/var/tmp/hf_cache'
+if not os.path.exists('/var/tmp/hf/misc'):
+    try:
+        os.makedirs('/var/tmp/hf/misc')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+if not os.path.exists('/var/tmp/hf/datasets'):
+    try:
+        os.makedirs('/var/tmp/hf/datasets')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+os.environ['TRANSFORMERS_CACHE'] = '/var/tmp/hf/models'
+os.environ['HF_HOME'] = '/var/tmp/hf/misc'
+os.environ['HF_DATASETS_CACHE'] = '/var/tmp/hf/datasets'
+
 
 import torch
 from auto_gptq import AutoGPTQForCausalLM
