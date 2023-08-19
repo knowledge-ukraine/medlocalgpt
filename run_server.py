@@ -25,9 +25,17 @@ if not os.path.exists('/var/tmp/hf/datasets'):
         if e.errno != errno.EEXIST:
             raise
 
+if not os.path.exists('/var/tmp/hf/sentence'):
+    try:
+        os.makedirs('/var/tmp/hf/sentence')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
 os.environ['TRANSFORMERS_CACHE'] = '/var/tmp/hf/models'
 os.environ['HF_HOME'] = '/var/tmp/hf/misc'
 os.environ['HF_DATASETS_CACHE'] = '/var/tmp/hf/datasets'
+os.environ['SENTENCE_TRANSFORMERS_HOME'] = '/var/tmp/hf/sentence'
 
 
 import torch
