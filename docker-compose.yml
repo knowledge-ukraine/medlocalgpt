@@ -7,8 +7,10 @@ services:
       dockerfile: Dockerfile-medlocalgpt
     container_name: medlocalgpt
     restart: unless-stopped
+    # If you already have the Chroma index pls creat DB dir with it and attache it via volume
     volumes:
       - "./DB:/medlocalgpt/DB"
+    # Pls set all cridentionals via env files
     env_file: medlocalgpt.env
   nginx:
     image: reverse-proxy-nginx:latest
