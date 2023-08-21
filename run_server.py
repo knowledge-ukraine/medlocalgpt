@@ -51,8 +51,12 @@ DB = Chroma(
 
 RETRIEVER = DB.as_retriever(search_kwargs={"k": 5})
 
-QA_local = RetrievalQA.from_chain_type(
+QA_LOCAL = RetrievalQA.from_chain_type(
     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
+)
+
+QA_OPENAI = RetrievalQA.from_chain_type(
+    llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
 )
 
 app = Flask(__name__)
@@ -145,9 +149,9 @@ def prompt_route():
     use_model = request.args.get('model', default = 'local', type = str)
 
     if use_model == 'openai':
-        QA = RetrievalQA.from_chain_type(llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES)
+        QA = QA_OPENAI
     if use_model == 'local':
-        QA = QA_local
+        QA = QA_LOCAL
 
     user_prompt = request.form.get("prompt")
     if user_prompt:
@@ -184,9 +188,9 @@ def prompt_gt():
     lang_dest = request.args.get('lang_dest', default = 'en', type = str)
 
     if use_model == 'openai':
-        QA = RetrievalQA.from_chain_type(llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES)
+        QA = QA_OPENAI
     if use_model == 'local':
-        QA = QA_local
+        QA = QA_LOCAL
 
     user_prompt = request.form.get("prompt")
     if user_prompt:
