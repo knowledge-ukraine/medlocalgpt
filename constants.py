@@ -1,7 +1,7 @@
 import os, logging
 from langchain.llms import OpenAI
 
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.DEBUG)
 
 openai_api_key = os.environ['OPENAI_API_KEY']
 openai_organization = os.environ['OPENAI_ORGANIZATION']
