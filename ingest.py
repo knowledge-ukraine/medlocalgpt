@@ -12,7 +12,6 @@ from langchain.vectorstores import Chroma
 from constants import (
     CHROMA_SETTINGS,
     DOCUMENT_MAP,
-    # EMBEDDING_MODEL_NAME,
     INGEST_THREADS,
     PERSIST_DIRECTORY,
     SOURCE_DIRECTORY,
@@ -129,10 +128,17 @@ def main(device_type):
     #     logging.info(PERSIST_DIRECTORY + " directory does not exist")
 
     if os.path.exists(PERSIST_DIRECTORY):
-        logging.info(PERSIST_DIRECTORY + ' - Chroma index exists')
+        with os.scandir(PERSIST_DIRECTORY) as it:
+            if any(it):
+                to_ingest = False
+                logging.info(PERSIST_DIRECTORY + ' - Chroma index exists')
+            else:
+                to_ingest = True
     else:
-        logging.info(PERSIST_DIRECTORY + " Chroma index does not exist. Let's create it!")
+        to_ingest = True
 
+    if to_ingest:
+        logging.info(PERSIST_DIRECTORY + " Chroma index does not exist. Let's create it!")
         # Load documents and split in chunks
         logging.info(f"Loading documents from {SOURCE_DIRECTORY}")
         documents = load_documents(SOURCE_DIRECTORY)
@@ -147,8 +153,6 @@ def main(device_type):
         logging.info(f"Split into {len(texts)} chunks of text")
 
         # Create embeddings
-        # embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
-
         db = Chroma.from_documents(
             texts,
             EMBEDDINGS,
