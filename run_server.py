@@ -51,7 +51,7 @@ DB = Chroma(
 
 RETRIEVER = DB.as_retriever(search_kwargs={"k": 5})
 
-QA = RetrievalQA.from_chain_type(
+QA_local = RetrievalQA.from_chain_type(
     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
 )
 
@@ -138,7 +138,7 @@ def run_ingest_route():
 
 @app.route("/medlocalgpt/api/v1/ask", methods=["GET", "POST"])
 def prompt_route():
-    global QA
+    # global QA
 
     #  template = """You are an AI assistant for answering questions about {subject}. Provide a very detailed comprehensive academic answer. If you don't know the answer, just say "I'm not sure." Don't try to make up an answer. If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. Question: {question} ========= {context} ========= Answer:"""
     
@@ -147,7 +147,7 @@ def prompt_route():
     if use_model == 'openai':
         QA = RetrievalQA.from_chain_type(llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES)
     if use_model == 'local':
-        QA = RetrievalQA.from_chain_type(llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES)
+        QA = QA_local
 
     user_prompt = request.form.get("prompt")
     if user_prompt:
@@ -174,7 +174,7 @@ def prompt_route():
 
 @app.route("/medlocalgpt/api/v1/gt/ask", methods=["GET", "POST"])
 def prompt_gt():
-    global QA
+    # global QA
     translator = Translator()
 
     #  template = """You are an AI assistant for answering questions about {subject}. Provide a very detailed comprehensive academic answer. If you don't know the answer, just say "I'm not sure." Don't try to make up an answer. If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. Question: {question} ========= {context} ========= Answer:"""
@@ -186,7 +186,7 @@ def prompt_gt():
     if use_model == 'openai':
         QA = RetrievalQA.from_chain_type(llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES)
     if use_model == 'local':
-        QA = RetrievalQA.from_chain_type(llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES)
+        QA = QA_local
 
     user_prompt = request.form.get("prompt")
     if user_prompt:
