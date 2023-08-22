@@ -1,5 +1,5 @@
 import logging
-import os, json
+import os, json, re
 import shutil
 import subprocess
 
@@ -145,17 +145,20 @@ def prompt_route():
     # global QA
 
     #  template = """You are an AI assistant for answering questions about {subject}. Provide a very detailed comprehensive academic answer. If you don't know the answer, just say "I'm not sure." Don't try to make up an answer. If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. Question: {question} ========= {context} ========= Answer:"""
-    
+
     use_model = request.args.get('model', default = 'local', type = str)
 
     if use_model == 'openai':
         QA = QA_OPENAI
+        logging.debug('Use QA_OPENAI')
     if use_model == 'local':
         QA = QA_LOCAL
+        logging.debug('Use QA_LOCAL')
 
     user_prompt = request.form.get("prompt")
     if user_prompt:
         # Get the answer from the chain
+        logging.debug('Get the answer from the chain')
         res = QA(user_prompt)
         answer, docs = res["result"], res["source_documents"]
 
@@ -167,10 +170,10 @@ def prompt_route():
         prompt_response_dict["Sources"] = []
         for document in docs:
             prompt_response_dict["Sources"].append(
-                (os.path.basename(str(document.metadata["source"])), str(document.page_content))
+                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
             )
 
-        logging.debug(json.dumps(prompt_response_dict, indent=4))
+        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
 
         return jsonify(prompt_response_dict), 200
     else:
@@ -188,8 +191,10 @@ def prompt_gt():
     lang_dest = request.args.get('lang_dest', default = 'en', type = str)
 
     if use_model == 'openai':
+        logging.debug('Use QA_OPENAI')
         QA = QA_OPENAI
     if use_model == 'local':
+        logging.debug('Use QA_LOCAL')
         QA = QA_LOCAL
 
     user_prompt = request.form.get("prompt")
@@ -197,12 +202,15 @@ def prompt_gt():
         #Translation uk to en
         # logging.info(translator.translate(user_prompt, src='uk', dest='en'))
         # tr_prompt = translator.translate(user_prompt, src='uk', dest='en')
+        logging.debug('Translation from ' + lang_src + ' to ' + lang_dest)
         tr_prompt = translator.translate(user_prompt, src=lang_src, dest=lang_dest)
         # Get the answer from the chain
+        logging.debug('Get the answer from the chain')
         res = QA(tr_prompt.text)
         answer, docs = res["result"], res["source_documents"]
 
         #Translation en to uk
+        logging.debug('Translation from en to uk')
         tr_response = translator.translate(answer, src='en', dest='uk')
 
         prompt_response_dict = {
@@ -213,10 +221,10 @@ def prompt_gt():
         prompt_response_dict["Sources"] = []
         for document in docs:
             prompt_response_dict["Sources"].append(
-                (os.path.basename(str(document.metadata["source"])), str(document.page_content))
+                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
             )
 
-        logging.debug(json.dumps(prompt_response_dict, indent=4))
+        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
 
         return jsonify(prompt_response_dict), 200
     else:
