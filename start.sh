@@ -6,10 +6,10 @@ export HF_DATASETS_CACHE=/var/tmp/hf/datasets
 export SENTENCE_TRANSFORMERS_HOME=/var/tmp/hf/sentence
 
 if [[ -d ./DB && -n "$(ls -A ./DB)" ]]; then 
-  echo "Chroma index exists."
+  echo "start.sh: Chroma index exists."
   uwsgi --ini ./deploy/uwsgi.ini
 else
-  echo "Chroma index does not exist. Let's create it!"
+  echo "start.sh: Chroma index does not exist. Let's create it!"
   python ingest.py --device_type cpu && uwsgi --ini ./deploy/uwsgi.ini
 fi
 
