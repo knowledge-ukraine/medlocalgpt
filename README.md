@@ -11,7 +11,7 @@ This project was inspired by the original [privateGPT](https://github.com/imarti
 
 Built with [LangChain](https://github.com/hwchase17/langchain), [GPT4All](https://github.com/nomic-ai/gpt4all), [LlamaCpp](https://github.com/ggerganov/llama.cpp), [Chroma](https://www.trychroma.com/), [SentenceTransformers](https://www.sbert.net/), [InstructorEmbeddings](https://instructor-embedding.github.io/).
 
-## Donation/Funding
+## Sponsor this project
 
 Please support @malakhovks. Despite the Wartime in Ukraine, R&D in the field of Digital Health are being resumed.
 [https://send.monobank.ua/jar/5ad56oNAcD](https://send.monobank.ua/jar/5ad56oNAcD)
@@ -19,5 +19,22 @@ Please support @malakhovks. Despite the Wartime in Ukraine, R&D in the field of 
 ## Important note
 
 **medlocalgpt** project and documentation are in active development. For any technical clarifications and questions contact me via email: [malakhovks@nas.gov.ua](mailto:malakhovks@nas.gov.ua) or via Issues. The recent Russian's rocket shelling on critical infrastructure in Ukraine and Kyiv led our server infrastructure to become unstable.
-
 **CPU support only (for now)**
+
+## 💻 Installation (Testing)
+
+TODO
+
+## 💻 Installation (Production)
+
+TODO
+
+## 🗃️ Dataset
+
+EBSCO articles dataset (domain knowledge: rehabilitation medicine)
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8185659.svg)](https://doi.org/10.5281/zenodo.8185659)
+
+```bash
+wget -O ./ebsco-rehabilitation-dataset.zip https://cdn.e-rehab.pp.ua/u/ebsco-rehabilitation-dataset.zip
+```
