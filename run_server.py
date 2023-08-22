@@ -130,7 +130,14 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
+EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
+DB = Chroma(
+    persist_directory=PERSIST_DIRECTORY,
+    embedding_function=EMBEDDINGS,
+    client_settings=CHROMA_SETTINGS,
+)
 RETRIEVER = DB.as_retriever(search_kwargs={"k": 5})
+
 LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
 QA_LOCAL = RetrievalQA.from_chain_type(
     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
@@ -139,14 +146,6 @@ QA_LOCAL = RetrievalQA.from_chain_type(
 LLM_OPENAI = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
 QA_OPENAI = RetrievalQA.from_chain_type(
     llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
-)
-
-EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
-
-DB = Chroma(
-    persist_directory=PERSIST_DIRECTORY,
-    embedding_function=EMBEDDINGS,
-    client_settings=CHROMA_SETTINGS,
 )
 
 app = Flask(__name__)
