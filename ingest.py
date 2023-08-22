@@ -5,17 +5,17 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_compl
 import click
 import torch
 from langchain.docstore.document import Document
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+# from langchain.embeddings import HuggingFaceInstructEmbeddings
 from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 
 from constants import (
     CHROMA_SETTINGS,
     DOCUMENT_MAP,
-    EMBEDDING_MODEL_NAME,
     INGEST_THREADS,
     PERSIST_DIRECTORY,
     SOURCE_DIRECTORY,
+    EMBEDDINGS
 )
 
 
@@ -118,48 +118,49 @@ def split_documents(documents: list[Document]) -> tuple[list[Document], list[Doc
 )
 def main(device_type):
     # Remove Chroma index
+    # if os.path.exists(PERSIST_DIRECTORY):
+    #     try:
+    #         shutil.rmtree(PERSIST_DIRECTORY)
+    #         logging.info(PERSIST_DIRECTORY + ' - Chroma index deleted')
+    #     except OSError as e:
+    #         logging.error(f"Error: {e.filename} - {e.strerror}.")
+    # else:
+    #     logging.info(PERSIST_DIRECTORY + " directory does not exist")
+
     if os.path.exists(PERSIST_DIRECTORY):
-        try:
-            shutil.rmtree(PERSIST_DIRECTORY)
-            logging.info(PERSIST_DIRECTORY + ' - Chroma index deleted')
-        except OSError as e:
-            print(f"Error: {e.filename} - {e.strerror}.")
+        with os.scandir(PERSIST_DIRECTORY) as it:
+            if any(it):
+                to_ingest = False
+                logging.info(PERSIST_DIRECTORY + ' - Chroma index exists')
+            else:
+                to_ingest = True
     else:
-        print("The directory does not exist")
+        to_ingest = True
 
-    # Load documents and split in chunks
-    logging.info(f"Loading documents from {SOURCE_DIRECTORY}")
-    documents = load_documents(SOURCE_DIRECTORY)
-    text_documents, python_documents = split_documents(documents)
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    python_splitter = RecursiveCharacterTextSplitter.from_language(
-        language=Language.PYTHON, chunk_size=1000, chunk_overlap=200
-    )
-    texts = text_splitter.split_documents(text_documents)
-    texts.extend(python_splitter.split_documents(python_documents))
-    logging.info(f"Loaded {len(documents)} documents from {SOURCE_DIRECTORY}")
-    logging.info(f"Split into {len(texts)} chunks of text")
+    if to_ingest:
+        logging.info(PERSIST_DIRECTORY + " Chroma index does not exist. Let's create it!")
+        # Load documents and split in chunks
+        logging.info(f"Loading documents from {SOURCE_DIRECTORY}")
+        documents = load_documents(SOURCE_DIRECTORY)
+        text_documents, python_documents = split_documents(documents)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        python_splitter = RecursiveCharacterTextSplitter.from_language(
+            language=Language.PYTHON, chunk_size=1000, chunk_overlap=200
+        )
+        texts = text_splitter.split_documents(text_documents)
+        texts.extend(python_splitter.split_documents(python_documents))
+        logging.info(f"Loaded {len(documents)} documents from {SOURCE_DIRECTORY}")
+        logging.info(f"Split into {len(texts)} chunks of text")
 
-    # Create embeddings
-    embeddings = HuggingFaceInstructEmbeddings(
-        model_name=EMBEDDING_MODEL_NAME,
-        model_kwargs={"device": device_type},
-    )
-    # change the embedding type here if you are running into issues.
-    # These are much smaller embeddings and will work for most appications
-    # If you use HuggingFaceEmbeddings, make sure to also use the same in the
-    # run_localGPT.py file.
-
-    # embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
-
-    db = Chroma.from_documents(
-        texts,
-        embeddings,
-        persist_directory=PERSIST_DIRECTORY,
-        client_settings=CHROMA_SETTINGS,
-    )
-    db.persist()
-    db = None
+        # Create embeddings
+        db = Chroma.from_documents(
+            texts,
+            EMBEDDINGS,
+            persist_directory=PERSIST_DIRECTORY,
+            client_settings=CHROMA_SETTINGS,
+        )
+        db.persist()
+        db = None
 
 
 if __name__ == "__main__":

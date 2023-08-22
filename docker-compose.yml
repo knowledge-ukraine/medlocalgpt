@@ -1,0 +1,25 @@
+version: '3'
+services:
+  medlocalgpt:
+    image: api-medlocalgpt:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-medlocalgpt
+    container_name: medlocalgpt
+    restart: unless-stopped
+    # If you already have the Chroma index pls creat DB dir with it and attache it via volume
+    volumes:
+      - "./DB:/medlocalgpt/DB"
+    # Pls set all cridentionals via env files
+    env_file: medlocalgpt.env
+  nginx:
+    image: reverse-proxy-nginx:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    depends_on:
+      - medlocalgpt
