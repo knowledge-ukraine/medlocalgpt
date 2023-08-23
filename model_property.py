@@ -48,9 +48,9 @@ DOCUMENT_MAP = {
 
 DEVICE_TYPE = "cpu"
 # Default Instructor Model
-# EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"
+EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"
 # EMBEDDING_MODEL_NAME = "hkunlp/instructor-xl"
-EMBEDDING_MODEL_NAME = "hkunlp/instructor-base"
+# EMBEDDING_MODEL_NAME = "hkunlp/instructor-base"
 # EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 # EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 # Select the Model ID and model_basename
