@@ -77,11 +77,19 @@ Read more about that you can here: [How is LLaMa.cpp possible?](https://finbarr.
 
 **PS:**  I also have a couple of HP servers, and using 28 cores, 1000 PDFs processed about 6 hours.
 
-7. Run medlocalgpt service
+7. Default models
+
+Embedding model: `hkunlp/instructor-large` from [InstructorEmbeddings](https://instructor-embedding.github.io/)
+LLM: `orca-mini-3b.ggmlv3.q4_0.bin` from [TheBloke/orca_mini_3B-GGML](https://huggingface.co/TheBloke/orca_mini_3B-GGML)
+
+Now you can set models via `model_property.py`.
+
+8. Run medlocalgpt service
 
 ```bash
 python run_server.py
 ```
+
 
 ## 💻 Installation (Production)
 
