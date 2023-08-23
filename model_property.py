@@ -6,7 +6,7 @@ OPENAI_ORGANIZATION = os.environ['OPENAI_ORGANIZATION']
 # import torch
 # from auto_gptq import AutoGPTQForCausalLM
 # from huggingface_hub import hf_hub_download
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+# from langchain.embeddings import HuggingFaceInstructEmbeddings
 # # from langchain.embeddings import HuggingFaceEmbeddings
 # from langchain.llms import HuggingFacePipeline, LlamaCpp
 
@@ -52,7 +52,7 @@ DEVICE_TYPE = "cpu"
 # EMBEDDING_MODEL_NAME = "hkunlp/instructor-xl"
 EMBEDDING_MODEL_NAME = "hkunlp/instructor-base"
 # EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
-EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
+# EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 # Select the Model ID and model_basename
 # load the LLM for generating Natural Language responses
 # MODEL_ID = "TheBloke/Llama-2-7B-Chat-GGML"

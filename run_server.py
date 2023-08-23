@@ -10,7 +10,7 @@ from auto_gptq import AutoGPTQForCausalLM
 from huggingface_hub import hf_hub_download
 from flask import Flask, jsonify, request
 from langchain.chains import RetrievalQA
-# from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain.embeddings import HuggingFaceInstructEmbeddings
 # from langchain.memory import ConversationBufferMemory
 # from langchain.prompts import PromptTemplate
 from langchain.llms import HuggingFacePipeline, LlamaCpp
@@ -37,7 +37,7 @@ from model_property import (
     MODEL_BASENAME,
     OPENAI_API_KEY,
     OPENAI_ORGANIZATION,
-    EMBEDDINGS)
+    EMBEDDING_MODEL_NAME)
 
 def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
@@ -132,6 +132,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
+EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 DB = Chroma(
     persist_directory=PERSIST_DIRECTORY,
     embedding_function=EMBEDDINGS,
