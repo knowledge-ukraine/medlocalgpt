@@ -132,14 +132,14 @@ def main(device_type):
         with os.scandir(PERSIST_DIRECTORY) as it:
             if any(it):
                 to_ingest = False
-                logging.info(PERSIST_DIRECTORY + ' - Chroma index exists')
+                logging.info(PERSIST_DIRECTORY + ' - Chroma index exists! If you want to build a new index plese remove DB directory.')
             else:
                 to_ingest = True
     else:
         to_ingest = True
 
     if to_ingest:
-        logging.info(PERSIST_DIRECTORY + " Chroma index does not exist. Let's create it!")
+        logging.info(PERSIST_DIRECTORY + " Chroma index does not exist. Let's build it!")
         # Load documents and split in chunks
         logging.info(f"Loading documents from {SOURCE_DIRECTORY}")
         documents = load_documents(SOURCE_DIRECTORY)

@@ -65,10 +65,6 @@ export OPENAI_ORGANIZATION="YOUR ID"
 
 6. Put all of your documents (.txt, .pdf, or .csv) into the SOURCE_DOCUMENTS and ingest all the data
 
-```bash
-python ingest.py
-```
-
 **CPU USAGE CAUTION**
 
 First of you need a lot of CPU cores to processing (to ingest) more documents. The week point here is not a RAM size.
@@ -76,6 +72,10 @@ Also the **week point is the memory bandwidth**. That's why all this stuff worki
 Read more about that you can here: [How is LLaMa.cpp possible?](https://finbarr.ca/how-is-llama-cpp-possible/)
 
 **PS:**  I also have a couple of HP servers, and using 28 cores, 1000 PDFs processed about 6 hours.
+
+```bash
+python ingest.py
+```
 
 **Default models**
 
@@ -89,7 +89,6 @@ Now you can set models via `model_property.py`.
 ```bash
 python run_server.py
 ```
-
 
 ## 💻 Installation (Production)
 
