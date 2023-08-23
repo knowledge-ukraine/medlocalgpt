@@ -1,17 +1,14 @@
-import os, logging
-from langchain.llms import OpenAI
+import os
 
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.DEBUG)
+OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
+OPENAI_ORGANIZATION = os.environ['OPENAI_ORGANIZATION']
 
-openai_api_key = os.environ['OPENAI_API_KEY']
-openai_organization = os.environ['OPENAI_ORGANIZATION']
-
-import torch
-from auto_gptq import AutoGPTQForCausalLM
-from huggingface_hub import hf_hub_download
-from langchain.embeddings import HuggingFaceInstructEmbeddings
-# from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.llms import HuggingFacePipeline, LlamaCpp
+# import torch
+# from auto_gptq import AutoGPTQForCausalLM
+# from huggingface_hub import hf_hub_download
+# from langchain.embeddings import HuggingFaceInstructEmbeddings
+# # from langchain.embeddings import HuggingFaceEmbeddings
+# from langchain.llms import HuggingFacePipeline, LlamaCpp
 
 
 # from dotenv import load_dotenv
@@ -20,8 +17,7 @@ from chromadb.config import Settings
 # https://python.langchain.com/en/latest/modules/indexes/document_loaders/examples/excel.html?highlight=xlsx#microsoft-excel
 from langchain.document_loaders import CSVLoader, PDFMinerLoader, TextLoader, UnstructuredExcelLoader, Docx2txtLoader
 
-from langchain.embeddings import HuggingFaceInstructEmbeddings
-# load_dotenv()
+# from langchain.embeddings import HuggingFaceInstructEmbeddings
 ROOT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
 # Define the folder for storing database
@@ -53,16 +49,16 @@ DOCUMENT_MAP = {
 DEVICE_TYPE = "cpu"
 # Default Instructor Model
 EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"
+# EMBEDDING_MODEL_NAME = "hkunlp/instructor-xl"
+# EMBEDDING_MODEL_NAME = "hkunlp/instructor-base"
 # EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
-EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
+# EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 # Select the Model ID and model_basename
 # load the LLM for generating Natural Language responses
-MODEL_ID = "TheBloke/Llama-2-7B-Chat-GGML"
-MODEL_BASENAME = "llama-2-7b-chat.ggmlv3.q4_0.bin"
-
-
-# MODEL_ID = "TheBloke/orca_mini_3B-GGML"
-# MODEL_BASENAME = "orca-mini-3b.ggmlv3.q4_0.bin"
+# MODEL_ID = "TheBloke/Llama-2-7B-Chat-GGML"
+# MODEL_BASENAME = "llama-2-7b-chat.ggmlv3.q4_0.bin"
+MODEL_ID = "TheBloke/orca_mini_3B-GGML"
+MODEL_BASENAME = "orca-mini-3b.ggmlv3.q4_0.bin"
 
 # MODEL_ID = "TheBloke/vicuna-7B-v1.5-GGML"
 # MODEL_BASENAME = "vicuna-7b-v1.5.ggmlv3.q4_1.bin"
@@ -98,7 +94,7 @@ MODEL_BASENAME = "llama-2-7b-chat.ggmlv3.q4_0.bin"
 # MODEL_ID = "TheBloke/orca_mini_3B-GGML"
 # MODEL_BASENAME = "orca-mini-3b.ggmlv3.q4_0.bin"
 
-def load_model(device_type, model_id, model_basename=None):
+""" def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
     logging.info("This action can take a few minutes!")
 
@@ -183,7 +179,4 @@ def load_model(device_type, model_id, model_basename=None):
     local_llm = HuggingFacePipeline(pipeline=pipe)
     logging.info("Local LLM Loaded")
 
-    return local_llm
-
-LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
-LLM_OPENAI = OpenAI(openai_api_key=openai_api_key, openai_organization=openai_organization)
+    return local_llm """

@@ -5,17 +5,18 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_compl
 import click
 import torch
 from langchain.docstore.document import Document
-# from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain.embeddings import HuggingFaceInstructEmbeddings
 from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 
-from constants import (
+from model_property import (
     CHROMA_SETTINGS,
     DOCUMENT_MAP,
     INGEST_THREADS,
     PERSIST_DIRECTORY,
     SOURCE_DIRECTORY,
-    EMBEDDINGS
+    EMBEDDING_MODEL_NAME,
+    DEVICE_TYPE
 )
 
 
@@ -153,6 +154,7 @@ def main(device_type):
         logging.info(f"Split into {len(texts)} chunks of text")
 
         # Create embeddings
+        EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
         db = Chroma.from_documents(
             texts,
             EMBEDDINGS,
