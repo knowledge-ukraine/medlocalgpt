@@ -23,7 +23,66 @@ Please support @malakhovks. Despite the Wartime in Ukraine, R&D in the field of 
 
 ## 💻 Installation (Testing)
 
-TODO
+### Environment setup
+
+1. Install Mininconda
+
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+
+```bash
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+
+2. Create Conda environment
+
+```bash
+conda create -n medlocalgpt
+```
+
+3. Activate Conda environment
+
+```bash
+conda activate medlocalgpt
+```
+
+4. Install requirements
+
+```bash
+pip install -r requirements.txt
+```
+
+5. Set environment variables
+
+```bash
+export OPENAI_API_KEY="YOUR KEY"
+```
+
+```bash
+export OPENAI_ORGANIZATION="YOUR ID"
+```
+
+6. Put all of your documents (.txt, .pdf, or .csv) into the SOURCE_DOCUMENTS and ingest all the data
+
+```bash
+python ingest.py
+```
+
+**CPU USAGE CAUTION**
+
+First of you need a lot of CPU cores to processing (to ingest) more documents. The week point here is not a RAM size.
+Also the **week point is the memory bandwidth**. That's why all this stuff working great on M1 or M2 chip.
+Read more about that you can here: [How is LLaMa.cpp possible?](https://finbarr.ca/how-is-llama-cpp-possible/).
+
+**PS:**  I also have a couple of HP servers, and using 28 cores, 1000 PDFs processed about 6 hours.
+
+7. Run medlocalgpt service
+
+```bash
+python run_server.py
+```
 
 ## 💻 Installation (Production)
 
