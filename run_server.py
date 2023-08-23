@@ -3,6 +3,8 @@ import os, json, re
 import shutil
 import subprocess
 
+os.environ["no_proxy"] = "*"
+
 import torch
 from auto_gptq import AutoGPTQForCausalLM
 from huggingface_hub import hf_hub_download
