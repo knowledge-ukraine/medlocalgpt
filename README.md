@@ -1,9 +1,9 @@
 # medlocalgpt
 
 Ask your (medical) dataset privately using LLMs and Embeddings. No data leaves your infrastructure/platform and 100% private.
-Optionally you can use OpenAI GPT models or other LLM SaaS solutions.
+Optionally you can use OpenAI GPT models or other LLM SaaS solutions via [LangChain](https://github.com/hwchase17/langchain).
 
-This project is part of the R&D on intelligent data analysis and computational linguistics for digital health (telerehabilitation an rehabilitation medicine). Read more: [Letter to the Editor–Update from Ukraine: Development of the Cloud-based Platform for Patient-centered Telerehabilitation of Oncology Patients with Mathematical-related Modeling](https://doi.org/10.5195/ijt.2023.6562).
+This project is part of the R&D on intelligent data analysis and computational linguistics for digital health (telerehabilitation an rehabilitation medicines). Read more: [Letter to the Editor–Update from Ukraine: Development of the Cloud-based Platform for Patient-centered Telerehabilitation of Oncology Patients with Mathematical-related Modeling](https://doi.org/10.5195/ijt.2023.6562).
 
 ## Inspired by
 
@@ -23,13 +23,12 @@ Please support @malakhovks. Despite the Wartime in Ukraine, R&D in the field of 
 
 ## 💻 Installation (Testing)
 
-### Environment setup
+### 🐍 Environment setup
 
 1. Install Mininconda
 
 ```bash
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
 ```
 
 ```bash
@@ -74,7 +73,7 @@ python ingest.py
 
 First of you need a lot of CPU cores to processing (to ingest) more documents. The week point here is not a RAM size.
 Also the **week point is the memory bandwidth**. That's why all this stuff working great on M1 or M2 chip.
-Read more about that you can here: [How is LLaMa.cpp possible?](https://finbarr.ca/how-is-llama-cpp-possible/).
+Read more about that you can here: [How is LLaMa.cpp possible?](https://finbarr.ca/how-is-llama-cpp-possible/)
 
 **PS:**  I also have a couple of HP servers, and using 28 cores, 1000 PDFs processed about 6 hours.
 
@@ -85,6 +84,10 @@ python run_server.py
 ```
 
 ## 💻 Installation (Production)
+
+TODO
+
+## 🎈 API usage
 
 TODO
 
