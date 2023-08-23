@@ -8,7 +8,7 @@ from auto_gptq import AutoGPTQForCausalLM
 from huggingface_hub import hf_hub_download
 from flask import Flask, jsonify, request
 from langchain.chains import RetrievalQA
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+# from langchain.embeddings import HuggingFaceInstructEmbeddings
 # from langchain.memory import ConversationBufferMemory
 # from langchain.prompts import PromptTemplate
 from langchain.llms import HuggingFacePipeline, LlamaCpp
@@ -24,18 +24,18 @@ from transformers import (
     GenerationConfig,
     LlamaForCausalLM,
     LlamaTokenizer,
-    pipeline,
+    pipeline
 )
 from werkzeug.utils import secure_filename
 
-from constants import (
+from model_property import (
     CHROMA_SETTINGS,
     PERSIST_DIRECTORY,
     MODEL_ID,
     MODEL_BASENAME,
     OPENAI_API_KEY,
     OPENAI_ORGANIZATION,
-    EMBEDDING_MODEL_NAME)
+    EMBEDDINGS)
 
 def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
@@ -130,7 +130,6 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
-EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 DB = Chroma(
     persist_directory=PERSIST_DIRECTORY,
     embedding_function=EMBEDDINGS,
@@ -173,7 +172,7 @@ def delete_source_route():
 
 # add route to delete PERSIST_DIRECTORY
 
-@app.route("/medlocalgpt/api/v1/save_document", methods=["GET", "POST"])
+@app.route("/medlocalgpt/api/v1/admin/save_document", methods=["GET", "POST"])
 def save_document_route():
     if "document" not in request.files:
         return "No document part", 400
@@ -190,7 +189,7 @@ def save_document_route():
         return "File saved successfully", 200
 
 
-@app.route("/medlocalgpt/api/v1/ingest", methods=["GET"])
+@app.route("/medlocalgpt/api/v1/admin/ingest", methods=["GET"])
 def run_ingest_route():
     global DB
     global RETRIEVER
