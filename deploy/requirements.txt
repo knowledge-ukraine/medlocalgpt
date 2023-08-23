@@ -1,6 +1,6 @@
 # Natural Language Processing
 langchain
-chromadb
+chromadb==0.3.22
 llama-cpp-python
 pdfminer.six==20221105
 googletrans==4.0.0rc1
