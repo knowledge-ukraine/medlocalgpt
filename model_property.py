@@ -1,7 +1,13 @@
 import os
 
-OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
-OPENAI_ORGANIZATION = os.environ['OPENAI_ORGANIZATION']
+if 'OPENAI_API_KEY' in os.environ:
+    OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
+else:
+    OPENAI_API_KEY = None
+if 'OPENAI_ORGANIZATION' in os.environ:
+    OPENAI_ORGANIZATION = os.environ['OPENAI_ORGANIZATION']
+else:
+    OPENAI_ORGANIZATION = None
 
 # import torch
 # from auto_gptq import AutoGPTQForCausalLM

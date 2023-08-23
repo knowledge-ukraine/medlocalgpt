@@ -145,10 +145,11 @@ QA_LOCAL = RetrievalQA.from_chain_type(
     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
 )
 
-LLM_OPENAI = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
-QA_OPENAI = RetrievalQA.from_chain_type(
-    llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
-)
+if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+    LLM_OPENAI = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
+    QA_OPENAI = RetrievalQA.from_chain_type(
+        llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
+    )
 
 app = Flask(__name__)
 
@@ -240,8 +241,11 @@ def prompt_route():
     use_model = request.args.get('model', default = 'local', type = str)
 
     if use_model == 'openai':
-        QA = QA_OPENAI
-        logging.debug('Use QA_OPENAI')
+        if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+            QA = QA_OPENAI
+            logging.debug('Use QA_OPENAI')
+        else:
+            return "No OPENAI cridentials received", 400
     if use_model == 'local':
         QA = QA_LOCAL
         logging.debug('Use QA_LOCAL')
@@ -282,8 +286,11 @@ def prompt_gt():
     lang_dest = request.args.get('lang_dest', default = 'en', type = str)
 
     if use_model == 'openai':
-        logging.debug('Use QA_OPENAI')
-        QA = QA_OPENAI
+        if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+            logging.debug('Use QA_OPENAI')
+            QA = QA_OPENAI
+        else:
+            return "No OPENAI cridentials received", 400
     if use_model == 'local':
         logging.debug('Use QA_LOCAL')
         QA = QA_LOCAL
