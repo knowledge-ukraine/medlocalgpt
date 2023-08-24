@@ -134,7 +134,7 @@ logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
 # "subject": "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
-template = """The subject areas of your responses should be: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. The domain of your responses should be academic. Provide a very detailed comprehensive academic answer. Your responses should be informative and logical. Your responses should be for knowledgeable and expert audience. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. If the question is not about subject areas and not directly in the given context, politely inform them that you are tuned to only answer questions about subject areas.
+template = """The subject areas of your responses should be: {subject}. The domain of your responses should be academic. Provide a very detailed comprehensive academic answer. Your responses should be informative and logical. Your responses should be for knowledgeable and expert audience. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}.
 
     {context}
 
@@ -144,9 +144,8 @@ template = """The subject areas of your responses should be: medicine, physical 
     Answer:"""
 
 # prompt = PromptTemplate.from_template(template)
-prompt = PromptTemplate(input_variables=["history", "context", "question"], template=template)
-# prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
-# subject = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
+prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
+subject = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
 
 memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
@@ -168,7 +167,7 @@ if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
     LLM_OPENAI = ChatOpenAI(model='gpt-3.5-turbo-16k', max_tokens=2024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
     QA_OPENAI = RetrievalQA.from_chain_type(
         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-        chain_type_kwargs={"prompt": prompt, "memory": memory}
+        chain_type_kwargs={"prompt": prompt.partial(subject=subject), "memory": memory}
     )
 
 app = Flask(__name__)
