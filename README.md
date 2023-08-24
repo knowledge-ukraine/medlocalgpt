@@ -82,7 +82,7 @@ Please support @malakhovks. Despite the Wartime in Ukraine, R&D in the field of 
     - Embedding model: `hkunlp/instructor-large` from [InstructorEmbeddings](https://instructor-embedding.github.io/)
     - LLM: `orca-mini-3b.ggmlv3.q4_0.bin` from [TheBloke/orca_mini_3B-GGML](https://huggingface.co/TheBloke/orca_mini_3B-GGML)
 
-    Now you can set models via `model_property.py`.
+    Now you can set models and OpenAI cridentials with env vars via `medlocalgpt.env`.
 
 7. Set env vars
 
