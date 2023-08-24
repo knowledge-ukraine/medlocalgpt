@@ -9,7 +9,7 @@ This project is part of the R&D on intelligent data analysis and computational l
 
 This project was inspired by the original [privateGPT](https://github.com/imartinez/privateGPT) and [localGPT](https://github.com/PromtEngineer/localGPT).
 
-Built with [LangChain](https://github.com/hwchase17/langchain), [GPT4All](https://github.com/nomic-ai/gpt4all), [LlamaCpp](https://github.com/ggerganov/llama.cpp), [Chroma](https://www.trychroma.com/), [SentenceTransformers](https://www.sbert.net/), [InstructorEmbeddings](https://instructor-embedding.github.io/).
+Built with [🦜️🔗 LangChain](https://github.com/hwchase17/langchain), [GPT4All](https://github.com/nomic-ai/gpt4all), [LlamaCpp](https://github.com/ggerganov/llama.cpp), [Chroma](https://www.trychroma.com/), [SentenceTransformers](https://www.sbert.net/), [InstructorEmbeddings](https://instructor-embedding.github.io/).
 
 ## Sponsor this project
 
@@ -84,7 +84,33 @@ Please support @malakhovks. Despite the Wartime in Ukraine, R&D in the field of 
 
     Now you can set models via `model_property.py`.
 
-7. Run medlocalgpt service
+7. Set env vars
+
+    ```bash
+    export OPENAI_API_KEY="YOUR API KEY"
+    ```
+
+    ```bash
+    export OPENAI_ORGANIZATION="YOUR ORGNIZATION ID"
+    ```
+
+    ```bash
+    export OPENAI_MODEL="gpt-3.5-turbo-16k"
+    ```
+
+    ```bash
+    export EMBEDDING_MODEL_NAME="hkunlp/instructor-large"
+    ```
+
+    ```bash
+    export MODEL_ID="TheBloke/orca_mini_3B-GGML"
+    ```
+
+    ```bash
+    export MODEL_BASENAME="orca-mini-3b.ggmlv3.q4_0.bin"
+    ```
+
+8. Run medlocalgpt service
 
     ```bash
     python run_server.py
