@@ -145,7 +145,8 @@ template = """The subject areas of your responses should be: {subject}. The doma
 
 prompt = PromptTemplate.from_template(template)
 # prompt = PromptTemplate(input_variables=["history", "context", "question"], template=template)
-subject = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
+SUBJECT = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
+prompt.format(subject=SUBJECT)
 
 memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
@@ -271,7 +272,7 @@ def prompt_route():
     user_prompt = request.form.get("prompt")
     if user_prompt:
         logging.debug('Get the answer from the chain')
-        res = QA({"query": user_prompt, "subject": subject})
+        res = QA(user_prompt)
         answer, docs = res["result"], res["source_documents"]
 
         prompt_response_dict = {
