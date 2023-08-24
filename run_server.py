@@ -143,7 +143,6 @@ template = """The subject areas of your responses should be: {subject}. The doma
 
 # prompt = PromptTemplate.from_template(template)
 prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
-prompt.format(subject="medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research")
 memory = ConversationBufferMemory(input_key="question", memory_key="history")
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
@@ -164,7 +163,7 @@ if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
     LLM_OPENAI = ChatOpenAI(model='gpt-3.5-turbo-16k', max_tokens=2024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
     QA_OPENAI = RetrievalQA.from_chain_type(
         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-        chain_type_kwargs={"prompt": prompt, "memory": memory}
+        chain_type_kwargs={"prompt": prompt, "memory": memory, "subject"="medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"}
     )
 
 app = Flask(__name__)
