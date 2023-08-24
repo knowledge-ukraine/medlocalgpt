@@ -4,10 +4,31 @@ if 'OPENAI_API_KEY' in os.environ:
     OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
 else:
     OPENAI_API_KEY = None
+
 if 'OPENAI_ORGANIZATION' in os.environ:
     OPENAI_ORGANIZATION = os.environ['OPENAI_ORGANIZATION']
 else:
     OPENAI_ORGANIZATION = None
+
+if 'EMBEDDING_MODEL_NAME' in os.environ:
+    EMBEDDING_MODEL_NAME = os.environ['EMBEDDING_MODEL_NAME']
+else:
+    EMBEDDING_MODEL_NAME = "hkunlp/instructor-base"
+
+if 'MODEL_ID' in os.environ:
+    MODEL_ID = os.environ['MODEL_ID']
+else:
+    MODEL_ID = "TheBloke/orca_mini_3B-GGML"
+
+if 'MODEL_BASENAME' in os.environ:
+    MODEL_BASENAME = os.environ['MODEL_BASENAME']
+else:
+    MODEL_BASENAME = "orca-mini-3b.ggmlv3.q4_0.bin"
+
+if 'DEVICE_TYPE' in os.environ:
+    DEVICE_TYPE = os.environ['DEVICE_TYPE']
+else:
+    DEVICE_TYPE = "cpu"
 
 # import torch
 # from auto_gptq import AutoGPTQForCausalLM
@@ -16,8 +37,6 @@ else:
 # # from langchain.embeddings import HuggingFaceEmbeddings
 # from langchain.llms import HuggingFacePipeline, LlamaCpp
 
-
-# from dotenv import load_dotenv
 from chromadb.config import Settings
 
 # https://python.langchain.com/en/latest/modules/indexes/document_loaders/examples/excel.html?highlight=xlsx#microsoft-excel
@@ -52,9 +71,8 @@ DOCUMENT_MAP = {
     ".doc": Docx2txtLoader,
 }
 
-DEVICE_TYPE = "cpu"
-# Default Instructor Model
-EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"
+# DEVICE_TYPE = "cpu"
+# EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"
 # EMBEDDING_MODEL_NAME = "hkunlp/instructor-xl"
 # EMBEDDING_MODEL_NAME = "hkunlp/instructor-base"
 # EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
@@ -63,8 +81,8 @@ EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"
 # load the LLM for generating Natural Language responses
 # MODEL_ID = "TheBloke/Llama-2-7B-Chat-GGML"
 # MODEL_BASENAME = "llama-2-7b-chat.ggmlv3.q4_0.bin"
-MODEL_ID = "TheBloke/orca_mini_3B-GGML"
-MODEL_BASENAME = "orca-mini-3b.ggmlv3.q4_0.bin"
+# MODEL_ID = "TheBloke/orca_mini_3B-GGML"
+# MODEL_BASENAME = "orca-mini-3b.ggmlv3.q4_0.bin"
 
 # MODEL_ID = "TheBloke/vicuna-7B-v1.5-GGML"
 # MODEL_BASENAME = "vicuna-7b-v1.5.ggmlv3.q4_1.bin"
