@@ -27,69 +27,68 @@ Please support @malakhovks. Despite the Wartime in Ukraine, R&D in the field of 
 
 1. Install Mininconda
 
-```bash
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-```
+    ```bash
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    ```
 
-```bash
-bash Miniconda3-latest-Linux-x86_64.sh
-```
+    ```bash
+    bash Miniconda3-latest-Linux-x86_64.sh
+    ```
 
 2. Create Conda environment
 
-```bash
-conda create -n medlocalgpt
-```
+    ```bash
+    conda create -n medlocalgpt
+    ```
 
 3. Activate Conda environment
 
-```bash
-conda activate medlocalgpt
-```
+    ```bash
+    conda activate medlocalgpt
+    ```
 
 4. Install requirements
 
-```bash
-pip install -r requirements.txt
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 5. Set environment variables
 
-```bash
-export OPENAI_API_KEY="YOUR KEY"
-```
+    ```bash
+    export OPENAI_API_KEY="YOUR KEY"
+    ```
 
-```bash
-export OPENAI_ORGANIZATION="YOUR ID"
-```
+    ```bash
+    export OPENAI_ORGANIZATION="YOUR ID"
+    ```
 
 6. Put all of your documents (.txt, .pdf, or .csv) into the SOURCE_DOCUMENTS and ingest all the data
 
-```bash
-python ingest.py
-```
+    **CPU USAGE CAUTION**
 
-**CPU USAGE CAUTION**
+    First of you need a lot of CPU cores to processing (to ingest) more documents. The week point here is not a RAM size.
+    Also the **week point is the memory bandwidth**. That's why all this stuff working great on M1 or M2 chip.
+    Read more about that you can here: [How is LLaMa.cpp possible?](https://finbarr.ca/how-is-llama-cpp-possible/)
 
-First of you need a lot of CPU cores to processing (to ingest) more documents. The week point here is not a RAM size.
-Also the **week point is the memory bandwidth**. That's why all this stuff working great on M1 or M2 chip.
-Read more about that you can here: [How is LLaMa.cpp possible?](https://finbarr.ca/how-is-llama-cpp-possible/)
+    **PS:**  I also have a couple of HP servers, and using 28 cores, 1000 PDFs processed about 6 hours.
 
-**PS:**  I also have a couple of HP servers, and using 28 cores, 1000 PDFs processed about 6 hours.
+    ```bash
+    python ingest.py
+    ```
 
-**Default models**
+    **Default models**
 
-- Embedding model: `hkunlp/instructor-large` from [InstructorEmbeddings](https://instructor-embedding.github.io/)
-- LLM: `orca-mini-3b.ggmlv3.q4_0.bin` from [TheBloke/orca_mini_3B-GGML](https://huggingface.co/TheBloke/orca_mini_3B-GGML)
+    - Embedding model: `hkunlp/instructor-large` from [InstructorEmbeddings](https://instructor-embedding.github.io/)
+    - LLM: `orca-mini-3b.ggmlv3.q4_0.bin` from [TheBloke/orca_mini_3B-GGML](https://huggingface.co/TheBloke/orca_mini_3B-GGML)
 
-Now you can set models via `model_property.py`.
+    Now you can set models via `model_property.py`.
 
 7. Run medlocalgpt service
 
-```bash
-python run_server.py
-```
-
+    ```bash
+    python run_server.py
+    ```
 
 ## 💻 Installation (Production)
 
