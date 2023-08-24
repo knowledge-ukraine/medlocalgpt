@@ -15,7 +15,7 @@ from langchain.embeddings import HuggingFaceInstructEmbeddings
 # from langchain.prompts import PromptTemplate
 from langchain.llms import HuggingFacePipeline, LlamaCpp
 # from langchain.llms import OpenAI
-from langchain.llms import OpenAIChat
+from langchain.chat_models import ChatOpenAI
 
 from googletrans import Translator
 
@@ -148,7 +148,7 @@ QA_LOCAL = RetrievalQA.from_chain_type(
 
 if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
     # LLM_OPENAI = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
-    LLM_OPENAI = OpenAIChat(madel='gpt-4-32k',max_tokens=2024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
+    LLM_OPENAI = ChatOpenAI(madel='gpt-4-32k',max_tokens=2024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
     QA_OPENAI = RetrievalQA.from_chain_type(
         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
     )
