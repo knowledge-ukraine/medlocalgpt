@@ -14,7 +14,8 @@ from langchain.embeddings import HuggingFaceInstructEmbeddings
 # from langchain.memory import ConversationBufferMemory
 # from langchain.prompts import PromptTemplate
 from langchain.llms import HuggingFacePipeline, LlamaCpp
-from langchain.llms import OpenAI
+# from langchain.llms import OpenAI
+from langchain.llms import OpenAIChat
 
 from googletrans import Translator
 
@@ -146,7 +147,8 @@ QA_LOCAL = RetrievalQA.from_chain_type(
 )
 
 if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-    LLM_OPENAI = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
+    # LLM_OPENAI = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
+    LLM_OPENAI = OpenAIChat(madel='gpt-4-32k',max_tokens=2024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
     QA_OPENAI = RetrievalQA.from_chain_type(
         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
     )
@@ -160,7 +162,6 @@ A secret key should be as random as possible. Your operating system has ways to 
 $ python -c 'import os; print(os.urandom(16))'
 b'_5#y2L"F4Q8z\n\xec]/'
 """
-# app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.secret_key = os.urandom(42)
 
 @app.route("/medlocalgpt/api/v1/delete_source", methods=["GET"])
@@ -252,7 +253,6 @@ def prompt_route():
 
     user_prompt = request.form.get("prompt")
     if user_prompt:
-        # Get the answer from the chain
         logging.debug('Get the answer from the chain')
         res = QA(user_prompt)
         answer, docs = res["result"], res["source_documents"]
@@ -302,11 +302,9 @@ def prompt_gt():
         # tr_prompt = translator.translate(user_prompt, src='uk', dest='en')
         logging.debug('Translation from ' + lang_src + ' to ' + lang_dest)
         tr_prompt = translator.translate(user_prompt, src=lang_src, dest=lang_dest)
-        # Get the answer from the chain
         logging.debug('Get the answer from the chain')
         res = QA(tr_prompt.text)
         answer, docs = res["result"], res["source_documents"]
-
         #Translation en to uk
         logging.debug('Translation from en to uk')
         tr_response = translator.translate(answer, src='en', dest='uk')
