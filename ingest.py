@@ -118,16 +118,6 @@ def split_documents(documents: list[Document]) -> tuple[list[Document], list[Doc
     help="Device to run on. (Default is cuda)",
 )
 def main(device_type):
-    # Remove Chroma index
-    # if os.path.exists(PERSIST_DIRECTORY):
-    #     try:
-    #         shutil.rmtree(PERSIST_DIRECTORY)
-    #         logging.info(PERSIST_DIRECTORY + ' - Chroma index deleted')
-    #     except OSError as e:
-    #         logging.error(f"Error: {e.filename} - {e.strerror}.")
-    # else:
-    #     logging.info(PERSIST_DIRECTORY + " directory does not exist")
-
     if os.path.exists(PERSIST_DIRECTORY):
         with os.scandir(PERSIST_DIRECTORY) as it:
             if any(it):
