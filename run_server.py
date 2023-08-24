@@ -134,17 +134,20 @@ logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
 # "subject": "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
-template = """The subject areas of your responses should be: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. The domain of your responses should be academic. Provide a very detailed comprehensive academic answer. Your responses should be informative and logical. Your responses should be for knowledgeable and expert audience. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. If the question is not about subject areas and not directly in the given context, politely inform them that you are tuned to only answer questions about subject areas.
+template = """The subject areas of your responses should be: {subject}. The domain of your responses should be academic. Provide a very detailed comprehensive academic answer. Your responses should be informative and logical. Your responses should be for knowledgeable and expert audience. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}.
 
     {context}
 
+    Chat History:
     {history}
     Question: {question}
     Answer:"""
 
-# prompt = PromptTemplate.from_template(template)
-prompt = PromptTemplate(input_variables=["history", "context", "question"], template=template)
-memory = ConversationBufferMemory(input_key="question", memory_key="history")
+prompt = PromptTemplate.from_template(template)
+# prompt = PromptTemplate(input_variables=["history", "context", "question"], template=template)
+subject = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
+
+memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 DB = Chroma(
@@ -152,7 +155,7 @@ DB = Chroma(
     embedding_function=EMBEDDINGS,
     client_settings=CHROMA_SETTINGS,
 )
-RETRIEVER = DB.as_retriever(search_kwargs={"k": 5})
+RETRIEVER = DB.as_retriever(search_kwargs={"k": 6})
 
 LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
 QA_LOCAL = RetrievalQA.from_chain_type(
@@ -268,7 +271,7 @@ def prompt_route():
     user_prompt = request.form.get("prompt")
     if user_prompt:
         logging.debug('Get the answer from the chain')
-        res = QA(user_prompt)
+        res = QA({"query": user_prompt, "subject": subject})
         answer, docs = res["result"], res["source_documents"]
 
         prompt_response_dict = {
