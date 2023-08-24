@@ -11,8 +11,8 @@ from huggingface_hub import hf_hub_download
 from flask import Flask, jsonify, request
 from langchain.chains import RetrievalQA
 from langchain.embeddings import HuggingFaceInstructEmbeddings
-# from langchain.memory import ConversationBufferMemory
-# from langchain.prompts import PromptTemplate
+from langchain.memory import ConversationBufferMemory
+from langchain.prompts import PromptTemplate
 from langchain.llms import HuggingFacePipeline, LlamaCpp
 # from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
@@ -133,6 +133,18 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
+template = """The subject areas of your responses should be: {subject}. The domain of your responses should be academic. Provide a very detailed comprehensive academic answer. Your responses should be informative and logical. Your responses should be for knowledgeable and expert audience. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}.
+
+    {context}
+
+    {history}
+    Question: {question}
+    Answer:"""
+
+prompt = PromptTemplate.from_template(template)
+prompt.format(subject="medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research")
+memory = ConversationBufferMemory(input_key="question", memory_key="history")
+
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 DB = Chroma(
     persist_directory=PERSIST_DIRECTORY,
@@ -150,7 +162,8 @@ if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
     # LLM_OPENAI = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
     LLM_OPENAI = ChatOpenAI(model='gpt-3.5-turbo-16k', max_tokens=2024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
     QA_OPENAI = RetrievalQA.from_chain_type(
-        llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
+        llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+        chain_type_kwargs={"prompt": prompt, "memory": memory}
     )
 
 app = Flask(__name__)
