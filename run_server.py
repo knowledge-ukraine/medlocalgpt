@@ -141,7 +141,8 @@ template = """The subject areas of your responses should be: {subject}. The doma
     Question: {question}
     Answer:"""
 
-prompt = PromptTemplate.from_template(template)
+# prompt = PromptTemplate.from_template(template)
+prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
 prompt.format(subject="medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research")
 memory = ConversationBufferMemory(input_key="question", memory_key="history")
 
