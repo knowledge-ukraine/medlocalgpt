@@ -10,6 +10,11 @@ if 'OPENAI_ORGANIZATION' in os.environ:
 else:
     OPENAI_ORGANIZATION = None
 
+if 'OPENAI_MODEL' in os.environ:
+    OPENAI_MODEL = os.environ['OPENAI_MODEL']
+else:
+    OPENAI_MODEL="gpt-3.5-turbo-16k"
+
 if 'EMBEDDING_MODEL_NAME' in os.environ:
     EMBEDDING_MODEL_NAME = os.environ['EMBEDDING_MODEL_NAME']
 else:
@@ -29,6 +34,16 @@ if 'DEVICE_TYPE' in os.environ:
     DEVICE_TYPE = os.environ['DEVICE_TYPE']
 else:
     DEVICE_TYPE = "cpu"
+
+if 'MAX_TOKENS' in os.environ:
+    MAX_TOKENS = os.environ['MAX_TOKENS']
+else:
+    MAX_TOKENS = 1024
+
+if 'DOC_NUMBER' in os.environ:
+    DOC_NUMBER = os.environ['DOC_NUMBER']
+else:
+    DOC_NUMBER = 6
 
 # import torch
 # from auto_gptq import AutoGPTQForCausalLM
