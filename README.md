@@ -55,44 +55,13 @@ Built with [🦜️🔗 LangChain](https://github.com/hwchase17/langchain), [GPT
 
 5. Set environment variables
 
-    ```bash
-    export OPENAI_API_KEY="YOUR KEY"
-    ```
-
-    ```bash
-    export OPENAI_ORGANIZATION="YOUR ID"
-    ```
-
-6. Put all of your documents (.txt, .pdf, or .csv) into the SOURCE_DOCUMENTS and ingest all the data
-
-    ⚠️ **CPU USAGE CAUTION**
-
-    First of you need a lot of CPU cores to processing (to ingest) more documents. The week point here is not a RAM size.
-    Also the **week point is the memory bandwidth**. That's why all this stuff working great on M1 or M2 chip.
-    Read more about that you can here: [How is LLaMa.cpp possible?](https://finbarr.ca/how-is-llama-cpp-possible/)
-
-    **PS:**  I also have a couple of HP servers, and using 28 cores, 1000 PDFs processed about 6 hours.
-
-    ```bash
-    python ingest.py
-    ```
-
-    **Default models**
-
-    - Embedding model: `hkunlp/instructor-large` from [InstructorEmbeddings](https://instructor-embedding.github.io/)
-    - LLM: `orca-mini-3b.ggmlv3.q4_0.bin` from [TheBloke/orca_mini_3B-GGML](https://huggingface.co/TheBloke/orca_mini_3B-GGML)
-
-    Now you can set models and OpenAI cridentials with env vars via `medlocalgpt.env`.
-
-7. Set env vars
-
     Set environment variables from `medlocalgpt.env` file of key/value pairs:
 
     ```bash
     set -o allexport && source medlocalgpt.env && set +o allexport
     ```
 
-    You can do it manually:
+    You can do it manually.
 
     Set embedding model:
 
@@ -144,7 +113,26 @@ Built with [🦜️🔗 LangChain](https://github.com/hwchase17/langchain), [GPT
     export SUBJECT="medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
     ```
 
-8. Run medlocalgpt service
+6. Put all of your documents (.txt, .pdf, or .csv) into the SOURCE_DOCUMENTS and ingest all the data
+
+    ⚠️ **CPU USAGE CAUTION**
+
+    First of you need a lot of CPU cores to processing (to ingest) more documents. The week point here is not a RAM size.
+    Also the **week point is the memory bandwidth**. That's why all this stuff working great on M1 or M2 chip.
+    Read more about that you can here: [How is LLaMa.cpp possible?](https://finbarr.ca/how-is-llama-cpp-possible/)
+
+    **PS:**  I also have a couple of HP servers, and using 28 cores, 1000 PDFs processed about 6 hours.
+
+    ```bash
+    python ingest.py
+    ```
+
+    **Default models**
+
+    - Embedding model: `hkunlp/instructor-large` from [InstructorEmbeddings](https://instructor-embedding.github.io/)
+    - LLM: `orca-mini-3b.ggmlv3.q4_0.bin` from [TheBloke/orca_mini_3B-GGML](https://huggingface.co/TheBloke/orca_mini_3B-GGML)
+
+7. Run medlocalgpt service
 
     ```bash
     python run_server.py
