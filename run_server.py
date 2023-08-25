@@ -136,6 +136,7 @@ logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
 # "subject": "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
 template = """Correct spelling and grammatical mistakes of the user question using domain knowledge from {subject}: {question} \
+Do not include corrected version of user's question in your response. \
 The subject areas of your responses should be: {subject}. \
 The domain of your responses should be academic. \
 Provide a very detailed comprehensive academic answer. \
@@ -152,29 +153,29 @@ Chat History:
 Question: {question}
 Answer:"""
 
-template_tr = """
-Correct spelling and grammatical mistakes of the user question (in Ukrainian language) using domain knowledge from {subject}: {question}
-Do not include corrected version of user's question in your response.
-Translate user question: {question} from Ukrainian to English using domain knowledge from {subject}. \
-The subject areas of your responses should be: {subject}. \
-The domain of your responses should be academic. \
-Provide a very detailed comprehensive academic answer. \
-Your responses should be informative and logical. \
-Your responses should be for knowledgeable and expert audience. \
-If you don't know the answer, just say that you don't know, don't try to make up an answer. \
-If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. \
-Use the following pieces of context to answer the question at the end. \
-Translate your response from English to Ukrainian.\
+# template_tr = """
+# Correct spelling and grammatical mistakes of the user question (in Ukrainian language) using domain knowledge from {subject}: {question}
+# Do not include corrected version of user's question in your response.
+# Translate user question: {question} from Ukrainian to English using domain knowledge from {subject}. \
+# The subject areas of your responses should be: {subject}. \
+# The domain of your responses should be academic. \
+# Provide a very detailed comprehensive academic answer. \
+# Your responses should be informative and logical. \
+# Your responses should be for knowledgeable and expert audience. \
+# If you don't know the answer, just say that you don't know, don't try to make up an answer. \
+# If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. \
+# Use the following pieces of context to answer the question at the end. \
+# Translate your response from English to Ukrainian.\
 
-{context}
+# {context}
 
-Chat History:
-{history}
-Question: {question}
-Answer:"""
+# Chat History:
+# {history}
+# Question: {question}
+# Answer:"""
 
 # prompt = PromptTemplate.from_template(template)
-prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template_tr)
+prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
 memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
