@@ -94,6 +94,38 @@ Built with [🦜️🔗 LangChain](https://github.com/hwchase17/langchain), [GPT
 
     You can do it manually:
 
+    Set embedding model:
+
+    ```bash
+    export EMBEDDING_MODEL_NAME="hkunlp/instructor-large"
+    ```
+
+    Set LLM repo:
+
+    ```bash
+    export MODEL_ID="TheBloke/orca_mini_3B-GGML"
+    ```
+
+    Set LLM's base name:
+
+    ```bash
+    export MODEL_BASENAME="orca-mini-3b.ggmlv3.q4_0.bin"
+    ```
+
+    Set returned source documents number:
+
+    ```bash
+    export DOC_NUMBER=6
+    ```
+
+    Set max response lenth:
+
+    ```bash
+    export MAX_TOKENS=256
+    ```
+
+    Set OpenAI cridentials and model:
+
     ```bash
     export OPENAI_API_KEY="YOUR API KEY"
     ```
@@ -106,16 +138,10 @@ Built with [🦜️🔗 LangChain](https://github.com/hwchase17/langchain), [GPT
     export OPENAI_MODEL="gpt-3.5-turbo-16k"
     ```
 
-    ```bash
-    export EMBEDDING_MODEL_NAME="hkunlp/instructor-large"
-    ```
+    Set domain knowledge:
 
     ```bash
-    export MODEL_ID="TheBloke/orca_mini_3B-GGML"
-    ```
-
-    ```bash
-    export MODEL_BASENAME="orca-mini-3b.ggmlv3.q4_0.bin"
+    export SUBJECT="medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
     ```
 
 8. Run medlocalgpt service
