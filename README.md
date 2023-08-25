@@ -1,4 +1,4 @@
-# medlocalgpt
+# ⚕️ medlocalgpt
 
 Ask your (medical) dataset privately using LLMs and Embeddings. No data leaves your infrastructure/platform and 100% private.
 Optionally you can use OpenAI GPT models or other LLM SaaS solutions via [LangChain](https://github.com/hwchase17/langchain).

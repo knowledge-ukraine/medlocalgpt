@@ -89,7 +89,6 @@ def load_model(device_type, model_id, model_basename=None):
     elif (
         device_type.lower() == "cuda"
     ):  # The code supports all huggingface models that ends with -HF or which have a .bin
-        # file in their HF repo.
         logging.info("Using AutoModelForCausalLM for full models")
         tokenizer = AutoTokenizer.from_pretrained(model_id)
         logging.info("Tokenizer loaded")
@@ -134,8 +133,9 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
-# "subject": "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
-template = """The subject areas of your responses should be: {subject}. \
+template = """Correct spelling and grammatical mistakes of the user question using domain knowledge from {subject}: {question} \
+Do not include corrected version of user's question in your response. \
+The subject areas of your responses should be: {subject}. \
 The domain of your responses should be academic. \
 Provide a very detailed comprehensive academic answer. \
 Your responses should be informative and logical. \
