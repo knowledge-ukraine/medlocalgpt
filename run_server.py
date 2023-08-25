@@ -170,10 +170,6 @@ QA_LOCAL = RetrievalQA.from_chain_type(
 
 if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
     LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
-    QA_OPENAI = RetrievalQA.from_chain_type(
-        llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-        chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
-    )
 
 app = Flask(__name__)
 
@@ -260,9 +256,15 @@ def prompt_route():
     # global QA
 
     use_model = request.args.get('model', default = 'local', type = str)
+    lang_src = request.args.get('lang_src', default = 'uk', type = str)
+    lang_dest = request.args.get('lang_dest', default = 'en', type = str)
 
     if use_model == 'openai':
         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+            QA_OPENAI = RetrievalQA.from_chain_type(
+                    llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+                    chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
+                )
             QA = QA_OPENAI
             logging.debug('Use QA_OPENAI')
         else:
