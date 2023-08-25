@@ -151,8 +151,27 @@ Chat History:
 Question: {question}
 Answer:"""
 
+template_tr = """
+Translate user query: {question} from Ukrainian to English. \
+The subject areas of your responses should be: {subject}. \
+The domain of your responses should be academic. \
+Provide a very detailed comprehensive academic answer. \
+Your responses should be informative and logical. \
+Your responses should be for knowledgeable and expert audience. \
+If you don't know the answer, just say that you don't know, don't try to make up an answer. \
+If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. \
+Use the following pieces of context to answer the question at the end. \
+Translate answer from English to Ukrainian.\
+
+{context}
+
+Chat History:
+{history}
+Question: {question}
+Answer:"""
+
 # prompt = PromptTemplate.from_template(template)
-prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
+prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template_tr)
 memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
