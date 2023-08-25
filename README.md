@@ -92,7 +92,7 @@ Built with [🦜️🔗 LangChain](https://github.com/hwchase17/langchain), [GPT
     set -o allexport && source medlocalgpt.env && set +o allexport
     ```
 
-    You can do it manually:
+    You can do it manually.
 
     Set embedding model:
 
