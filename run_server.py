@@ -41,7 +41,8 @@ from model_property import (
     EMBEDDING_MODEL_NAME,
     MAX_TOKENS,
     OPENAI_MODEL,
-    DOC_NUMBER)
+    DOC_NUMBER,
+    SUBJECT)
 
 def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
@@ -88,7 +89,6 @@ def load_model(device_type, model_id, model_basename=None):
     elif (
         device_type.lower() == "cuda"
     ):  # The code supports all huggingface models that ends with -HF or which have a .bin
-        # file in their HF repo.
         logging.info("Using AutoModelForCausalLM for full models")
         tokenizer = AutoTokenizer.from_pretrained(model_id)
         logging.info("Tokenizer loaded")
@@ -133,8 +133,9 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
-# "subject": "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
-template = """The subject areas of your responses should be: {subject}. \
+template = """Correct spelling and grammatical mistakes of the user question using domain knowledge from {subject}: {question} \
+Do not include corrected version of user's question in your response. \
+The subject areas of your responses should be: {subject}. \
 The domain of your responses should be academic. \
 Provide a very detailed comprehensive academic answer. \
 Your responses should be informative and logical. \
@@ -152,8 +153,6 @@ Answer:"""
 
 # prompt = PromptTemplate.from_template(template)
 prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
-subject = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
-
 memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
@@ -170,11 +169,10 @@ QA_LOCAL = RetrievalQA.from_chain_type(
 )
 
 if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-    # LLM_OPENAI = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
     LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
     QA_OPENAI = RetrievalQA.from_chain_type(
         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-        chain_type_kwargs={"prompt": prompt.partial(subject=subject), "memory": memory}
+        chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
     )
 
 app = Flask(__name__)
@@ -260,8 +258,6 @@ def run_ingest_route():
 @app.route("/medlocalgpt/api/v1/ask", methods=["GET", "POST"])
 def prompt_route():
     # global QA
-
-    #  template = """You are an AI assistant for answering questions about {subject}. Provide a very detailed comprehensive academic answer. If you don't know the answer, just say "I'm not sure." Don't try to make up an answer. If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. Question: {question} ========= {context} ========= Answer:"""
 
     use_model = request.args.get('model', default = 'local', type = str)
 

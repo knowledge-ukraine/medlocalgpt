@@ -45,6 +45,11 @@ if 'DOC_NUMBER' in os.environ:
 else:
     DOC_NUMBER = 6
 
+if 'SUBJECT' in os.environ:
+    SUBJECT = os.environ['SUBJECT']
+else:
+    SUBJECT = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
+
 # import torch
 # from auto_gptq import AutoGPTQForCausalLM
 # from huggingface_hub import hf_hub_download
