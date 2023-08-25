@@ -162,7 +162,7 @@ DB = Chroma(
     embedding_function=EMBEDDINGS,
     client_settings=CHROMA_SETTINGS,
 )
-RETRIEVER = DB.as_retriever(search_kwargs={"k": DOC_NUMBER})
+RETRIEVER = DB.as_retriever(search_kwargs={"k": int(DOC_NUMBER)})
 
 LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
 QA_LOCAL = RetrievalQA.from_chain_type(
@@ -171,7 +171,7 @@ QA_LOCAL = RetrievalQA.from_chain_type(
 
 if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
     # LLM_OPENAI = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
-    LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=MAX_TOKENS, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
+    LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
     QA_OPENAI = RetrievalQA.from_chain_type(
         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
         chain_type_kwargs={"prompt": prompt.partial(subject=subject), "memory": memory}
