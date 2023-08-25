@@ -86,6 +86,14 @@ Built with [🦜️🔗 LangChain](https://github.com/hwchase17/langchain), [GPT
 
 7. Set env vars
 
+    Set environment variables from `medlocalgpt.env` file of key/value pairs:
+
+    ```bash
+    set -o allexport && source medlocalgpt.env && set +o allexport
+    ```
+
+    You can do it manually:
+
     ```bash
     export OPENAI_API_KEY="YOUR API KEY"
     ```

@@ -38,7 +38,10 @@ from model_property import (
     MODEL_BASENAME,
     OPENAI_API_KEY,
     OPENAI_ORGANIZATION,
-    EMBEDDING_MODEL_NAME)
+    EMBEDDING_MODEL_NAME,
+    MAX_TOKENS,
+    OPENAI_MODEL,
+    DOC_NUMBER)
 
 def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
@@ -106,16 +109,13 @@ def load_model(device_type, model_id, model_basename=None):
 
     # Load configuration from the model to avoid warnings
     generation_config = GenerationConfig.from_pretrained(model_id)
-    # see here for details:
-    # https://huggingface.co/docs/transformers/
-    # main_classes/text_generation#transformers.GenerationConfig.from_pretrained.returns
 
     # Create a pipeline for text generation
     pipe = pipeline(
         "text-generation",
         model=model,
         tokenizer=tokenizer,
-        max_length=2048,
+        max_length=MAX_TOKENS,
         temperature=0,
         top_p=0.95,
         repetition_penalty=1.15,
@@ -134,7 +134,14 @@ logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
 # "subject": "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
-template = """The subject areas of your responses should be: {subject}. The domain of your responses should be academic. Provide a very detailed comprehensive academic answer. Your responses should be informative and logical. Your responses should be for knowledgeable and expert audience. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}.
+template = """The subject areas of your responses should be: {subject}. \
+    The domain of your responses should be academic. \
+    Provide a very detailed comprehensive academic answer. \
+    Your responses should be informative and logical. \
+    Your responses should be for knowledgeable and expert audience. \
+    If you don't know the answer, just say that you don't know, don't try to make up an answer. \
+    If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. \
+    Use the following pieces of context to answer the question at the end.
 
     {context}
 
@@ -155,7 +162,7 @@ DB = Chroma(
     embedding_function=EMBEDDINGS,
     client_settings=CHROMA_SETTINGS,
 )
-RETRIEVER = DB.as_retriever(search_kwargs={"k": 6})
+RETRIEVER = DB.as_retriever(search_kwargs={"k": DOC_NUMBER})
 
 LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
 QA_LOCAL = RetrievalQA.from_chain_type(
@@ -164,7 +171,7 @@ QA_LOCAL = RetrievalQA.from_chain_type(
 
 if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
     # LLM_OPENAI = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
-    LLM_OPENAI = ChatOpenAI(model='gpt-3.5-turbo-16k', max_tokens=2024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
+    LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=MAX_TOKENS, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
     QA_OPENAI = RetrievalQA.from_chain_type(
         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
         chain_type_kwargs={"prompt": prompt.partial(subject=subject), "memory": memory}
@@ -296,8 +303,6 @@ def prompt_gt():
     # global QA
     translator = Translator()
 
-    #  template = """You are an AI assistant for answering questions about {subject}. Provide a very detailed comprehensive academic answer. If you don't know the answer, just say "I'm not sure." Don't try to make up an answer. If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. Question: {question} ========= {context} ========= Answer:"""
-    
     use_model = request.args.get('model', default = 'local', type = str)
     lang_src = request.args.get('lang_src', default = 'uk', type = str)
     lang_dest = request.args.get('lang_dest', default = 'en', type = str)
