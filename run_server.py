@@ -261,22 +261,22 @@ def prompt_route():
 
     if use_model == 'openai':
         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-            QA_OPENAI = RetrievalQA.from_chain_type(
+            qa_openai = RetrievalQA.from_chain_type(
                     llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
                     chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
                 )
-            QA = QA_OPENAI
+            qa = qa_openai
             logging.debug('Use QA_OPENAI')
         else:
             return "No OPENAI cridentials received", 400
     if use_model == 'local':
-        QA = QA_LOCAL
+        qa = QA_LOCAL
         logging.debug('Use QA_LOCAL')
 
     user_prompt = request.form.get("prompt")
     if user_prompt:
         logging.debug('Get the answer from the chain')
-        res = QA(user_prompt)
+        res = qa(user_prompt)
         answer, docs = res["result"], res["source_documents"]
 
         prompt_response_dict = {
@@ -308,12 +308,16 @@ def prompt_gt():
     if use_model == 'openai':
         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
             logging.debug('Use QA_OPENAI')
-            QA = QA_OPENAI
+            qa_openai = RetrievalQA.from_chain_type(
+                    llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+                    chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
+                )
+            qa = qa_openai
         else:
             return "No OPENAI cridentials received", 400
     if use_model == 'local':
         logging.debug('Use QA_LOCAL')
-        QA = QA_LOCAL
+        qa = QA_LOCAL
 
     user_prompt = request.form.get("prompt")
     if user_prompt:
@@ -323,7 +327,7 @@ def prompt_gt():
         logging.debug('Translation from ' + lang_src + ' to ' + lang_dest)
         tr_prompt = translator.translate(user_prompt, src=lang_src, dest=lang_dest)
         logging.debug('Get the answer from the chain')
-        res = QA(tr_prompt.text)
+        res = qa(tr_prompt.text)
         answer, docs = res["result"], res["source_documents"]
         #Translation en to uk
         logging.debug('Translation from en to uk')
