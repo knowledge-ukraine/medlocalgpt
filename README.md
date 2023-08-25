@@ -5,23 +5,23 @@ Optionally you can use OpenAI GPT models or other LLM SaaS solutions via [LangCh
 
 This project is part of the R&D on intelligent data analysis and computational linguistics for digital health (telerehabilitation an rehabilitation medicines). Read more: [Letter to the Editor–Update from Ukraine: Development of the Cloud-based Platform for Patient-centered Telerehabilitation of Oncology Patients with Mathematical-related Modeling](https://doi.org/10.5195/ijt.2023.6562).
 
-## Inspired by
-
-This project was inspired by the original [privateGPT](https://github.com/imartinez/privateGPT) and [localGPT](https://github.com/PromtEngineer/localGPT).
-
-Built with [LangChain](https://github.com/hwchase17/langchain), [GPT4All](https://github.com/nomic-ai/gpt4all), [LlamaCpp](https://github.com/ggerganov/llama.cpp), [Chroma](https://www.trychroma.com/), [SentenceTransformers](https://www.sbert.net/), [InstructorEmbeddings](https://instructor-embedding.github.io/).
-
 ## Sponsor this project
 
 Please support @malakhovks. Despite the Wartime in Ukraine, R&D in the field of Digital Health are being resumed.
 [https://send.monobank.ua/jar/5ad56oNAcD](https://send.monobank.ua/jar/5ad56oNAcD)
 
-## Important note
+## Inspired by
+
+This project was inspired by the original [privateGPT](https://github.com/imartinez/privateGPT) and [localGPT](https://github.com/PromtEngineer/localGPT).
+
+Built with [🦜️🔗 LangChain](https://github.com/hwchase17/langchain), [GPT4All](https://github.com/nomic-ai/gpt4all), [LlamaCpp](https://github.com/ggerganov/llama.cpp), [Chroma](https://www.trychroma.com/), [SentenceTransformers](https://www.sbert.net/), [InstructorEmbeddings](https://instructor-embedding.github.io/).
+
+## ⚠️ Important note
 
 **medlocalgpt** project and documentation are in active development. For any technical clarifications and questions contact me via email: [malakhovks@nas.gov.ua](mailto:malakhovks@nas.gov.ua) or via Issues. The recent Russian's rocket shelling on critical infrastructure in Ukraine and Kyiv led our server infrastructure to become unstable.
 **CPU support only (for now)**
 
-## 💻 Installation (Testing)
+## 💻 Setup for Testing
 
 ### 🐍 Environment setup
 
@@ -65,7 +65,7 @@ Please support @malakhovks. Despite the Wartime in Ukraine, R&D in the field of 
 
 6. Put all of your documents (.txt, .pdf, or .csv) into the SOURCE_DOCUMENTS and ingest all the data
 
-    **CPU USAGE CAUTION**
+    ⚠️ **CPU USAGE CAUTION**
 
     First of you need a lot of CPU cores to processing (to ingest) more documents. The week point here is not a RAM size.
     Also the **week point is the memory bandwidth**. That's why all this stuff working great on M1 or M2 chip.
@@ -82,15 +82,49 @@ Please support @malakhovks. Despite the Wartime in Ukraine, R&D in the field of 
     - Embedding model: `hkunlp/instructor-large` from [InstructorEmbeddings](https://instructor-embedding.github.io/)
     - LLM: `orca-mini-3b.ggmlv3.q4_0.bin` from [TheBloke/orca_mini_3B-GGML](https://huggingface.co/TheBloke/orca_mini_3B-GGML)
 
-    Now you can set models via `model_property.py`.
+    Now you can set models and OpenAI cridentials with env vars via `medlocalgpt.env`.
 
-7. Run medlocalgpt service
+7. Set env vars
+
+    Set environment variables from `medlocalgpt.env` file of key/value pairs:
+
+    ```bash
+    set -o allexport && source medlocalgpt.env && set +o allexport
+    ```
+
+    You can do it manually:
+
+    ```bash
+    export OPENAI_API_KEY="YOUR API KEY"
+    ```
+
+    ```bash
+    export OPENAI_ORGANIZATION="YOUR ORGNIZATION ID"
+    ```
+
+    ```bash
+    export OPENAI_MODEL="gpt-3.5-turbo-16k"
+    ```
+
+    ```bash
+    export EMBEDDING_MODEL_NAME="hkunlp/instructor-large"
+    ```
+
+    ```bash
+    export MODEL_ID="TheBloke/orca_mini_3B-GGML"
+    ```
+
+    ```bash
+    export MODEL_BASENAME="orca-mini-3b.ggmlv3.q4_0.bin"
+    ```
+
+8. Run medlocalgpt service
 
     ```bash
     python run_server.py
     ```
 
-## 💻 Installation (Production)
+## 💻 Setup for Production
 
 TODO
 
