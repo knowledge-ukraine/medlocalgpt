@@ -135,7 +135,8 @@ logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
 # "subject": "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
-template = """The subject areas of your responses should be: {subject}. \
+template = """Correct spelling and grammatical mistakes of the user question using domain knowledge from {subject}: {question} \
+The subject areas of your responses should be: {subject}. \
 The domain of your responses should be academic. \
 Provide a very detailed comprehensive academic answer. \
 Your responses should be informative and logical. \
@@ -152,7 +153,8 @@ Question: {question}
 Answer:"""
 
 template_tr = """
-Translate user query: {question} from Ukrainian to English. \
+Correct spelling and grammatical mistakes of the user question using domain knowledge from {subject}: {question}
+Translate user question: {question} from Ukrainian to English using domain knowledge from {subject}. \
 The subject areas of your responses should be: {subject}. \
 The domain of your responses should be academic. \
 Provide a very detailed comprehensive academic answer. \
