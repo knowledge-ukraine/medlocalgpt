@@ -16,6 +16,7 @@ from langchain.prompts import PromptTemplate
 from langchain.llms import HuggingFacePipeline, LlamaCpp
 # from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
+from langchain.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
 
 from googletrans import Translator
 
@@ -152,8 +153,7 @@ Chat History:
 Question: {question}
 Answer:"""
 
-# prompt = PromptTemplate.from_template(template)
-prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
+# prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
 memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
@@ -262,9 +262,22 @@ def prompt_route():
 
     if use_model == 'openai':
         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+            system_template = """You will provided with the sample text. \
+            You task is to correct spelling and grammatical mistakes using domain knowledge from {subject} \
+            Next step of your task is to translate the text from {input_lang} into {output_lang} language.
+            """
+            system_message_prompt_template = SystemMessagePromptTemplate.from_template(
+                    system_template
+                )
+            human_template = "{sample_text}"
+            human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
+            chat_prompt_template = ChatPromptTemplate.from_messages(
+                    [system_message_prompt_template, human_message_prompt_template]
+                )
+            final_prompt = chat_prompt_template.format_prompt(output_lang=lang_dest, input_lang=lang_src).to_messages()
             qa_openai = RetrievalQA.from_chain_type(
                     llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-                    chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
+                    chain_type_kwargs={"prompt": final_prompt, "memory": memory}
                 )
             qa = qa_openai
             logging.debug('Use QA_OPENAI')
