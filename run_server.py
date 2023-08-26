@@ -155,7 +155,7 @@ Chat History:
 Question: {question}
 Answer:"""
 
-# prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
+prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
 memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
@@ -260,8 +260,8 @@ def prompt_route():
 
     use_model = request.args.get('model', default = 'local', type = str)
     user_prompt = request.form.get("prompt")
-    lang_src = request.args.get('lang_src', default = 'uk', type = str)
-    lang_dest = request.args.get('lang_dest', default = 'en', type = str)
+    lang_src = request.args.get('lang_src', default = 'Ukrainian', type = str)
+    lang_dest = request.args.get('lang_dest', default = 'English', type = str)
 
     if use_model == 'openai':
         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
@@ -274,13 +274,13 @@ def prompt_route():
                     [system_message_prompt_template, human_message_prompt_template]
                 )
             # initialize LLMChain by passing LLM and prompt template
-            llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template)
+            llm_chain_1 = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template)
 
-            # qa_openai = RetrievalQA.from_chain_type(
-            #         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-            #         chain_type_kwargs={"prompt": final_prompt, "memory": memory}
-            #     )
-            # qa = qa_openai
+            qa_openai = RetrievalQA.from_chain_type(
+                    llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+                    chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
+                )
+            qa = qa_openai
 
             logging.debug('Use QA_OPENAI')
         else:
@@ -292,20 +292,20 @@ def prompt_route():
     if user_prompt:
         logging.debug('Get the answer from the chain')
 
-        res = llm_chain.run(input_lang='Ukrainian', output_lang='English', sample_text=user_prompt, subject=SUBJECT)
-        # res = qa(user_prompt)
-        # answer, docs = res["result"], res["source_documents"]
+        tr = llm_chain_1.run(input_lang=lang_src, output_lang=lang_dest, subject=SUBJECT,sample_text=user_prompt)
+        res = qa(tr)
+        answer, docs = res["result"], res["source_documents"]
 
-        # prompt_response_dict = {
-        #     "Prompt": user_prompt,
-        #     "Answer": answer,
-        # }
+        prompt_response_dict = {
+            "Prompt": user_prompt,
+            "Answer": answer,
+        }
 
-        # prompt_response_dict["Sources"] = []
-        # for document in docs:
-        #     prompt_response_dict["Sources"].append(
-        #         (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
-        #     )
+        prompt_response_dict["Sources"] = []
+        for document in docs:
+            prompt_response_dict["Sources"].append(
+                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
+            )
 
         # logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
         logging.debug('RESULTS:' + json.dumps(res, indent=4))
