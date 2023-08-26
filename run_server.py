@@ -295,7 +295,7 @@ def prompt_route():
     if user_prompt:
         logging.debug('Get the answer from the chain')
 
-        res = llm_chain.run(input_lang='Ukrainian', output_lang='English', sample_text=user_prompt)
+        res = llm_chain.run(input_lang='Ukrainian', output_lang='English', sample_text=user_prompt, subject=SUBJECT)
         # res = qa(user_prompt)
         # answer, docs = res["result"], res["source_documents"]
 
