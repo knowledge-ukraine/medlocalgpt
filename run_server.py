@@ -293,7 +293,6 @@ def prompt_route():
         logging.debug('Get the answer from the chain')
 
         tr = llm_chain_1.run(input_lang=lang_src, output_lang=lang_dest, subject=SUBJECT,sample_text=user_prompt)
-        print(tr)
         res = qa(tr)
         answer, docs = res["result"], res["source_documents"]
 
@@ -308,8 +307,7 @@ def prompt_route():
                 (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
             )
 
-        # logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
-        logging.debug('RESULTS:' + json.dumps(res, indent=4))
+        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
 
         return jsonify(prompt_response_dict), 200
     else:
