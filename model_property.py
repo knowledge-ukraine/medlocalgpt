@@ -137,3 +137,10 @@ DOCUMENT_MAP = {
 # MODEL_BASENAME = "wizard-vicuna-13B.ggmlv3.q2_K.bin"
 # MODEL_ID = "TheBloke/orca_mini_3B-GGML"
 # MODEL_BASENAME = "orca-mini-3b.ggmlv3.q4_0.bin"
+
+SYSTEM_TEMPLATE_FOR_TRANSLATION = """You will provided with the sample text. \
+            You task is to correct spelling and grammatical mistakes using domain knowledge from {subject} \
+            Next step of your task is to translate the sample text from {input_lang} into {output_lang} language. \
+            Sample text: ```{sample_text}``` \
+            Translation:
+            """

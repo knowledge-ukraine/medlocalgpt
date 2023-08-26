@@ -44,7 +44,8 @@ from model_property import (
     MAX_TOKENS,
     OPENAI_MODEL,
     DOC_NUMBER,
-    SUBJECT)
+    SUBJECT,
+    SYSTEM_TEMPLATE_FOR_TRANSLATION)
 
 def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
@@ -264,14 +265,8 @@ def prompt_route():
 
     if use_model == 'openai':
         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-            system_template = """You will provided with the sample text. \
-            You task is to correct spelling and grammatical mistakes using domain knowledge from {subject} \
-            Next step of your task is to translate the sample text from {input_lang} into {output_lang} language. \
-            Sample text: ```{sample_text}``` \
-            Translation:
-            """
             system_message_prompt_template = SystemMessagePromptTemplate.from_template(
-                    system_template
+                    SYSTEM_TEMPLATE_FOR_TRANSLATION
                 )
             human_template = "{sample_text}"
             human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
