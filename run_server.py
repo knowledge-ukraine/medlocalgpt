@@ -17,6 +17,7 @@ from langchain.llms import HuggingFacePipeline, LlamaCpp
 # from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
+from langchain.chains import LLMChain
 
 from googletrans import Translator
 
@@ -257,6 +258,7 @@ def prompt_route():
     # global QA
 
     use_model = request.args.get('model', default = 'local', type = str)
+    user_prompt = request.form.get("prompt")
     lang_src = request.args.get('lang_src', default = 'uk', type = str)
     lang_dest = request.args.get('lang_dest', default = 'en', type = str)
 
@@ -274,13 +276,20 @@ def prompt_route():
             chat_prompt_template = ChatPromptTemplate.from_messages(
                     [system_message_prompt_template, human_message_prompt_template]
                 )
-            final_prompt = chat_prompt_template.format_prompt(output_lang=lang_dest, input_lang=lang_src, subject=SUBJECT
+            final_prompt = chat_prompt_template.format_prompt(output_lang=lang_dest, input_lang=lang_src, subject=SUBJECT,
+                    sample_text=user_prompt
                 ).to_messages()
-            qa_openai = RetrievalQA.from_chain_type(
-                    llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-                    chain_type_kwargs={"prompt": final_prompt, "memory": memory}
-                )
-            qa = qa_openai
+
+            # qa_openai = RetrievalQA.from_chain_type(
+            #         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+            #         chain_type_kwargs={"prompt": final_prompt, "memory": memory}
+            #     )
+            # qa = qa_openai
+            # initialize LLMChain by passing LLM and prompt template
+            llm_chain = LLMChain(
+                llm=LLM_OPENAI,
+                prompt=final_prompt
+            )
             logging.debug('Use QA_OPENAI')
         else:
             return "No OPENAI cridentials received", 400
@@ -288,26 +297,29 @@ def prompt_route():
         qa = QA_LOCAL
         logging.debug('Use QA_LOCAL')
 
-    user_prompt = request.form.get("prompt")
     if user_prompt:
         logging.debug('Get the answer from the chain')
-        res = qa(sample_text=user_prompt)
-        answer, docs = res["result"], res["source_documents"]
 
-        prompt_response_dict = {
-            "Prompt": user_prompt,
-            "Answer": answer,
-        }
+        res = llm_chain.run()
+        # res = qa(user_prompt)
+        # answer, docs = res["result"], res["source_documents"]
 
-        prompt_response_dict["Sources"] = []
-        for document in docs:
-            prompt_response_dict["Sources"].append(
-                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
-            )
+        # prompt_response_dict = {
+        #     "Prompt": user_prompt,
+        #     "Answer": answer,
+        # }
 
-        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
+        # prompt_response_dict["Sources"] = []
+        # for document in docs:
+        #     prompt_response_dict["Sources"].append(
+        #         (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
+        #     )
 
-        return jsonify(prompt_response_dict), 200
+        # logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
+        logging.debug('RESULTS:' + json.dumps(res, indent=4))
+
+        # return jsonify(prompt_response_dict), 200
+        return jsonify(res), 200
     else:
         return "No user prompt received", 400
 
