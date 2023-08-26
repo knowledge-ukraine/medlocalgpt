@@ -275,7 +275,7 @@ def prompt_route():
                 )
             human_template = "{sample_text}"
             human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
-            chat_prompt_template = ChatPromptTemplate.from_messageіs(
+            chat_prompt_template = ChatPromptTemplate.from_messages(
                     [system_message_prompt_template, human_message_prompt_template]
                 )
             # initialize LLMChain by passing LLM and prompt template
