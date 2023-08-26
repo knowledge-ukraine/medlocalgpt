@@ -266,9 +266,9 @@ def prompt_route():
         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
             system_template = """You will provided with the sample text. \
             You task is to correct spelling and grammatical mistakes using domain knowledge from {subject} \
-            Next step of your task is to translate the text from {input_lang} into {output_lang} language. \
+            Next step of your task is to translate the sample text from {input_lang} into {output_lang} language. \
             Sample text: ```{sample_text}``` \
-            Output: 
+            Translation:
             """
             system_message_prompt_template = SystemMessagePromptTemplate.from_template(
                     system_template
