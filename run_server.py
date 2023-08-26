@@ -296,9 +296,11 @@ def prompt_route():
         res = qa(tr)
         answer, docs = res["result"], res["source_documents"]
 
+        tr = llm_chain_1.run(input_lang=lang_dest, output_lang=lang_src, subject=SUBJECT,sample_text=answer)
+
         prompt_response_dict = {
             "Prompt": user_prompt,
-            "Answer": answer,
+            "Answer": tr,
         }
 
         prompt_response_dict["Sources"] = []
