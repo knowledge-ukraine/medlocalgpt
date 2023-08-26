@@ -276,20 +276,15 @@ def prompt_route():
             chat_prompt_template = ChatPromptTemplate.from_messages(
                     [system_message_prompt_template, human_message_prompt_template]
                 )
-            final_prompt = chat_prompt_template.format_prompt(output_lang=lang_dest, input_lang=lang_src, subject=SUBJECT,
-                    sample_text=user_prompt
-                ).to_messages()
+            # initialize LLMChain by passing LLM and prompt template
+            llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template)
 
             # qa_openai = RetrievalQA.from_chain_type(
             #         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
             #         chain_type_kwargs={"prompt": final_prompt, "memory": memory}
             #     )
             # qa = qa_openai
-            # initialize LLMChain by passing LLM and prompt template
-            llm_chain = LLMChain(
-                llm=LLM_OPENAI,
-                prompt=final_prompt
-            )
+
             logging.debug('Use QA_OPENAI')
         else:
             return "No OPENAI cridentials received", 400
@@ -300,7 +295,7 @@ def prompt_route():
     if user_prompt:
         logging.debug('Get the answer from the chain')
 
-        res = llm_chain.run()
+        res = llm_chain.run(input_lang='Ukrainian', output_lang='English', sample_text=user_prompt)
         # res = qa(user_prompt)
         # answer, docs = res["result"], res["source_documents"]
 
