@@ -274,7 +274,8 @@ def prompt_route():
             chat_prompt_template = ChatPromptTemplate.from_messages(
                     [system_message_prompt_template, human_message_prompt_template]
                 )
-            final_prompt = chat_prompt_template.format_prompt(output_lang=lang_dest, input_lang=lang_src).to_messages()
+            final_prompt = chat_prompt_template.format_prompt(output_lang=lang_dest, input_lang=lang_src, subject=SUBJECT
+                ).to_messages()
             qa_openai = RetrievalQA.from_chain_type(
                     llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
                     chain_type_kwargs={"prompt": final_prompt, "memory": memory}
