@@ -266,14 +266,16 @@ def prompt_route():
         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
             system_template = """You will provided with the sample text. \
             You task is to correct spelling and grammatical mistakes using domain knowledge from {subject} \
-            Next step of your task is to translate the text from {input_lang} into {output_lang} language.
+            Next step of your task is to translate the text from {input_lang} into {output_lang} language. \
+            Sample text: ```{sample_text}``` \
+            Output: 
             """
             system_message_prompt_template = SystemMessagePromptTemplate.from_template(
                     system_template
                 )
             human_template = "{sample_text}"
             human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
-            chat_prompt_template = ChatPromptTemplate.from_messages(
+            chat_prompt_template = ChatPromptTemplate.from_messageіs(
                     [system_message_prompt_template, human_message_prompt_template]
                 )
             # initialize LLMChain by passing LLM and prompt template
