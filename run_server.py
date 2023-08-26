@@ -310,8 +310,7 @@ def prompt_route():
         # logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
         logging.debug('RESULTS:' + json.dumps(res, indent=4))
 
-        # return jsonify(prompt_response_dict), 200
-        return jsonify(res), 200
+        return jsonify(prompt_response_dict), 200
     else:
         return "No user prompt received", 400
 
