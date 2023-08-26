@@ -291,7 +291,7 @@ def prompt_route():
     user_prompt = request.form.get("prompt")
     if user_prompt:
         logging.debug('Get the answer from the chain')
-        res = qa(user_prompt)
+        res = qa(sample_text=user_prompt)
         answer, docs = res["result"], res["source_documents"]
 
         prompt_response_dict = {
