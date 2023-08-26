@@ -293,6 +293,7 @@ def prompt_route():
         logging.debug('Get the answer from the chain')
 
         tr = llm_chain_1.run(input_lang=lang_src, output_lang=lang_dest, subject=SUBJECT,sample_text=user_prompt)
+        print(tr)
         res = qa(tr)
         answer, docs = res["result"], res["source_documents"]
 
