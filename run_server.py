@@ -308,7 +308,7 @@ def process_en_query():
             system_message_prompt_template = SystemMessagePromptTemplate.from_template(
                     SYSTEM_TEMPLATE_BASIC
                 )
-            human_template = "{context}"
+            human_template = "{context}\n{question}"
             human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
             chat_prompt_template = ChatPromptTemplate.from_messages(
                     [system_message_prompt_template, human_message_prompt_template]
@@ -329,7 +329,7 @@ def process_en_query():
     if user_prompt:
         logging.debug('Get the answer from the chain')
 
-        res = qa(user_prompt)
+        res = qa(question=user_prompt)
         answer, docs = res["result"], res["source_documents"]
 
         prompt_response_dict = {
