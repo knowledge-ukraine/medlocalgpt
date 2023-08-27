@@ -17,7 +17,7 @@ from langchain.llms import HuggingFacePipeline, LlamaCpp
 # from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
-from langchain.chains import LLMChain
+from langchain.chains import LLMChain, ConversationalRetrievalChain
 
 from googletrans import Translator
 
@@ -314,11 +314,17 @@ def process_en_query():
                     [system_message_prompt_template, human_message_prompt_template]
                 )
             final_prompt = chat_prompt_template.format_prompt(subject=SUBJECT).to_messages()
-            qa_openai = RetrievalQA.from_chain_type(
-                    llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-                    chain_type_kwargs={"prompt": final_prompt, "memory": memory}
+            # qa_openai = RetrievalQA.from_chain_type(
+            #         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+            #         chain_type_kwargs={"prompt": final_prompt, "memory": memory}
+            #     )
+            qa_openai = ConversationalRetrievalChain.from_llm(
+                    LLM_OPENAI,
+                    RETRIEVER,
+                    condense_question_prompt=final_prompt,
+                    return_source_documents=SHOW_SOURCES,
+                    memory=memory
                 )
-            qa = qa_openai
             logging.debug('Use QA_OPENAI')
         else:
             return "No OPENAI cridentials received", 400
@@ -329,7 +335,7 @@ def process_en_query():
     if user_prompt:
         logging.debug('Get the answer from the chain')
 
-        res = qa({"query": user_prompt})
+        res = qa_openai({"question": user_prompt})
         answer, docs = res["result"], res["source_documents"]
 
         prompt_response_dict = {
