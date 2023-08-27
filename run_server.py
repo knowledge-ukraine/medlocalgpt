@@ -148,10 +148,10 @@ DB = Chroma(
 )
 RETRIEVER = DB.as_retriever(search_kwargs={"k": int(DOC_NUMBER)})
 
-# LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
-# QA_LOCAL = RetrievalQA.from_chain_type(
-#     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
-# )
+LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
+QA_LOCAL = RetrievalQA.from_chain_type(
+    llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
+)
 
 if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
     LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
@@ -246,7 +246,6 @@ def process_en_dataset_openai_query_v1():
     user_prompt = request.form.get("prompt")
 
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-        qa = QA_OPENAI
         logging.debug('Use QA_OPENAI')
     else:
         return "No OPENAI cridentials received", 400
@@ -254,7 +253,7 @@ def process_en_dataset_openai_query_v1():
     if user_prompt:
         logging.debug('Get the answer from the chain')
 
-        res = qa(user_prompt)
+        res = QA_OPENAI(user_prompt)
         answer, docs = res["result"], res["source_documents"]
 
         prompt_response_dict = {
@@ -268,7 +267,7 @@ def process_en_dataset_openai_query_v1():
                 (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
             )
 
-        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
+        logging.debug(f"RESULTS: {json.dumps(prompt_response_dict, indent=4)}")
 
         return jsonify(prompt_response_dict), 200
     else:
@@ -324,6 +323,35 @@ def process_gt_dataset_openai_query_v1():
     else:
         return "No user prompt received", 400
 
+@app.route("/medlocalgpt/api/v1/en/dataset/local/ask", methods=["GET", "POST"])
+def prompt_route():
+    user_prompt = request.form.get("prompt")
+
+    logging.debug('Use QA_LOCAL')
+
+    if user_prompt:
+        logging.debug('Get the answer from the chain')
+
+        res = QA_LOCAL(user_prompt)
+
+        answer, docs = res["result"], res["source_documents"]
+
+        prompt_response_dict = {
+            "Prompt": user_prompt,
+            "Answer": answer,
+        }
+
+        prompt_response_dict["Sources"] = []
+        for document in docs:
+            prompt_response_dict["Sources"].append(
+                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
+            )
+
+        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
+
+        return jsonify(prompt_response_dict), 200
+    else:
+        return "No user prompt received", 400
 
 # @app.route("/medlocalgpt/api/v1/ask", methods=["GET", "POST"])
 # def prompt_route():
