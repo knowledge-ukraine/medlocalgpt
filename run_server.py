@@ -137,26 +137,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
-template = """Correct spelling and grammatical mistakes of the user question using domain knowledge from {subject}: {question} \
-Do not include corrected version of user's question in your response. \
-The subject areas of your responses should be: {subject}. \
-The domain of your responses should be academic. \
-Provide a very detailed comprehensive academic answer. \
-Your responses should be informative and logical. \
-Your responses should be for knowledgeable and expert audience. \
-If you don't know the answer, just say that you don't know, don't try to make up an answer. \
-If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. \
-If the question is not directly in the given pieces of context, just say that context do not provide this information \
-Use the following pieces of context to answer the question. \
-
-{context}
-
-Chat History:
-{history}
-Question: {question}
-Answer:"""
-
-prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=template)
+prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=SYSTEM_TEMPLATE_BASIC)
 memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
@@ -260,44 +241,6 @@ def run_ingest_route():
         return f"Error occurred: {str(e)}", 500
 
 
-# @app.route("/medlocalgpt/api/v1/en/ask", methods=["GET", "POST"])
-# def process_en_query():
-#     use_model = request.args.get('model', default = 'local', type = str)
-#     user_prompt = request.form.get("prompt")
-
-#     if use_model == 'openai':
-#         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-#             qa = QA_OPENAI
-#             logging.debug('Use QA_OPENAI')
-#         else:
-#             return "No OPENAI cridentials received", 400
-#     if use_model == 'local':
-#         qa = QA_LOCAL
-#         logging.debug('Use QA_LOCAL')
-
-#     if user_prompt:
-#         logging.debug('Get the answer from the chain')
-
-#         res = qa(user_prompt)
-#         answer, docs = res["result"], res["source_documents"]
-
-#         prompt_response_dict = {
-#             "Prompt": user_prompt,
-#             "Answer": answer,
-#         }
-
-#         prompt_response_dict["Sources"] = []
-#         for document in docs:
-#             prompt_response_dict["Sources"].append(
-#                 (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
-#             )
-
-#         logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
-
-#         return jsonify(prompt_response_dict), 200
-#     else:
-#         return "No user prompt received", 400
-
 @app.route("/medlocalgpt/api/v1/en/ask", methods=["GET", "POST"])
 def process_en_query():
     use_model = request.args.get('model', default = 'local', type = str)
@@ -305,26 +248,7 @@ def process_en_query():
 
     if use_model == 'openai':
         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-            system_message_prompt_template = SystemMessagePromptTemplate.from_template(
-                    SYSTEM_TEMPLATE_BASIC
-                )
-            human_template = "{question}"
-            human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
-            chat_prompt_template = ChatPromptTemplate.from_messages(
-                    [system_message_prompt_template, human_message_prompt_template]
-                )
-            final_prompt = chat_prompt_template.format_prompt(subject=SUBJECT, question=user_prompt).to_messages()
-            qa_openai = RetrievalQA.from_chain_type(
-                    llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-                    chain_type_kwargs={"prompt": final_prompt, "memory": memory}
-                )
-            # qa_openai = ConversationalRetrievalChain.from_llm(
-            #         LLM_OPENAI,
-            #         RETRIEVER,
-            #         condense_question_prompt=final_prompt,
-            #         return_source_documents=SHOW_SOURCES,
-            #         memory=memory
-            #     )
+            qa = QA_OPENAI
             logging.debug('Use QA_OPENAI')
         else:
             return "No OPENAI cridentials received", 400
@@ -335,7 +259,7 @@ def process_en_query():
     if user_prompt:
         logging.debug('Get the answer from the chain')
 
-        res = qa_openai.run()
+        res = qa(user_prompt)
         answer, docs = res["result"], res["source_documents"]
 
         prompt_response_dict = {
