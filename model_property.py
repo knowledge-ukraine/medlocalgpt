@@ -157,7 +157,7 @@ Your responses should be for knowledgeable and expert audience. \
 If you don't know the answer, just say that you don't know, don't try to make up an answer. \
 If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. \
 If the question is not directly in the given context, just say that context do not provide this information \
-Use only the following pieces of context to answer the question: \
+Use only the following context to answer the question: \
 
 {context}
 
