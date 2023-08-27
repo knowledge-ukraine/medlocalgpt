@@ -329,7 +329,7 @@ def process_en_query():
     if user_prompt:
         logging.debug('Get the answer from the chain')
 
-        res = qa({'question': user_prompt})
+        res = qa({"query": user_prompt})
         answer, docs = res["result"], res["source_documents"]
 
         prompt_response_dict = {
