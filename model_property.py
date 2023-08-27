@@ -157,7 +157,6 @@ If the question is not about {subject} and not directly in the given context, po
 If the question is not directly in the given pieces of context, just say that context do not provide this information \
 Use the following pieces of context to answer the question. \
 
-{context}
 
 Chat History:
 {history}
