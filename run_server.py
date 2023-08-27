@@ -45,7 +45,8 @@ from model_property import (
     OPENAI_MODEL,
     DOC_NUMBER,
     SUBJECT,
-    SYSTEM_TEMPLATE_FOR_TRANSLATION)
+    SYSTEM_TEMPLATE_FOR_TRANSLATION,
+    SYSTEM_TEMPLATE_BASIC)
 
 def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
@@ -259,6 +260,44 @@ def run_ingest_route():
         return f"Error occurred: {str(e)}", 500
 
 
+# @app.route("/medlocalgpt/api/v1/en/ask", methods=["GET", "POST"])
+# def process_en_query():
+#     use_model = request.args.get('model', default = 'local', type = str)
+#     user_prompt = request.form.get("prompt")
+
+#     if use_model == 'openai':
+#         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+#             qa = QA_OPENAI
+#             logging.debug('Use QA_OPENAI')
+#         else:
+#             return "No OPENAI cridentials received", 400
+#     if use_model == 'local':
+#         qa = QA_LOCAL
+#         logging.debug('Use QA_LOCAL')
+
+#     if user_prompt:
+#         logging.debug('Get the answer from the chain')
+
+#         res = qa(user_prompt)
+#         answer, docs = res["result"], res["source_documents"]
+
+#         prompt_response_dict = {
+#             "Prompt": user_prompt,
+#             "Answer": answer,
+#         }
+
+#         prompt_response_dict["Sources"] = []
+#         for document in docs:
+#             prompt_response_dict["Sources"].append(
+#                 (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
+#             )
+
+#         logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
+
+#         return jsonify(prompt_response_dict), 200
+#     else:
+#         return "No user prompt received", 400
+
 @app.route("/medlocalgpt/api/v1/en/ask", methods=["GET", "POST"])
 def process_en_query():
     use_model = request.args.get('model', default = 'local', type = str)
@@ -266,7 +305,20 @@ def process_en_query():
 
     if use_model == 'openai':
         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-            qa = QA_OPENAI
+            system_message_prompt_template = SystemMessagePromptTemplate.from_template(
+                    SYSTEM_TEMPLATE_BASIC
+                )
+            human_template = "{context}\n{question}"
+            human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
+            chat_prompt_template = ChatPromptTemplate.from_messages(
+                    [system_message_prompt_template, human_message_prompt_template]
+                )
+            final_prompt = chat_prompt_template.format_prompt(subject=SUBJECT).to_messages()
+            qa_openai = RetrievalQA.from_chain_type(
+                    llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+                    chain_type_kwargs={"prompt": final_prompt, "memory": memory}
+                )
+            qa = qa_openai
             logging.debug('Use QA_OPENAI')
         else:
             return "No OPENAI cridentials received", 400
