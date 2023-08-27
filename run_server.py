@@ -148,10 +148,10 @@ DB = Chroma(
 )
 RETRIEVER = DB.as_retriever(search_kwargs={"k": int(DOC_NUMBER)})
 
-LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
-QA_LOCAL = RetrievalQA.from_chain_type(
-    llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
-)
+# LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
+# QA_LOCAL = RetrievalQA.from_chain_type(
+#     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
+# )
 
 if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
     LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
@@ -241,20 +241,15 @@ def run_ingest_route():
         return f"Error occurred: {str(e)}", 500
 
 
-@app.route("/medlocalgpt/api/v1/en/ask", methods=["GET", "POST"])
-def process_en_query():
-    use_model = request.args.get('model', default = 'local', type = str)
+@app.route("/medlocalgpt/api/v1/en/dataset/openai/ask", methods=["GET", "POST"])
+def process_en_dataset_openai_query_v1():
     user_prompt = request.form.get("prompt")
 
-    if use_model == 'openai':
-        if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-            qa = QA_OPENAI
-            logging.debug('Use QA_OPENAI')
-        else:
-            return "No OPENAI cridentials received", 400
-    if use_model == 'local':
-        qa = QA_LOCAL
-        logging.debug('Use QA_LOCAL')
+    if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+        qa = QA_OPENAI
+        logging.debug('Use QA_OPENAI')
+    else:
+        return "No OPENAI cridentials received", 400
 
     if user_prompt:
         logging.debug('Get the answer from the chain')
@@ -279,125 +274,125 @@ def process_en_query():
     else:
         return "No user prompt received", 400
 
-@app.route("/medlocalgpt/api/v1/ask", methods=["GET", "POST"])
-def prompt_route():
-    # global QA
+# @app.route("/medlocalgpt/api/v1/ask", methods=["GET", "POST"])
+# def prompt_route():
+#     # global QA
 
-    use_model = request.args.get('model', default = 'local', type = str)
-    user_prompt = request.form.get("prompt")
-    lang_src = request.args.get('lang_src', default = 'Ukrainian', type = str)
-    lang_dest = request.args.get('lang_dest', default = 'English', type = str)
+#     use_model = request.args.get('model', default = 'local', type = str)
+#     user_prompt = request.form.get("prompt")
+#     lang_src = request.args.get('lang_src', default = 'Ukrainian', type = str)
+#     lang_dest = request.args.get('lang_dest', default = 'English', type = str)
 
-    if use_model == 'openai':
-        if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-            system_message_prompt_template = SystemMessagePromptTemplate.from_template(
-                    SYSTEM_TEMPLATE_FOR_TRANSLATION
-                )
-            human_template = "{sample_text}"
-            human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
-            chat_prompt_template = ChatPromptTemplate.from_messages(
-                    [system_message_prompt_template, human_message_prompt_template]
-                )
-            # initialize LLMChain by passing LLM and prompt template
-            llm_chain_1 = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template)
+#     if use_model == 'openai':
+#         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+#             system_message_prompt_template = SystemMessagePromptTemplate.from_template(
+#                     SYSTEM_TEMPLATE_FOR_TRANSLATION
+#                 )
+#             human_template = "{sample_text}"
+#             human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
+#             chat_prompt_template = ChatPromptTemplate.from_messages(
+#                     [system_message_prompt_template, human_message_prompt_template]
+#                 )
+#             # initialize LLMChain by passing LLM and prompt template
+#             llm_chain_1 = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template)
 
-            qa_openai = RetrievalQA.from_chain_type(
-                    llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-                    chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
-                )
-            qa = qa_openai
+#             qa_openai = RetrievalQA.from_chain_type(
+#                     llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+#                     chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
+#                 )
+#             qa = qa_openai
 
-            logging.debug('Use QA_OPENAI')
-        else:
-            return "No OPENAI cridentials received", 400
-    if use_model == 'local':
-        qa = QA_LOCAL
-        logging.debug('Use QA_LOCAL')
+#             logging.debug('Use QA_OPENAI')
+#         else:
+#             return "No OPENAI cridentials received", 400
+#     if use_model == 'local':
+#         qa = QA_LOCAL
+#         logging.debug('Use QA_LOCAL')
 
-    if user_prompt:
-        logging.debug('Get the answer from the chain')
+#     if user_prompt:
+#         logging.debug('Get the answer from the chain')
 
-        tr = llm_chain_1.run(input_lang=lang_src, output_lang=lang_dest, subject=SUBJECT,sample_text=user_prompt)
-        logging.debug(f"Translation Uk-En: {tr}")
+#         tr = llm_chain_1.run(input_lang=lang_src, output_lang=lang_dest, subject=SUBJECT,sample_text=user_prompt)
+#         logging.debug(f"Translation Uk-En: {tr}")
 
-        res = qa(tr)
+#         res = qa(tr)
 
-        answer, docs = res["result"], res["source_documents"]
+#         answer, docs = res["result"], res["source_documents"]
 
-        tr = llm_chain_1.run(input_lang=lang_dest, output_lang=lang_src, subject=SUBJECT,sample_text=answer)
+#         tr = llm_chain_1.run(input_lang=lang_dest, output_lang=lang_src, subject=SUBJECT,sample_text=answer)
 
-        logging.debug(f"Translation En-Uks: {tr}")
+#         logging.debug(f"Translation En-Uks: {tr}")
 
-        prompt_response_dict = {
-            "Prompt": user_prompt,
-            "Answer": tr,
-        }
+#         prompt_response_dict = {
+#             "Prompt": user_prompt,
+#             "Answer": tr,
+#         }
 
-        prompt_response_dict["Sources"] = []
-        for document in docs:
-            prompt_response_dict["Sources"].append(
-                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
-            )
+#         prompt_response_dict["Sources"] = []
+#         for document in docs:
+#             prompt_response_dict["Sources"].append(
+#                 (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
+#             )
 
-        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
+#         logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
 
-        return jsonify(prompt_response_dict), 200
-    else:
-        return "No user prompt received", 400
+#         return jsonify(prompt_response_dict), 200
+#     else:
+#         return "No user prompt received", 400
 
-@app.route("/medlocalgpt/api/v1/gt/ask", methods=["GET", "POST"])
-def prompt_gt():
-    # global QA
-    translator = Translator()
+# @app.route("/medlocalgpt/api/v1/gt/dataset/ask", methods=["GET", "POST"])
+# def process_gt_dataset_query_v1():
+#     # global QA
+#     translator = Translator()
 
-    use_model = request.args.get('model', default = 'local', type = str)
-    lang_src = request.args.get('lang_src', default = 'uk', type = str)
-    lang_dest = request.args.get('lang_dest', default = 'en', type = str)
+#     use_model = request.args.get('model', default = 'local', type = str)
+#     lang_src = request.args.get('lang_src', default = 'uk', type = str)
+#     lang_dest = request.args.get('lang_dest', default = 'en', type = str)
 
-    if use_model == 'openai':
-        if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-            logging.debug('Use QA_OPENAI')
-            qa_openai = RetrievalQA.from_chain_type(
-                    llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-                    chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
-                )
-            qa = qa_openai
-        else:
-            return "No OPENAI cridentials received", 400
-    if use_model == 'local':
-        logging.debug('Use QA_LOCAL')
-        qa = QA_LOCAL
+#     if use_model == 'openai':
+#         if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+#             logging.debug('Use QA_OPENAI')
+#             qa_openai = RetrievalQA.from_chain_type(
+#                     llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+#                     chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
+#                 )
+#             qa = qa_openai
+#         else:
+#             return "No OPENAI cridentials received", 400
+#     if use_model == 'local':
+#         logging.debug('Use QA_LOCAL')
+#         qa = QA_LOCAL
 
-    user_prompt = request.form.get("prompt")
-    if user_prompt:
-        #Translation uk to en
-        # logging.info(translator.translate(user_prompt, src='uk', dest='en'))
-        # tr_prompt = translator.translate(user_prompt, src='uk', dest='en')
-        logging.debug('Translation from ' + lang_src + ' to ' + lang_dest)
-        tr_prompt = translator.translate(user_prompt, src=lang_src, dest=lang_dest)
-        logging.debug('Get the answer from the chain')
-        res = qa(tr_prompt.text)
-        answer, docs = res["result"], res["source_documents"]
-        #Translation en to uk
-        logging.debug('Translation from en to uk')
-        tr_response = translator.translate(answer, src='en', dest='uk')
+#     user_prompt = request.form.get("prompt")
+#     if user_prompt:
+#         #Translation uk to en
+#         # logging.info(translator.translate(user_prompt, src='uk', dest='en'))
+#         # tr_prompt = translator.translate(user_prompt, src='uk', dest='en')
+#         logging.debug('Translation from ' + lang_src + ' to ' + lang_dest)
+#         tr_prompt = translator.translate(user_prompt, src=lang_src, dest=lang_dest)
+#         logging.debug('Get the answer from the chain')
+#         res = qa(tr_prompt.text)
+#         answer, docs = res["result"], res["source_documents"]
+#         #Translation en to uk
+#         logging.debug('Translation from en to uk')
+#         tr_response = translator.translate(answer, src='en', dest='uk')
 
-        prompt_response_dict = {
-            "Prompt": user_prompt,
-            "Answer": tr_response.text,
-        }
+#         prompt_response_dict = {
+#             "Prompt": user_prompt,
+#             "Answer": tr_response.text,
+#         }
 
-        prompt_response_dict["Sources"] = []
-        for document in docs:
-            prompt_response_dict["Sources"].append(
-                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
-            )
+#         prompt_response_dict["Sources"] = []
+#         for document in docs:
+#             prompt_response_dict["Sources"].append(
+#                 (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
+#             )
 
-        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
+#         logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
 
-        return jsonify(prompt_response_dict), 200
-    else:
-        return "No user prompt received", 400
+#         return jsonify(prompt_response_dict), 200
+#     else:
+#         return "No user prompt received", 400
 
 
 if __name__ == "__main__":
