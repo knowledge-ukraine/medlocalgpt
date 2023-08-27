@@ -274,6 +274,57 @@ def process_en_dataset_openai_query_v1():
     else:
         return "No user prompt received", 400
 
+@app.route("/medlocalgpt/api/v1/gt/dataset/openai/ask", methods=["GET", "POST"])
+def process_gt_dataset_openai_query_v1():
+
+    translator = Translator()
+
+    lang_src = request.args.get('lang_src', default = 'uk', type = str)
+    lang_dest = request.args.get('lang_dest', default = 'en', type = str)
+
+
+    if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+        logging.debug('Use QA_OPENAI')
+        qa_openai = RetrievalQA.from_chain_type(
+                llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+                chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
+            )
+        qa = qa_openai
+    else:
+        return "No OPENAI cridentials received", 400
+
+    user_prompt = request.form.get("prompt")
+    if user_prompt:
+        #Translation uk to en
+        # logging.info(translator.translate(user_prompt, src='uk', dest='en'))
+        # tr_prompt = translator.translate(user_prompt, src='uk', dest='en')
+        logging.debug('Translation from ' + lang_src + ' to ' + lang_dest)
+        tr_prompt = translator.translate(user_prompt, src=lang_src, dest=lang_dest)
+        logging.debug('Get the answer from the chain')
+        res = qa(tr_prompt.text)
+        answer, docs = res["result"], res["source_documents"]
+        #Translation en to uk
+        logging.debug('Translation from en to uk')
+        tr_response = translator.translate(answer, src='en', dest='uk')
+
+        prompt_response_dict = {
+            "Prompt": user_prompt,
+            "Answer": tr_response.text,
+        }
+
+        prompt_response_dict["Sources"] = []
+        for document in docs:
+            prompt_response_dict["Sources"].append(
+                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
+            )
+
+        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
+
+        return jsonify(prompt_response_dict), 200
+    else:
+        return "No user prompt received", 400
+
+
 # @app.route("/medlocalgpt/api/v1/ask", methods=["GET", "POST"])
 # def prompt_route():
 #     # global QA
