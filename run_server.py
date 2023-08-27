@@ -173,6 +173,11 @@ QA_LOCAL = RetrievalQA.from_chain_type(
 
 if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
     LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
+    LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=1024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
+    QA_OPENAI = RetrievalQA.from_chain_type(
+        llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+        chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
+        )
 
 app = Flask(__name__)
 
@@ -253,6 +258,44 @@ def run_ingest_route():
     except Exception as e:
         return f"Error occurred: {str(e)}", 500
 
+
+@app.route("/medlocalgpt/api/v1/en/ask", methods=["GET", "POST"])
+def process_en_query():
+    use_model = request.args.get('model', default = 'local', type = str)
+    user_prompt = request.form.get("prompt")
+
+    if use_model == 'openai':
+        if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+            qa = QA_OPENAI
+            logging.debug('Use QA_OPENAI')
+        else:
+            return "No OPENAI cridentials received", 400
+    if use_model == 'local':
+        qa = QA_LOCAL
+        logging.debug('Use QA_LOCAL')
+
+    if user_prompt:
+        logging.debug('Get the answer from the chain')
+
+        res = qa(user_prompt)
+        answer, docs = res["result"], res["source_documents"]
+
+        prompt_response_dict = {
+            "Prompt": user_prompt,
+            "Answer": answer,
+        }
+
+        prompt_response_dict["Sources"] = []
+        for document in docs:
+            prompt_response_dict["Sources"].append(
+                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
+            )
+
+        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
+
+        return jsonify(prompt_response_dict), 200
+    else:
+        return "No user prompt received", 400
 
 @app.route("/medlocalgpt/api/v1/ask", methods=["GET", "POST"])
 def prompt_route():
