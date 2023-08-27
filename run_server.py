@@ -246,12 +246,12 @@ def process_en_dataset_openai_query_v1():
     user_prompt = request.form.get("prompt")
 
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-        logging.debug('Use QA_OPENAI')
+        logging.debug(f"Use QA_OPENAI")
     else:
         return "No OPENAI cridentials received", 400
 
     if user_prompt:
-        logging.debug('Get the answer from the chain')
+        logging.debug(f"Get the answer from the chain")
 
         res = QA_OPENAI(user_prompt)
         answer, docs = res["result"], res["source_documents"]
@@ -283,7 +283,7 @@ def process_gt_dataset_openai_query_v1():
 
 
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-        logging.debug('Use QA_OPENAI')
+        logging.debug(f"Use QA_OPENAI")
         qa_openai = RetrievalQA.from_chain_type(
                 llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
                 chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
@@ -297,13 +297,13 @@ def process_gt_dataset_openai_query_v1():
         #Translation uk to en
         # logging.info(translator.translate(user_prompt, src='uk', dest='en'))
         # tr_prompt = translator.translate(user_prompt, src='uk', dest='en')
-        logging.debug('Translation from ' + lang_src + ' to ' + lang_dest)
+        logging.debug(f"Translation from {lang_src} to {lang_dest}")
         tr_prompt = translator.translate(user_prompt, src=lang_src, dest=lang_dest)
-        logging.debug('Get the answer from the chain')
+        logging.debug(f"Get the answer from the chain")
         res = qa(tr_prompt.text)
         answer, docs = res["result"], res["source_documents"]
         #Translation en to uk
-        logging.debug('Translation from en to uk')
+        logging.debug(f"Translation from en to uk")
         tr_response = translator.translate(answer, src='en', dest='uk')
 
         prompt_response_dict = {
@@ -317,7 +317,7 @@ def process_gt_dataset_openai_query_v1():
                 (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
             )
 
-        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
+        logging.debug(f"RESULTS: {json.dumps(prompt_response_dict, indent=4)}")
 
         return jsonify(prompt_response_dict), 200
     else:
@@ -327,10 +327,10 @@ def process_gt_dataset_openai_query_v1():
 def prompt_route():
     user_prompt = request.form.get("prompt")
 
-    logging.debug('Use QA_LOCAL')
+    logging.debug(f"Use QA_LOCAL")
 
     if user_prompt:
-        logging.debug('Get the answer from the chain')
+        logging.debug(f"Get the answer from the chain")
 
         res = QA_LOCAL(user_prompt)
 
@@ -347,7 +347,7 @@ def prompt_route():
                 (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
             )
 
-        logging.debug('RESULTS:' + json.dumps(prompt_response_dict, indent=4))
+        logging.debug(f"RESULTS: {json.dumps(prompt_response_dict, indent=4)}")
 
         return jsonify(prompt_response_dict), 200
     else:
