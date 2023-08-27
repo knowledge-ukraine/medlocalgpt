@@ -138,14 +138,16 @@ DOCUMENT_MAP = {
 # MODEL_ID = "TheBloke/orca_mini_3B-GGML"
 # MODEL_BASENAME = "orca-mini-3b.ggmlv3.q4_0.bin"
 
-SYSTEM_TEMPLATE_FOR_TRANSLATION = """You will provided with the sample text. \
-            You task is to correct spelling and grammatical mistakes using domain knowledge from {subject} \
+SYSTEM_TEMPLATE_FOR_TRANSLATION = """I want you to act as an translator, spelling and grammar corrector. \
+            You will provided with the sample text. \
+            Your task is to correct spelling and grammar mistakes using domain knowledge from {subject} \
             Next step of your task is to translate the sample text from {input_lang} into {output_lang} language. \
             Sample text: ```{sample_text}``` \
             Translation:
             """
 
-SYSTEM_TEMPLATE_BASIC = """Correct spelling and grammatical mistakes of the user question using domain knowledge from {subject}: {question} \
+SYSTEM_TEMPLATE_BASIC = """I want you to act as an AI assistant in {subject}
+Correct spelling and grammar mistakes of the user question using domain knowledge from {subject}: {question} \
 Do not include corrected version of user's question in your response. \
 The subject areas of your responses should be: {subject}. \
 The domain of your responses should be academic. \
@@ -155,7 +157,7 @@ Your responses should be for knowledgeable and expert audience. \
 If you don't know the answer, just say that you don't know, don't try to make up an answer. \
 If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. \
 If the question is not directly in the given pieces of context, just say that context do not provide this information \
-Use the following pieces of context to answer the question. \
+Use the following pieces of context to answer the question: \
 
 {context}
 
