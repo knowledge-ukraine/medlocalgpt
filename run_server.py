@@ -245,7 +245,6 @@ def run_ingest_route():
 @app.route("/medlocalgpt/api/v1/en/advanced/openai/ask", methods=["GET", "POST"])
 def process_en_advanced_openai_query_v1():
     user_prompt = request.form.get("prompt")
-    memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         logging.debug(f"Use LLM_OPENAI")
@@ -357,7 +356,7 @@ def process_gt_dataset_openai_query_v1():
         return "No user prompt received", 400
 
 @app.route("/medlocalgpt/api/v1/en/dataset/local/ask", methods=["GET", "POST"])
-def prompt_route():
+def process_en_dataset_local_query_v1():
     user_prompt = request.form.get("prompt")
 
     logging.debug(f"Use QA_LOCAL")
