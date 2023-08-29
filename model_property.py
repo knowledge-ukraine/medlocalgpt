@@ -146,7 +146,7 @@ SYSTEM_TEMPLATE_FOR_TRANSLATION = """I want you to act as an translator, spellin
             Translation:
             """
 
-SYSTEM_TEMPLATE_BASIC = """
+SYSTEM_TEMPLATE_BASIC = """I want you to act as an AI assistant for healthcare professionals \
 Correct spelling and grammar mistakes of the user question using domain knowledge from {subject}: {question} \
 Do not include corrected version of user's question in your response. \
 The subject areas of your responses should be: {subject}. \
@@ -165,7 +165,7 @@ Question: {question}
 Answer:
 """
 
-SYSTEM_TEMPLATE_ADVANCED_EN = """I want you to act as an AI assistant for healthcare professional in {subject}
+SYSTEM_TEMPLATE_ADVANCED_EN = """I want you to act as an AI assistant for healthcare professionals in {subject}
 Correct spelling and grammar mistakes of the User question using domain knowledge from {subject}: {question} \
 Do not include corrected version of User's question in your response. \
 The subject areas of your responses should be: {subject}. \

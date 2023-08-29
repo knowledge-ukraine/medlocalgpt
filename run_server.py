@@ -153,7 +153,7 @@ RETRIEVER = DB.as_retriever(search_kwargs={"k": int(DOC_NUMBER)})
 
 LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
 QA_LOCAL = RetrievalQA.from_chain_type(
-    llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES, chain_type_kwargs={"memory": memory_loc}
+    llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
 )
 # QA_LOCAL = RetrievalQA.from_chain_type(
 #     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES, chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory_loc}
