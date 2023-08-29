@@ -140,6 +140,8 @@ logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
 prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=SYSTEM_TEMPLATE_BASIC)
 memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
+memory_adv = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
+
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 DB = Chroma(
@@ -263,7 +265,7 @@ def process_en_advanced_openai_query_v1():
                     [system_message_prompt_template, human_message_prompt_template]
                 )
         # initialize LLMChain by passing LLM and prompt template
-        llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template, memory=memory)
+        llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template, memory=memory_adv)
         res = llm_chain.run(question=user_prompt, subject=SUBJECT, max_tokens=MAX_TOKENS)
 
         logging.debug(f"RESULTS: {res}")
