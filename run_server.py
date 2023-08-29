@@ -46,7 +46,8 @@ from model_property import (
     DOC_NUMBER,
     SUBJECT,
     SYSTEM_TEMPLATE_FOR_TRANSLATION,
-    SYSTEM_TEMPLATE_BASIC)
+    SYSTEM_TEMPLATE_BASIC,
+    SYSTEM_TEMPLATE_ADVANCED_EN)
 
 def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
@@ -240,6 +241,37 @@ def run_ingest_route():
     except Exception as e:
         return f"Error occurred: {str(e)}", 500
 
+
+@app.route("/medlocalgpt/api/v1/en/advanced/openai/ask", methods=["GET", "POST"])
+def process_en_advanced_openai_query_v1():
+    user_prompt = request.form.get("prompt")
+
+    if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+        logging.debug(f"Use LLM_OPENAI")
+    else:
+        return "No OPENAI cridentials received", 400
+
+    if user_prompt:
+        logging.debug(f"Get the answer from the chain")
+
+        system_message_prompt_template = SystemMessagePromptTemplate.from_template(
+                    SYSTEM_TEMPLATE_ADVANCED_EN
+                )
+        human_template = "{question}"
+        subject = "{subject}"
+        human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
+        chat_prompt_template = ChatPromptTemplate.from_messages(
+                    [system_message_prompt_template, human_message_prompt_template]
+                )
+        # initialize LLMChain by passing LLM and prompt template
+        llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template)
+        res = llm_chain.run(question=user_prompt, subject=SUBJECT)
+
+        logging.debug(f"RESULTS: {res}")
+
+        return jsonify(res), 200
+    else:
+        return "No user prompt received", 400
 
 @app.route("/medlocalgpt/api/v1/en/dataset/openai/ask", methods=["GET", "POST"])
 def process_en_dataset_openai_query_v1():
