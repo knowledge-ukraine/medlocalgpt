@@ -139,10 +139,9 @@ logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
 prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=SYSTEM_TEMPLATE_BASIC)
-memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
-memory_adv = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
-memory_loc = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
-
+memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True, max_token_limit=10000)
+memory_adv = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True, max_token_limit=10000)
+memory_loc = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True, max_token_limit=1500)
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 DB = Chroma(
