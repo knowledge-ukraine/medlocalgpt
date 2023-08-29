@@ -268,7 +268,7 @@ def process_en_advanced_openai_query_v1():
 
         logging.debug(f"RESULTS: {res}")
 
-        return jsonify(res), 200
+        return jsonify({"response": res, "prompt": user_prompt}), 200
     else:
         return "No user prompt received", 400
 
