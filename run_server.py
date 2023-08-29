@@ -160,8 +160,8 @@ QA_LOCAL = RetrievalQA.from_chain_type(
 # )
 
 if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-    LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
-    LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=1024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
+    LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.5)
+    LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=1024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.5)
     QA_OPENAI = RetrievalQA.from_chain_type(
         llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
         chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
