@@ -245,6 +245,7 @@ def run_ingest_route():
 @app.route("/medlocalgpt/api/v1/en/advanced/openai/ask", methods=["GET", "POST"])
 def process_en_advanced_openai_query_v1():
     user_prompt = request.form.get("prompt")
+    memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         logging.debug(f"Use LLM_OPENAI")
@@ -258,13 +259,13 @@ def process_en_advanced_openai_query_v1():
                     SYSTEM_TEMPLATE_ADVANCED_EN
                 )
         human_template = "{question}"
-        subject = "{subject}"
+        # subject = "{subject}"
         human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
         chat_prompt_template = ChatPromptTemplate.from_messages(
                     [system_message_prompt_template, human_message_prompt_template]
                 )
         # initialize LLMChain by passing LLM and prompt template
-        llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template)
+        llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template, memory=memory)
         res = llm_chain.run(question=user_prompt, subject=SUBJECT)
 
         logging.debug(f"RESULTS: {res}")
