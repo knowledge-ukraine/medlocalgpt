@@ -141,6 +141,7 @@ logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=SYSTEM_TEMPLATE_BASIC)
 memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 memory_adv = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
+memory_loc = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True)
 
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
@@ -153,8 +154,11 @@ RETRIEVER = DB.as_retriever(search_kwargs={"k": int(DOC_NUMBER)})
 
 LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
 QA_LOCAL = RetrievalQA.from_chain_type(
-    llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
+    llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES, chain_type_kwargs={"memory": memory_loc}
 )
+# QA_LOCAL = RetrievalQA.from_chain_type(
+#     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES, chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory_loc}
+# )
 
 if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
     LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
