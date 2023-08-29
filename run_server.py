@@ -11,7 +11,7 @@ from huggingface_hub import hf_hub_download
 from flask import Flask, jsonify, request
 from langchain.chains import RetrievalQA
 from langchain.embeddings import HuggingFaceInstructEmbeddings
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory
 from langchain.prompts import PromptTemplate
 from langchain.llms import HuggingFacePipeline, LlamaCpp
 # from langchain.llms import OpenAI
@@ -139,9 +139,9 @@ logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
 prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=SYSTEM_TEMPLATE_BASIC)
-memory = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True, max_token_limit=10000)
-memory_adv = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True, max_token_limit=10000)
-memory_loc = ConversationBufferMemory(input_key="question", memory_key="history", return_messages=True, max_token_limit=1500)
+memory = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
+memory_adv = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
+memory_loc = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=5)
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 DB = Chroma(
