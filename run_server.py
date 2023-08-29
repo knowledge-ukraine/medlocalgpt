@@ -258,14 +258,13 @@ def process_en_advanced_openai_query_v1():
                     SYSTEM_TEMPLATE_ADVANCED_EN
                 )
         human_template = "{question}"
-        # subject = "{subject}"
         human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
         chat_prompt_template = ChatPromptTemplate.from_messages(
                     [system_message_prompt_template, human_message_prompt_template]
                 )
         # initialize LLMChain by passing LLM and prompt template
         llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template, memory=memory)
-        res = llm_chain.run(question=user_prompt, subject=SUBJECT)
+        res = llm_chain.run(question=user_prompt, subject=SUBJECT, max_tokens=MAX_TOKENS)
 
         logging.debug(f"RESULTS: {res}")
 
