@@ -55,6 +55,11 @@ if 'MODEL' in os.environ:
 else:
     MODEL = "openai"
 
+if 'TEMPERATURE' in os.environ:
+    TEMPERATURE = os.environ['TEMPERATURE']
+else:
+    TEMPERATURE = 0.5
+
 # import torch
 # from auto_gptq import AutoGPTQForCausalLM
 # from huggingface_hub import hf_hub_download

@@ -41,6 +41,7 @@ from model_property import (
     MODEL_BASENAME,
     OPENAI_API_KEY,
     OPENAI_ORGANIZATION,
+    TEMPERATURE,
     EMBEDDING_MODEL_NAME,
     MAX_TOKENS,
     OPENAI_MODEL,
@@ -162,8 +163,8 @@ if MODEL == 'local':
     # )
 elif MODEL == 'openai':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-        LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.5)
-        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=1024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.5)
+        LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=1024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
         QA_OPENAI = RetrievalQA.from_chain_type(
             llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
             chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
