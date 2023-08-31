@@ -152,7 +152,7 @@ DB = Chroma(
 )
 RETRIEVER = DB.as_retriever(search_kwargs={"k": int(DOC_NUMBER)})
 
-if MODEL is 'local':
+if MODEL == 'local':
     LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
     QA_LOCAL = RetrievalQA.from_chain_type(
         llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
@@ -160,7 +160,7 @@ if MODEL is 'local':
     # QA_LOCAL = RetrievalQA.from_chain_type(
     #     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES, chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory_loc}
     # )
-elif MODEL is 'openai':
+elif MODEL == 'openai':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.5)
         LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=1024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.5)
@@ -365,7 +365,7 @@ def process_gt_dataset_openai_query_v1():
 def process_en_dataset_local_query_v1():
     user_prompt = request.form.get("prompt")
 
-    if MODEL is not 'local':
+    if MODEL != 'local':
         return "No OPENAI cridentials received", 400
 
     logging.debug(f"Use QA_LOCAL")
