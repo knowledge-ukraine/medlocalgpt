@@ -366,7 +366,8 @@ def process_en_dataset_local_query_v1():
     user_prompt = request.form.get("prompt")
 
     if MODEL != 'local':
-        return "No OPENAI cridentials received", 400
+        logging.debug(f"Local model is not loaded")
+        return "Local model is not loaded", 400
 
     logging.debug(f"Use QA_LOCAL")
 
