@@ -36,6 +36,7 @@ from werkzeug.utils import secure_filename
 from model_property import (
     CHROMA_SETTINGS,
     PERSIST_DIRECTORY,
+    MODEL,
     MODEL_ID,
     MODEL_BASENAME,
     OPENAI_API_KEY,
@@ -151,21 +152,22 @@ DB = Chroma(
 )
 RETRIEVER = DB.as_retriever(search_kwargs={"k": int(DOC_NUMBER)})
 
-LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
-QA_LOCAL = RetrievalQA.from_chain_type(
-    llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
-)
-# QA_LOCAL = RetrievalQA.from_chain_type(
-#     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES, chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory_loc}
-# )
-
-if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-    LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.5)
-    LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=1024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.5)
-    QA_OPENAI = RetrievalQA.from_chain_type(
-        llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-        chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
-        )
+if MODEL is 'local':
+    LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
+    QA_LOCAL = RetrievalQA.from_chain_type(
+        llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
+    )
+    # QA_LOCAL = RetrievalQA.from_chain_type(
+    #     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES, chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory_loc}
+    # )
+elif MODEL is 'openai':
+    if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+        LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.5)
+        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=1024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.5)
+        QA_OPENAI = RetrievalQA.from_chain_type(
+            llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
+            chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
+            )
 
 app = Flask(__name__)
 
@@ -362,6 +364,9 @@ def process_gt_dataset_openai_query_v1():
 @app.route("/medlocalgpt/api/v1/en/dataset/local/ask", methods=["GET", "POST"])
 def process_en_dataset_local_query_v1():
     user_prompt = request.form.get("prompt")
+
+    if MODEL is not 'local':
+        return "No OPENAI cridentials received", 400
 
     logging.debug(f"Use QA_LOCAL")
 

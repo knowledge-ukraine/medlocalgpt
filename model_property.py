@@ -50,6 +50,11 @@ if 'SUBJECT' in os.environ:
 else:
     SUBJECT = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
 
+if 'MODEL' in os.environ:
+    MODEL = os.environ['MODEL']
+else:
+    MODEL = "openai"
+
 # import torch
 # from auto_gptq import AutoGPTQForCausalLM
 # from huggingface_hub import hf_hub_download
