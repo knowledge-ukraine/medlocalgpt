@@ -336,7 +336,7 @@ def process_uk_advanced_openai_query_v1():
                     [system_prompt_translate_template, human_prompt_translate_template]
                 )
         llm_chain_1 = LLMChain(
-            llm=LLM_OPENAI,
+            llm=LLM_OPENAI_TR,
             prompt=chat_prompt_translate_template
             )
          # This is an LLMChain to ask question -----------------------------------------------------------------------------
@@ -355,10 +355,28 @@ def process_uk_advanced_openai_query_v1():
             """
         system_prompt_ask_template = PromptTemplate.from_template(ask_template)
         llm_chain_2 = LLMChain(
-            llm=LLM_OPENAI,
+            llm=LLM_OPENAI_TR,
             prompt=system_prompt_ask_template
             )
-        overall_chain = SimpleSequentialChain(chains=[llm_chain_1, llm_chain_2], verbose=True)
+
+        # This is an LLMChain to translate text -----------------------------------------------------------------------------
+        translate_template_2 = """I want you to act as an translator, spelling and grammar corrector. \
+            You will provided with the sample text. \
+            Your task is to correct spelling and grammar mistakes using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+            Next step of your task is to translate the sample text from English into Ukrainian language using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+            Sample text: {sample_text} \
+            Translation:
+            """
+        system_prompt_translate_template = SystemMessagePromptTemplate.from_template(translate_template_2)
+        human_prompt_translate_template = HumanMessagePromptTemplate.from_template(human_translate_template)
+        chat_prompt_translate_template_2 = ChatPromptTemplate.from_messages(
+                    [system_prompt_translate_template, human_prompt_translate_template]
+                )
+        llm_chain_3 = LLMChain(
+            llm=LLM_OPENAI_TR,
+            prompt=chat_prompt_translate_template_2
+            )
+        overall_chain = SimpleSequentialChain(chains=[llm_chain_1, llm_chain_2, llm_chain_3], verbose=True)
         output = overall_chain.run(user_prompt)
 
         logging.debug(f"RESULTS: {output}")
