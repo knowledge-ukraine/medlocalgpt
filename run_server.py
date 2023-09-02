@@ -351,8 +351,6 @@ def process_uk_advanced_openai_query_v1():
         overall_chain = SimpleSequentialChain(chains=[llm_chain_1, llm_chain_2, llm_chain_3], verbose=True)
         output = overall_chain.run(user_prompt)
 
-        # logging.debug(f"RESULTS: {output}")
-
         return jsonify({"response": output, "prompt": user_prompt}), 200
     else:
         return "No user prompt received", 400
