@@ -38,7 +38,7 @@ Built with [🦜️🔗 LangChain](https://github.com/hwchase17/langchain), [GPT
 2. Create Conda environment
 
     ```bash
-    conda create -n medlocalgpt python=3.10.13
+    conda create -n medlocalgpt python=3.10.12
     ```
 
 3. Activate Conda environment
