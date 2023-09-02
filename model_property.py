@@ -40,6 +40,11 @@ if 'MAX_TOKENS' in os.environ:
 else:
     MAX_TOKENS = 1024
 
+if 'MAX_TOKENS_FOR_TRANSLATION' in os.environ:
+    MAX_TOKENS_FOR_TRANSLATION = os.environ['MAX_TOKENS']
+else:
+    MAX_TOKENS_FOR_TRANSLATION = 3024
+
 if 'DOC_NUMBER' in os.environ:
     DOC_NUMBER = os.environ['DOC_NUMBER']
 else:

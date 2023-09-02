@@ -47,10 +47,9 @@ from model_property import (
     OPENAI_MODEL,
     DOC_NUMBER,
     SUBJECT,
-    SYSTEM_TEMPLATE_FOR_TRANSLATION,
     SYSTEM_TEMPLATE_BASIC,
     SYSTEM_TEMPLATE_ADVANCED_EN,
-    ASK_TEMPLATE_ADVANCED_EN)
+    MAX_TOKENS_FOR_TRANSLATION)
 
 def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
@@ -165,7 +164,7 @@ if MODEL == 'local':
 elif MODEL == 'openai':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
-        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=3024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=MAX_TOKENS_FOR_TRANSLATION, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
         QA_OPENAI = RetrievalQA.from_chain_type(
             llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
             chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
