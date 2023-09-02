@@ -197,23 +197,6 @@ Question: {question}
 Answer:
 """
 
-ASK_TEMPLATE_ADVANCED_EN = """I want you to act as an AI assistant for healthcare professionals in {subject}
-Correct spelling and grammar mistakes of the User question using domain knowledge from {subject}: {translated_questions} \
-Do not include corrected version of User's question in your response. \
-The subject areas of your responses should be: {subject}. \
-The domain of your responses should be academic. \
-Provide a very detailed comprehensive academic answer. \
-Your response size must not exceed {max_tokens} tokens \
-Your responses should be informative and logical. \
-Your responses should be for knowledgeable and expert audience. \
-If the question is not about {subject}, politely inform User that you are tuned to only answer questions about {subject}. \
-
-Chat History:
-{history}
-Question: {translated_question}
-Answer:
-"""
-
 # SYSTEM_TEMPLATE_BASIC_ADVANCED = """I want you to act as an AI assistant in {subject}
 # Correct spelling and grammar mistakes of the user question using domain knowledge from {subject}: {question} \
 # Do not include corrected version of user's question in your response. \
