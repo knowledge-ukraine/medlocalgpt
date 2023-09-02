@@ -165,7 +165,7 @@ if MODEL == 'local':
 elif MODEL == 'openai':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
-        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=1024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=3024, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
         QA_OPENAI = RetrievalQA.from_chain_type(
             llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
             chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
@@ -292,34 +292,6 @@ def process_uk_advanced_openai_query_v1():
 
     if user_prompt:
         logging.debug(f"Get the answer from the chain")
-        # # This is an LLMChain to translate text
-        # translate_template = SYSTEM_TEMPLATE_FOR_TRANSLATION
-        # translate_prompt_template = PromptTemplate(input_variables=["subject", "input_lang", "output_lang", "sample_text"], template=translate_template)
-        # # initialize transaltion chain
-        # llm_chain_1 = LLMChain(
-        #     llm=LLM_OPENAI,
-        #     prompt=translate_prompt_template,
-        #     output_key="translated_question"
-        #     )
-        # # This is an LLMChain to ask GPT
-        # ask_template = ASK_TEMPLATE_ADVANCED_EN
-        # ask_prompt_template =PromptTemplate(input_variables=["translated_question"], template=ask_template)
-        # llm_chain_2 = LLMChain(llm=LLM_OPENAI, prompt=ask_prompt_template, output_key="answer", memory=memory_adv)
-        # llm_chain_3 = LLMChain(
-        #     llm=LLM_OPENAI,
-        #     prompt=translate_prompt_template,
-        #     output_key="translated_answer"
-        #     )
-        # overall_chain = SequentialChain(
-        #     chains=[llm_chain_1, llm_chain_2, llm_chain_3],
-        #     input_variables=["subject", "input_lang", "output_lang", "sample_text"],
-        #     # Here we return multiple variables
-        #     output_variables=["translated_question", "answer", "translated_answer"],
-        #     verbose=True
-        #     )
-
-        # overall_chain({"subject":SUBJECT, "input_lang": "Ukrainian", "output_lang": "English", "sample_text": user_prompt})
-        # logging.debug(f"RESULTS: {res}")
 
         # This is an LLMChain to translate text -----------------------------------------------------------------------------
         translate_template = """I want you to act as an translator, spelling and grammar corrector. \
@@ -341,18 +313,18 @@ def process_uk_advanced_openai_query_v1():
             )
          # This is an LLMChain to ask question -----------------------------------------------------------------------------
         ask_template = """I want you to act as an AI assistant for healthcare professionals in medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
-            Correct spelling and grammar mistakes of the User question using domain knowledge from medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research: {translated_question} \
-            Do not include corrected version of User's question in your response. \
-            The subject areas of your responses should be: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
-            The domain of your responses should be academic. \
-            Provide a very detailed comprehensive academic answer. \
-            Your response size must not exceed 1024 tokens \
-            Your responses should be informative and logical. \
-            Your responses should be for knowledgeable and expert audience. \
-            If the question is not about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research, politely inform User that you are tuned to only answer questions about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
-            Question: {translated_question}
-            Answer:
-            """
+        Correct spelling and grammar mistakes of the User question using domain knowledge from medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research: {translated_question} \
+        Do not include corrected version of User's question in your response. \
+        The subject areas of your responses should be: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+        The domain of your responses should be academic. \
+        Provide a very detailed comprehensive academic answer. \
+        Your response size must not exceed 1024 tokens \
+        Your responses should be logical. \
+        Your responses should be for knowledgeable and expert audience. \
+        If the question is not about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research, politely inform User that you are tuned to only answer questions about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+        Question: {translated_question}
+        Answer:
+        """
         system_prompt_ask_template = PromptTemplate.from_template(ask_template)
         llm_chain_2 = LLMChain(
             llm=LLM_OPENAI_TR,
