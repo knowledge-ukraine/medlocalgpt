@@ -17,7 +17,7 @@ from langchain.llms import HuggingFacePipeline, LlamaCpp
 # from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
-from langchain.chains import LLMChain, ConversationalRetrievalChain
+from langchain.chains import LLMChain, ConversationalRetrievalChain, SequentialChain, SimpleSequentialChain
 
 from googletrans import Translator
 
@@ -49,7 +49,8 @@ from model_property import (
     SUBJECT,
     SYSTEM_TEMPLATE_FOR_TRANSLATION,
     SYSTEM_TEMPLATE_BASIC,
-    SYSTEM_TEMPLATE_ADVANCED_EN)
+    SYSTEM_TEMPLATE_ADVANCED_EN,
+    ASK_TEMPLATE_ADVANCED_EN)
 
 def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
@@ -249,7 +250,7 @@ def run_ingest_route():
     except Exception as e:
         return f"Error occurred: {str(e)}", 500
 
-
+# Tuning prompt (with selected domain knowledge) for query to OpenAI model in English
 @app.route("/medlocalgpt/api/v1/en/advanced/openai/ask", methods=["GET", "POST"])
 def process_en_advanced_openai_query_v1():
     user_prompt = request.form.get("prompt")
@@ -280,6 +281,94 @@ def process_en_advanced_openai_query_v1():
     else:
         return "No user prompt received", 400
 
+@app.route("/medlocalgpt/api/v1/uk/advanced/openai/ask", methods=["GET", "POST"])
+def process_uk_advanced_openai_query_v1():
+    user_prompt = request.form.get("prompt")
+
+    if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+        logging.debug(f"Use LLM_OPENAI")
+    else:
+        return "No OPENAI cridentials received", 400
+
+    if user_prompt:
+        logging.debug(f"Get the answer from the chain")
+        # # This is an LLMChain to translate text
+        # translate_template = SYSTEM_TEMPLATE_FOR_TRANSLATION
+        # translate_prompt_template = PromptTemplate(input_variables=["subject", "input_lang", "output_lang", "sample_text"], template=translate_template)
+        # # initialize transaltion chain
+        # llm_chain_1 = LLMChain(
+        #     llm=LLM_OPENAI,
+        #     prompt=translate_prompt_template,
+        #     output_key="translated_question"
+        #     )
+        # # This is an LLMChain to ask GPT
+        # ask_template = ASK_TEMPLATE_ADVANCED_EN
+        # ask_prompt_template =PromptTemplate(input_variables=["translated_question"], template=ask_template)
+        # llm_chain_2 = LLMChain(llm=LLM_OPENAI, prompt=ask_prompt_template, output_key="answer", memory=memory_adv)
+        # llm_chain_3 = LLMChain(
+        #     llm=LLM_OPENAI,
+        #     prompt=translate_prompt_template,
+        #     output_key="translated_answer"
+        #     )
+        # overall_chain = SequentialChain(
+        #     chains=[llm_chain_1, llm_chain_2, llm_chain_3],
+        #     input_variables=["subject", "input_lang", "output_lang", "sample_text"],
+        #     # Here we return multiple variables
+        #     output_variables=["translated_question", "answer", "translated_answer"],
+        #     verbose=True
+        #     )
+
+        # overall_chain({"subject":SUBJECT, "input_lang": "Ukrainian", "output_lang": "English", "sample_text": user_prompt})
+        # logging.debug(f"RESULTS: {res}")
+
+        # This is an LLMChain to translate text -----------------------------------------------------------------------------
+        translate_template = """I want you to act as an translator, spelling and grammar corrector. \
+            You will provided with the sample text. \
+            Your task is to correct spelling and grammar mistakes using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+            Next step of your task is to translate the sample text from Ukrainian into English language using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+            Sample text: {sample_text} \
+            Translation:
+            """
+        system_prompt_translate_template = SystemMessagePromptTemplate.from_template(translate_template)
+        human_translate_template = "{sample_text}"
+        human_prompt_translate_template = HumanMessagePromptTemplate.from_template(human_translate_template)
+        chat_prompt_translate_template = ChatPromptTemplate.from_messages(
+                    [system_prompt_translate_template, human_prompt_translate_template]
+                )
+        llm_chain_1 = LLMChain(
+            llm=LLM_OPENAI,
+            prompt=chat_prompt_translate_template
+            )
+         # This is an LLMChain to ask question -----------------------------------------------------------------------------
+        ask_template = """I want you to act as an AI assistant for healthcare professionals in medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+            Correct spelling and grammar mistakes of the User question using domain knowledge from medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research: {translated_question} \
+            Do not include corrected version of User's question in your response. \
+            The subject areas of your responses should be: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+            The domain of your responses should be academic. \
+            Provide a very detailed comprehensive academic answer. \
+            Your response size must not exceed 1024 tokens \
+            Your responses should be informative and logical. \
+            Your responses should be for knowledgeable and expert audience. \
+            If the question is not about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research, politely inform User that you are tuned to only answer questions about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+
+            Chat History:
+            {history}
+            Question: {translated_question}
+            Answer:
+            """
+        system_prompt_ask_template = SystemMessagePromptTemplate.from_template(ask_template)
+        llm_chain_2 = LLMChain(
+            llm=LLM_OPENAI,
+            prompt=system_prompt_ask_template
+            )
+        overall_chain = SimpleSequentialChain(chains=[llm_chain_1, llm_chain_2], verbose=True)
+        output = overall_chain.run(user_prompt)
+
+        return jsonify({"response": output, "prompt": user_prompt}), 200
+    else:
+        return "No user prompt received", 400
+
+# Tuning prompt (with selected domain knowledge, local dataset) for query to OpenAI model in English
 @app.route("/medlocalgpt/api/v1/en/dataset/openai/ask", methods=["GET", "POST"])
 def process_en_dataset_openai_query_v1():
     user_prompt = request.form.get("prompt")
@@ -312,6 +401,7 @@ def process_en_dataset_openai_query_v1():
     else:
         return "No user prompt received", 400
 
+# Tuning prompt (with selected domain knowledge, local dataset) for query to OpenAI model in English with translating feature via googletrans package
 @app.route("/medlocalgpt/api/v1/gt/dataset/openai/ask", methods=["GET", "POST"])
 def process_gt_dataset_openai_query_v1():
 
@@ -362,6 +452,7 @@ def process_gt_dataset_openai_query_v1():
     else:
         return "No user prompt received", 400
 
+# Tuning prompt (with selected domain knowledge, local dataset) for query to Local selected model in English
 @app.route("/medlocalgpt/api/v1/en/dataset/local/ask", methods=["GET", "POST"])
 def process_en_dataset_local_query_v1():
     user_prompt = request.form.get("prompt")

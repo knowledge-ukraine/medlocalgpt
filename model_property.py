@@ -150,9 +150,9 @@ DOCUMENT_MAP = {
 
 SYSTEM_TEMPLATE_FOR_TRANSLATION = """I want you to act as an translator, spelling and grammar corrector. \
             You will provided with the sample text. \
-            Your task is to correct spelling and grammar mistakes using domain knowledge from {subject} \
-            Next step of your task is to translate the sample text from {input_lang} into {output_lang} language. \
-            Sample text: ```{sample_text}``` \
+            Your task is to correct spelling and grammar mistakes using domain knowledge from: {subject} \
+            Next step of your task is to translate the sample text from {input_lang} into {output_lang} language using domain knowledge from: {subject}. \
+            Sample text: {sample_text} \
             Translation:
             """
 
@@ -189,6 +189,23 @@ If the question is not about {subject}, politely inform User that you are tuned 
 Chat History:
 {history}
 Question: {question}
+Answer:
+"""
+
+ASK_TEMPLATE_ADVANCED_EN = """I want you to act as an AI assistant for healthcare professionals in {subject}
+Correct spelling and grammar mistakes of the User question using domain knowledge from {subject}: {translated_questions} \
+Do not include corrected version of User's question in your response. \
+The subject areas of your responses should be: {subject}. \
+The domain of your responses should be academic. \
+Provide a very detailed comprehensive academic answer. \
+Your response size must not exceed {max_tokens} tokens \
+Your responses should be informative and logical. \
+Your responses should be for knowledgeable and expert audience. \
+If the question is not about {subject}, politely inform User that you are tuned to only answer questions about {subject}. \
+
+Chat History:
+{history}
+Question: {translated_question}
 Answer:
 """
 
