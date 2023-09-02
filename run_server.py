@@ -359,7 +359,8 @@ def process_uk_advanced_openai_query_v1():
         # system_prompt_ask_template = SystemMessagePromptTemplate.from_template(ask_template)
         llm_chain_2 = LLMChain(
             llm=LLM_OPENAI,
-            prompt=ask_template
+            prompt=ask_template,
+            memory=memory_adv
             )
         overall_chain = SimpleSequentialChain(chains=[llm_chain_1, llm_chain_2], verbose=True)
         output = overall_chain.run(user_prompt)
