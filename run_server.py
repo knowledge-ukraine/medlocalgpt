@@ -356,7 +356,7 @@ def process_uk_advanced_openai_query_v1():
             Question: {translated_question}
             Answer:
             """
-        system_prompt_ask_template = SystemMessagePromptTemplate.from_template(ask_template)
+        system_prompt_ask_template = PromptTemplate.from_template(ask_template)
         llm_chain_2 = LLMChain(
             llm=LLM_OPENAI,
             prompt=system_prompt_ask_template,
