@@ -148,9 +148,9 @@ TODO
 
 ## 🗃️ Dataset
 
-EBSCO articles dataset (domain knowledge: rehabilitation medicine)
+EBSCO articles dataset (domain knowledge: rehabilitation medicine) + JSON of every article
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8185659.svg)](https://doi.org/10.5281/zenodo.8185659)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8308214.svg)](https://doi.org/10.5281/zenodo.8308214)
 
 ```bash
 wget -O ./ebsco-rehabilitation-dataset.zip https://cdn.e-rehab.pp.ua/u/ebsco-rehabilitation-dataset.zip
