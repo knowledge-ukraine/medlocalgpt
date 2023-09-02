@@ -8,7 +8,7 @@ os.environ["no_proxy"] = "*"
 import torch
 from auto_gptq import AutoGPTQForCausalLM
 from huggingface_hub import hf_hub_download
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from langchain.chains import RetrievalQA
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 from langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory
@@ -472,6 +472,13 @@ def process_en_dataset_local_query_v1():
         return jsonify(prompt_response_dict), 200
     else:
         return "No user prompt received", 400
+
+@app.route('/')
+def index():
+    return 'index'
+
+if __name__ == '__main__':
+   app.run()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080)
