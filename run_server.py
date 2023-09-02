@@ -477,8 +477,5 @@ def process_en_dataset_local_query_v1():
 def index():
     return 'index'
 
-if __name__ == '__main__':
-   app.run()
-
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080)
