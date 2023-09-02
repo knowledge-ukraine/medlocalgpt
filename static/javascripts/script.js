@@ -16,7 +16,7 @@ const loadDataFromLocalstorage = () => {
 
     const defaultText = `<div class="default-text">
                             <h1>⚕️ MedLocalGPT Demo</h1>
-                            <p>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients. Ask your (medical EBSCO) dataset using LLMs and Embeddings. Optionally you can use OpenAI GPT models or other LLMs and SaaS solutions.<br> Your chat history will be displayed here.</p>
+                            <p>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients. Ask your (medical EBSCO) dataset using LLMs and Embeddings. <br> Optionally you can use local LLMs, OpenAI GPT models or other SaaS solutions. <br> Your chat history will be displayed here.</p>
                         </div>`
 
     chatContainer.innerHTML = localStorage.getItem("all-chats") || defaultText;
