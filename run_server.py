@@ -350,17 +350,13 @@ def process_uk_advanced_openai_query_v1():
             Your responses should be informative and logical. \
             Your responses should be for knowledgeable and expert audience. \
             If the question is not about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research, politely inform User that you are tuned to only answer questions about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
-
-            Chat History:
-            {history}
             Question: {translated_question}
             Answer:
             """
         system_prompt_ask_template = PromptTemplate.from_template(ask_template)
         llm_chain_2 = LLMChain(
             llm=LLM_OPENAI,
-            prompt=system_prompt_ask_template,
-            memory=memory_adv
+            prompt=system_prompt_ask_template
             )
         overall_chain = SimpleSequentialChain(chains=[llm_chain_1, llm_chain_2], verbose=True)
         output = overall_chain.run(user_prompt)
