@@ -5,6 +5,8 @@ Ask your EBSCO dataset (domain knowledge: rehabilitation medicine) using LLMs an
 
 This project is part of the R&D on intelligent data analysis and computational linguistics for digital health (telerehabilitation an rehabilitation medicines). Read more: [Letter to the Editor–Update from Ukraine: Development of the Cloud-based Platform for Patient-centered Telerehabilitation of Oncology Patients with Mathematical-related Modeling](https://doi.org/10.5195/ijt.2023.6562).
 
+Supported languges: English, Ukrainian
+
 ## 📖 Quick index
   * [🚀 Sponsor this project](#-sponsor-this-project)
   * [🌎 Inspired by](#-inspired-by)
