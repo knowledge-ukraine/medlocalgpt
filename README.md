@@ -1,3 +1,15 @@
+- [⚕️ medlocalgpt](#-medlocalgpt)
+  * [Sponsor this project](#sponsor-this-project)
+  * [Inspired by](#inspired-by)
+  * [⚠️ Important note](#-important-note)
+  * [💻 Setup for Testing](#-setup-for-testing)
+    + [🐍 Environment setup](#-environment-setup)
+  * [💻 Setup for Production](#-setup-for-production)
+  * [🎈 API usage](#-api-usage)
+    + [Query to OpenAI models with tuning prompt (domain knowledge, OpenAI model, max tokens generation, temperature - all this sets up with `medlocalgpt.env`)](#query-to-openai-models-with-tuning-prompt-domain-knowledge-openai-model-max-tokens-generation-temperature---all-this-sets-up-with-medlocalgptenv)
+    + [Query to OpenAI models with tuning prompt (domain knowledge, OpenAI model, max tokens generation, temperature - all this sets up with `medlocalgpt.env`) using EBSCO articles dataset](#query-to-openai-models-with-tuning-prompt-domain-knowledge-openai-model-max-tokens-generation-temperature---all-this-sets-up-with-medlocalgptenv-using-ebsco-articles-dataset)
+  * [🗃️ Dataset](#-dataset)
+
 # ⚕️ medlocalgpt
 
 Applying LLM-powered (OpenAI GPT-4, Vicuna, Orca-mini, etc.) AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients.
