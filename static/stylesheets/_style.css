@@ -329,3 +329,56 @@ span.material-symbols-rounded {
     font-size: 0.9rem;
   }
 }
+
+/* Typing container styling for mobile screens */
+@media screen and (max-width: 600px) {
+  .typing-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically on mobile */
+    padding: 10px; /* Reduce padding for mobile */
+    background: var(--outgoing-chat-bg);
+    border-top: 1px solid var(--incoming-chat-border);
+  }
+
+  .typing-container .typing-content {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically on mobile */
+    max-width: 950px;
+    width: 100%;
+  }
+
+  .typing-container .typing-textarea {
+    width: 100%;
+    display: flex;
+    position: relative;
+  }
+
+  .typing-textarea textarea {
+    resize: none;
+    height: 45px; /* Reduce height for mobile */
+    width: 100%;
+    border: none;
+    padding: 10px 40px 10px 10px;
+    color: var(--text-color);
+    font-size: 1rem; /* Adjust font size for mobile */
+    border-radius: 4px;
+    max-height: 250px;
+    overflow-y: auto;
+    background: var(--incoming-chat-bg);
+    outline: 1px solid var(--incoming-chat-border);
+  }
+
+  .typing-content span {
+    height: 45px;
+    width: 45px;
+    margin-left: 5px;
+    font-size: 1.25rem; /* Adjust font size for mobile */
+  }
+
+  span.material-symbols-rounded {
+    font-size: 1.25rem!important;
+  }
+}
