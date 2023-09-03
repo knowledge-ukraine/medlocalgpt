@@ -74,6 +74,15 @@ const getChatResponse = async (incomingChatDiv) => {
     // Send POST request to API, get response and set the reponse as paragraph element text
     try {
         const response = await (await fetch(API_URL, requestOptions)).json();
+        if (sampleOptions.value == "option1") {
+            pElement.textContent = response['response'].trim();
+        }
+        if (sampleOptions.value == "option2") {
+            pElement.textContent = response['response'].trim();
+        }
+        if (sampleOptions.value == "option3") {
+            pElement.textContent = response['answer'].trim();
+        }
         pElement.textContent = response['response'].trim();
     } catch (error) { // Add error class to the paragraph element and set error text
         pElement.classList.add("error");
