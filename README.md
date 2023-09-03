@@ -8,9 +8,8 @@ This project is part of the R&D on intelligent data analysis and computational l
 ## 📖 Quick index
   * [Sponsor this project](#sponsor-this-project)
   * [Inspired by](#inspired-by)
-  * [⚠️ Important note](#-important-note)
+  * [⚠ Important note](#-important-note)
   * [💻 Setup for Testing](#-setup-for-testing)
-    + [🐍 Environment setup](#-environment-setup)
   * [💻 Setup for Production](#-setup-for-production)
   * [🎈 API usage](#-api-usage)
   * [🗃️ Dataset](#-dataset)
@@ -26,7 +25,7 @@ This project was inspired by the original [privateGPT](https://github.com/imarti
 
 Built with [🦜️🔗 LangChain](https://github.com/hwchase17/langchain), [GPT4All](https://github.com/nomic-ai/gpt4all), [LlamaCpp](https://github.com/ggerganov/llama.cpp), [Chroma](https://www.trychroma.com/), [SentenceTransformers](https://www.sbert.net/), [InstructorEmbeddings](https://instructor-embedding.github.io/).
 
-## ⚠️ Important note
+## ⚠ Important note
 
 **medlocalgpt** project and documentation are in active development. For any technical clarifications and questions contact me via email: [malakhovks@nas.gov.ua](mailto:malakhovks@nas.gov.ua) or via Issues. The recent Russian's rocket shelling on critical infrastructure in Ukraine and Kyiv led our server infrastructure to become unstable.
 **CPU support only (for now)**
