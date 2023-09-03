@@ -6,20 +6,20 @@ Ask your EBSCO dataset (domain knowledge: rehabilitation medicine) using LLMs an
 This project is part of the R&D on intelligent data analysis and computational linguistics for digital health (telerehabilitation an rehabilitation medicines). Read more: [Letter to the Editor–Update from Ukraine: Development of the Cloud-based Platform for Patient-centered Telerehabilitation of Oncology Patients with Mathematical-related Modeling](https://doi.org/10.5195/ijt.2023.6562).
 
 ## 📖 Quick index
-  * [Sponsor this project](#sponsor-this-project)
-  * [Inspired by](#inspired-by)
+  * [🚀 Sponsor this project](#-sponsor-this-project)
+  * [🌎 Inspired by](#-inspired-by)
   * [⚠ Important note](#-important-note)
   * [💻 Setup for Testing](#-setup-for-testing)
   * [💻 Setup for Production](#-setup-for-production)
   * [🎈 API usage](#-api-usage)
   * [📕 Dataset](#-dataset)
 
-## Sponsor this project
+## 🚀 Sponsor this project
 
 Please support @malakhovks. Despite the Wartime in Ukraine, R&D in the field of Digital Health are being resumed.
 [https://send.monobank.ua/jar/5ad56oNAcD](https://send.monobank.ua/jar/5ad56oNAcD)
 
-## Inspired by
+## 🌎 Inspired by
 
 This project was inspired by the original [privateGPT](https://github.com/imartinez/privateGPT) and [localGPT](https://github.com/PromtEngineer/localGPT).
 
@@ -154,8 +154,6 @@ TODO
 ## 🎈 API usage
 
 ### Query to OpenAI models with tuning prompt (domain knowledge, OpenAI model, max tokens generation, temperature - all this sets up with `medlocalgpt.env`)
-
-
 
 **Request:**
 
