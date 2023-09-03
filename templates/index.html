@@ -1,0 +1,53 @@
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>⚕️ MedLocalGPT</title>
+  <link rel="stylesheet" href="./static/stylesheets/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts Link For Icons -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+</head>
+
+<body class="">
+  <!-- Chats container -->
+  <div class="chat-container">
+    <div class="default-text">
+      <h1>⚕️ MedLocalGPT Demo</h1>
+      <p>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation &amp; Telerehabilitation
+        Therapists, Students, and Patients. <br> Ask your (medical EBSCO) dataset using LLMs and Embeddings. <br>
+        Optionally you can use local LLMs, OpenAI GPT models or other SaaS solutions. <br> Your chat history will be
+        displayed here.</p>
+    </div>
+  </div>
+
+  <!-- Typing container -->
+  <div class="typing-container">
+    <div class="typing-content">
+      <div class="typing-textarea">
+        <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required=""
+          style="height: 55px;"></textarea>
+        <span id="send-btn" class="material-symbols-rounded">send</span>
+      </div>
+      <div class="typing-controls">
+        <span id="theme-btn" class="material-symbols-rounded">light_mode</span>
+        <span id="delete-btn" class="material-symbols-rounded">delete</span>
+      </div>
+      <!-- Select container with sample options -->
+      <div class="select-container">
+        <select id="sample-options">
+          <option value="option1" title="/medlocalgpt/api/v1/en/advanced/openai/ask">API 1</option>
+          <option value="option2" title="/medlocalgpt/api/v1/uk/advanced/openai/ask">API 2</option>
+          <option value="option3" title="/medlocalgpt/api/v1/en/dataset/openai/ask">API 3</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <!-- ---------------------------------------------------------------------------------------------------- -->
+  <script src="./static/javascripts/script.js" defer=""></script>
+
+
+</body>
+
+</html>
