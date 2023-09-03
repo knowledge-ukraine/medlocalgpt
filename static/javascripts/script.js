@@ -83,7 +83,6 @@ const getChatResponse = async (incomingChatDiv) => {
         if (sampleOptions.value == "option3") {
             pElement.textContent = response['Answer'].trim();
         }
-        pElement.textContent = response['response'].trim();
     } catch (error) { // Add error class to the paragraph element and set error text
         pElement.classList.add("error");
         pElement.textContent = "Oops! Something went wrong while retrieving the response. Please try again.";
