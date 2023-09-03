@@ -49,7 +49,8 @@ from model_property import (
     SUBJECT,
     SYSTEM_TEMPLATE_BASIC,
     SYSTEM_TEMPLATE_ADVANCED_EN,
-    MAX_TOKENS_FOR_TRANSLATION)
+    MAX_TOKENS_FOR_TRANSLATION,
+    MAX_TOKENS_OPENAI)
 
 def load_model(device_type, model_id, model_basename=None):
     logging.info(f"Loading Model: {model_id}, on: {device_type}")
@@ -163,7 +164,7 @@ if MODEL == 'local':
     # )
 elif MODEL == 'openai':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-        LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS_OPENAI), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
         LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=MAX_TOKENS_FOR_TRANSLATION, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
         QA_OPENAI = RetrievalQA.from_chain_type(
             llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
@@ -278,7 +279,7 @@ def process_en_advanced_openai_query_v1():
                 )
         # initialize LLMChain by passing LLM and prompt template
         llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template, memory=memory_adv)
-        res = llm_chain.run(question=user_prompt, subject=SUBJECT, max_tokens=MAX_TOKENS)
+        res = llm_chain.run(question=user_prompt, subject=SUBJECT)
 
         logging.debug(f"RESULTS: {res}")
 
@@ -323,13 +324,12 @@ def process_uk_advanced_openai_query_v1():
             prompt=chat_prompt_translate_template
             )
          # This is an LLMChain to ask question -----------------------------------------------------------------------------
-        ask_template = """I want you to act as an AI assistant for healthcare professionals in medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+        ask_template = """I want you to act as an AI assistant for healthcare professionals in medicine, physical rehabilitation medicine, telerehabilitation, breast canser, cardiovascular system, arterial oscillography, telemedicine, health informatics, digital health, computer sciences, transdisciplinary research. \
         Correct spelling and grammar mistakes of the User question using domain knowledge from medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research: {translated_question} \
         Do not include corrected version of User's question in your response. \
         The subject areas of your responses should be: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
         The domain of your responses should be academic. \
         Provide a very detailed comprehensive academic answer. \
-        Your response size must not exceed 1024 tokens \
         Your responses should be logical. \
         Your responses should be for knowledgeable and expert audience. \
         If the question is not about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research, politely inform User that you are tuned to only answer questions about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \

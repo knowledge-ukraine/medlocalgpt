@@ -40,10 +40,15 @@ if 'MAX_TOKENS' in os.environ:
 else:
     MAX_TOKENS = 1024
 
+if 'MAX_TOKENS_OPENAI' in os.environ:
+    MAX_TOKENS_OPENAI = os.environ['MAX_TOKENS']
+else:
+    MAX_TOKENS_OPENAI = 5024
+
 if 'MAX_TOKENS_FOR_TRANSLATION' in os.environ:
     MAX_TOKENS_FOR_TRANSLATION = os.environ['MAX_TOKENS']
 else:
-    MAX_TOKENS_FOR_TRANSLATION = 3024
+    MAX_TOKENS_FOR_TRANSLATION = 5024
 
 if 'DOC_NUMBER' in os.environ:
     DOC_NUMBER = os.environ['DOC_NUMBER']
@@ -186,7 +191,6 @@ Do not include corrected version of User's question in your response. \
 The subject areas of your responses should be: {subject}. \
 The domain of your responses should be academic. \
 Provide a very detailed comprehensive academic answer. \
-Your response size must not exceed {max_tokens} tokens \
 Your responses should be informative and logical. \
 Your responses should be for knowledgeable and expert audience. \
 If the question is not about {subject}, politely inform User that you are tuned to only answer questions about {subject}. \
