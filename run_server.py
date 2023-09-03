@@ -165,7 +165,8 @@ if MODEL == 'local':
 elif MODEL == 'openai':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS_OPENAI), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
-        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=MAX_TOKENS_FOR_TRANSLATION, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        # LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=MAX_TOKENS_FOR_TRANSLATION, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
         QA_OPENAI = RetrievalQA.from_chain_type(
             llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
             chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
