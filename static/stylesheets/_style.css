@@ -346,19 +346,18 @@ span.material-symbols-rounded {
   .typing-container .typing-content {
     display: flex;
     flex-direction: column; /* Stack elements vertically on mobile */
-    max-width: 950px;
-    width: 100%;
+    width: 100%; /* Use the full width of the container */
   }
 
   .typing-container .typing-textarea {
     width: 100%;
     display: flex;
     position: relative;
+    margin-bottom: 5px; /* Add a 5px margin between elements */
   }
 
   .typing-textarea textarea {
     resize: none;
-    height: 45px; /* Reduce height for mobile */
     width: 100%;
     border: none;
     padding: 10px 40px 10px 10px;
