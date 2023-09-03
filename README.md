@@ -144,7 +144,34 @@ TODO
 
 ## 🎈 API usage
 
-TODO
+### Query to OpenAI models with tuning prompt (domain knowledge, OpenAI model, max tokens generation, temperature - all this sets up with `medlocalgpt.env`) in English only
+
+**Request:**
+
+`POST /medlocalgpt/api/v1/en/advanced/openai/ask`
+
+```javascript
+    const API_URL = "/medlocalgpt/api/v1/en/advanced/openai/ask"
+    const requestOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            prompt: "What are the ICD-10 codes for abdominal aortic aneurysm?"
+        })
+    }
+    const response = await (await fetch(API_URL, requestOptions)).json();
+```
+
+**Response:**
+
+```JSON
+{
+ "prompt": "What are the ICD-10 codes for abdominal aortic aneurysm?",
+ "response": "Abdominal aortic aneurysm is a potentially life-threatening condition characterized by the weakening and bulging of the abdominal aorta, the largest artery in the body. The International Classification of Diseases, 10th Revision (ICD-10) provides specific codes to classify and document this condition. The ICD-10 codes for abdominal aortic aneurysm are as follows:\n\n1. I71.4 - Abdominal aortic aneurysm, without rupture\n2. I71.5 - Abdominal aortic aneurysm, ruptured\n\nThese codes are used to accurately identify and classify cases of abdominal aortic aneurysm in medical records, billing, and research. It is important for healthcare professionals to use these codes to ensure proper documentation and communication of the condition.\n\nPlease note that these codes are specific to abdominal aortic aneurysm and should not be used for other types of aneurysms or conditions. It is always recommended to consult the official ICD-10 coding guidelines and documentation for accurate coding and billing practices.\n\nIf you have any further questions or need more information, feel free to ask."
+}
+```
 
 ## 🗃️ Dataset
 
