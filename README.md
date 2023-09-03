@@ -12,7 +12,7 @@ This project is part of the R&D on intelligent data analysis and computational l
   * [💻 Setup for Testing](#-setup-for-testing)
   * [💻 Setup for Production](#-setup-for-production)
   * [🎈 API usage](#-api-usage)
-  * [🗃️ Dataset](#-dataset)
+  * [📕 Dataset](#-dataset)
 
 ## Sponsor this project
 
@@ -251,7 +251,7 @@ Endpoint: `/medlocalgpt/api/v1/en/dataset/openai/ask`
 }
 ```
 
-## 🗃️ Dataset
+## 📕 Dataset
 
 EBSCO articles dataset (domain knowledge: rehabilitation medicine) + JSON of every article
 
