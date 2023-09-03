@@ -288,7 +288,13 @@ def process_en_advanced_openai_query_v1():
 
 @app.route("/medlocalgpt/api/v1/uk/advanced/openai/ask", methods=["GET", "POST"])
 def process_uk_advanced_openai_query_v1():
-    user_prompt = request.form.get("prompt")
+    # user_prompt = request.form.get("prompt")
+    content_type = request.headers.get('Content-Type')
+    if content_type == 'application/json':
+        request_json = request.get_json()
+        user_prompt = request_json.get('prompt')
+    else:
+        return 'Content-Type not supported!', 400
 
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         logging.debug(f"Use LLM_OPENAI")
@@ -363,7 +369,13 @@ def process_uk_advanced_openai_query_v1():
 # Tuning prompt (with selected domain knowledge, local dataset) for query to OpenAI model in English
 @app.route("/medlocalgpt/api/v1/en/dataset/openai/ask", methods=["GET", "POST"])
 def process_en_dataset_openai_query_v1():
-    user_prompt = request.form.get("prompt")
+    # user_prompt = request.form.get("prompt")
+    content_type = request.headers.get('Content-Type')
+    if content_type == 'application/json':
+        request_json = request.get_json()
+        user_prompt = request_json.get('prompt')
+    else:
+        return 'Content-Type not supported!', 400
 
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         logging.debug(f"Use QA_OPENAI")
