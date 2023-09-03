@@ -338,6 +338,8 @@ span.material-symbols-rounded {
     width: 100%;
     display: flex;
     flex-direction: column; /* Stack elements vertically on mobile */
+    justify-content: center; /* Center elements vertically */
+    align-items: center; /* Center elements horizontally */
     padding: 10px; /* Reduce padding for mobile */
     background: var(--outgoing-chat-bg);
     border-top: 1px solid var(--incoming-chat-border);
@@ -347,12 +349,14 @@ span.material-symbols-rounded {
     display: flex;
     flex-direction: column; /* Stack elements vertically on mobile */
     width: 100%; /* Use the full width of the container */
+    align-items: center; /* Center elements horizontally */
   }
 
   .typing-container .typing-textarea {
     width: 100%;
     display: flex;
-    position: relative;
+    flex-direction: column; /* Stack elements vertically on mobile */
+    align-items: center; /* Center elements horizontally */
     margin-bottom: 5px; /* Add a 5px margin between elements */
   }
 
@@ -373,7 +377,7 @@ span.material-symbols-rounded {
   .typing-content span {
     height: 45px;
     width: 45px;
-    margin-left: 5px;
+    margin-top: 5px; /* Add a 5px margin between elements */
     font-size: 1.25rem; /* Adjust font size for mobile */
   }
 
