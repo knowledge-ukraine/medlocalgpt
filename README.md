@@ -146,11 +146,13 @@ TODO
 
 ### Query to OpenAI models with tuning prompt (domain knowledge, OpenAI model, max tokens generation, temperature - all this sets up with `medlocalgpt.env`)
 
-Query language: English
+
 
 **Request:**
 
-`POST /medlocalgpt/api/v1/en/advanced/openai/ask`
+Query language: English
+
+Endpoint: `/medlocalgpt/api/v1/en/advanced/openai/ask`
 
 ```javascript
     const API_URL = "/medlocalgpt/api/v1/en/advanced/openai/ask"
@@ -179,11 +181,11 @@ Query language: English
 
 ### Query to OpenAI models with tuning prompt (domain knowledge, OpenAI model, max tokens generation, temperature - all this sets up with `medlocalgpt.env`) using EBSCO articles dataset
 
-Query language: English
-
 **Request:**
 
-`POST /medlocalgpt/api/v1/en/dataset/openai/ask`
+Query language: English
+
+Endpoint: `/medlocalgpt/api/v1/en/dataset/openai/ask`
 
 ```javascript
     const API_URL = "/medlocalgpt/api/v1/en/dataset/openai/ask"
