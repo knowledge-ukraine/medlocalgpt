@@ -173,7 +173,7 @@ span.material-symbols-rounded {
   }
 }
 
-/* Typing container styling */
+//* Typing container styling */
 .typing-container {
   position: fixed;
   bottom: 0;
@@ -189,7 +189,8 @@ span.material-symbols-rounded {
   display: flex;
   max-width: 950px;
   width: 100%;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: space-between; /* Place select-container and typing-controls in one row */
 }
 
 .typing-container .typing-textarea {
@@ -347,13 +348,13 @@ span.material-symbols-rounded {
 
   .typing-container .typing-content {
     display: flex;
-    justify-content: space-between; /* Place elements in a row */
-    align-items: center; /* Center elements vertically */
+    flex-direction: column; /* Stack elements vertically on mobile */
     width: 100%; /* Use the full width of the container */
+    align-items: center; /* Center elements horizontally */
   }
 
   .typing-container .typing-textarea {
-    width: 70%; /* Adjust the width for the textarea */
+    width: 100%;
     display: flex;
     flex-direction: column; /* Stack elements vertically on mobile */
     align-items: center; /* Center elements horizontally */
@@ -374,17 +375,6 @@ span.material-symbols-rounded {
     outline: 1px solid var(--incoming-chat-border);
   }
 
-  .typing-textarea span {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    visibility: hidden;
-  }
-
-  .typing-textarea textarea:valid ~ span {
-    visibility: visible;
-  }
-
   .typing-content span {
     height: 45px;
     width: 45px;
@@ -392,20 +382,7 @@ span.material-symbols-rounded {
     font-size: 1.25rem; /* Adjust font size for mobile */
   }
 
-  .select-container {
-    width: 30%; /* Adjust the width for the select-container */
-    display: flex;
-    justify-content: flex-end; /* Align select to the right */
-  }
-
-  .select-container select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--incoming-chat-border);
-    border-radius: 4px;
-    background: var(--incoming-chat-bg);
-    color: var(--text-color);
-    font-size: 1rem; /* Adjust font size for mobile */
-    height: 45px; /* Match the height of the textarea */
+  span.material-symbols-rounded {
+    font-size: 1.25rem!important;
   }
 }
