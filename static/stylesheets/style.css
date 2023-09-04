@@ -173,7 +173,7 @@ span.material-symbols-rounded {
   }
 }
 
-//* Typing container styling */
+/* Typing container styling */
 .typing-container {
   position: fixed;
   bottom: 0;
@@ -255,11 +255,11 @@ span.material-symbols-rounded {
   background: var(--icon-hover-bg);
 }
 
-/* Select container styling */
+/* Styling for select-container */
 .select-container {
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  height: 45px; /* Set the same height for all elements */
 }
 
 .select-container select {
@@ -270,7 +270,22 @@ span.material-symbols-rounded {
   color: var(--text-color);
   margin-left: 7px;
   font-size: 1rem;
-  height: 55px;
+  height: 100%; /* Set the same height as the parent container */
+}
+
+/* Styling for theme-btn and delete-btn */
+.typing-controls {
+  display: flex;
+  align-items: center;
+  height: 55px; /* Set the same height for all elements */
+}
+
+.typing-controls span {
+  margin-left: 7px;
+  font-size: 1.4rem;
+  background: var(--incoming-chat-bg);
+  outline: 1px solid var(--incoming-chat-border);
+  height: 100%; /* Set the same height as the parent container */
 }
 
 /* Responsive Media Query */
