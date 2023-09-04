@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
 
 <head>
@@ -26,13 +27,8 @@
   <div class="typing-container">
     <div class="typing-content">
       <div class="typing-textarea">
-        <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required=""
-          style="height: 55px;"></textarea>
+        <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required=""></textarea>
         <span id="send-btn" class="material-symbols-rounded">send</span>
-      </div>
-      <div class="typing-controls">
-        <span id="theme-btn" class="material-symbols-rounded">light_mode</span>
-        <span id="delete-btn" class="material-symbols-rounded">delete</span>
       </div>
       <!-- Select container with sample options -->
       <div class="select-container">
@@ -42,12 +38,14 @@
           <option value="option3" title="/medlocalgpt/api/v1/en/dataset/openai/ask">API 3</option>
         </select>
       </div>
+      <div class="typing-controls">
+        <span id="theme-btn" class="material-symbols-rounded">light_mode</span>
+        <span id="delete-btn" class="material-symbols-rounded">delete</span>
+      </div>
     </div>
   </div>
   <!-- ---------------------------------------------------------------------------------------------------- -->
   <script src="./static/javascripts/script.js" defer=""></script>
-
-
 </body>
 
 </html>

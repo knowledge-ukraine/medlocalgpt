@@ -374,14 +374,21 @@ span.material-symbols-rounded {
     outline: 1px solid var(--incoming-chat-border);
   }
 
+  .typing-textarea span {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    visibility: hidden;
+  }
+
+  .typing-textarea textarea:valid ~ span {
+    visibility: visible;
+  }
+
   .typing-content span {
     height: 45px;
     width: 45px;
     margin-top: 5px; /* Add a 5px margin between elements */
     font-size: 1.25rem; /* Adjust font size for mobile */
-  }
-
-  span.material-symbols-rounded {
-    font-size: 1.25rem!important;
   }
 }
