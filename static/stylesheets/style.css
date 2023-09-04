@@ -259,7 +259,7 @@ span.material-symbols-rounded {
 .select-container {
   display: flex;
   align-items: center;
-  height: 45px; /* Set the same height for all elements */
+  height: 55px; /* Set the same height for all elements */
 }
 
 .select-container select {
@@ -339,6 +339,7 @@ span.material-symbols-rounded {
 @media screen and (max-width: 600px) {
   .select-container {
     margin-top: 5px;
+    height: 45px;
   }
 
   .select-container select {
