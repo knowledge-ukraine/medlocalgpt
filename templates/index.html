@@ -23,27 +23,28 @@
     </div>
   </div>
 
-  <!-- Typing container -->
-  <div class="typing-container">
-    <div class="typing-content">
-      <div class="typing-textarea">
-        <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required=""></textarea>
-        <span id="send-btn" class="material-symbols-rounded">send</span>
-      </div>
-      <!-- Select container with sample options -->
-      <div class="select-container">
-        <select id="sample-options">
-          <option value="option1" title="/medlocalgpt/api/v1/en/advanced/openai/ask">API 1</option>
-          <option value="option2" title="/medlocalgpt/api/v1/uk/advanced/openai/ask">API 2</option>
-          <option value="option3" title="/medlocalgpt/api/v1/en/dataset/openai/ask">API 3</option>
-        </select>
-      </div>
-      <div class="typing-controls">
-        <span id="theme-btn" class="material-symbols-rounded">light_mode</span>
-        <span id="delete-btn" class="material-symbols-rounded">delete</span>
-      </div>
+<!-- Typing container -->
+<div class="typing-container">
+  <div class="typing-content">
+    <div class="typing-textarea">
+      <textarea id="chat-input" spellcheck="false" placeholder="Enter a prompt here" required=""></textarea>
+      <span id="send-btn" class="material-symbols-rounded">send</span>
+    </div>
+    <div class="typing-controls">
+      <span id="theme-btn" class="material-symbols-rounded">light_mode</span>
+      <span id="delete-btn" class="material-symbols-rounded">delete</span>
     </div>
   </div>
+  <!-- Select container with sample options -->
+  <div class="select-container">
+    <select id="sample-options">
+      <option value="option1" title="/medlocalgpt/api/v1/en/advanced/openai/ask">API 1</option>
+      <option value="option2" title="/medlocalgpt/api/v1/uk/advanced/openai/ask">API 2</option>
+      <option value="option3" title="/medlocalgpt/api/v1/en/dataset/openai/ask">API 3</option>
+    </select>
+  </div>
+</div>
+
   <!-- ---------------------------------------------------------------------------------------------------- -->
   <script src="./static/javascripts/script.js" defer=""></script>
 </body>

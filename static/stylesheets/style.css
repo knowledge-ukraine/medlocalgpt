@@ -347,13 +347,13 @@ span.material-symbols-rounded {
 
   .typing-container .typing-content {
     display: flex;
-    flex-direction: column; /* Stack elements vertically on mobile */
+    justify-content: space-between; /* Place elements in a row */
+    align-items: center; /* Center elements vertically */
     width: 100%; /* Use the full width of the container */
-    align-items: center; /* Center elements horizontally */
   }
 
   .typing-container .typing-textarea {
-    width: 100%;
+    width: 70%; /* Adjust the width for the textarea */
     display: flex;
     flex-direction: column; /* Stack elements vertically on mobile */
     align-items: center; /* Center elements horizontally */
@@ -390,5 +390,22 @@ span.material-symbols-rounded {
     width: 45px;
     margin-top: 5px; /* Add a 5px margin between elements */
     font-size: 1.25rem; /* Adjust font size for mobile */
+  }
+
+  .select-container {
+    width: 30%; /* Adjust the width for the select-container */
+    display: flex;
+    justify-content: flex-end; /* Align select to the right */
+  }
+
+  .select-container select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--incoming-chat-border);
+    border-radius: 4px;
+    background: var(--incoming-chat-bg);
+    color: var(--text-color);
+    font-size: 1rem; /* Adjust font size for mobile */
+    height: 45px; /* Match the height of the textarea */
   }
 }
