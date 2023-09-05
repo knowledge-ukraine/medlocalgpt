@@ -1,7 +1,5 @@
 import logging
 import os, json, re
-import shutil
-import subprocess
 
 os.environ["no_proxy"] = "*"
 
