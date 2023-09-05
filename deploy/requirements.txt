@@ -28,7 +28,7 @@ click
 flask
 flask-cors
 requests
-uWSGI
+# uWSGI
 waitress==2.1.2
 
 # Streamlit related
