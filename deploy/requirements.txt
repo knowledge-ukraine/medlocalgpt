@@ -27,7 +27,7 @@ click
 flask
 flask-cors
 requests
-uWSGI
+uWSGI==2.0.21
 
 # Streamlit related
 streamlit
