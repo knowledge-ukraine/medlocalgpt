@@ -1,4 +1,5 @@
 # Natural Language Processing
+pyarrow==11.0.0
 pandas==2.0.1
 langchain==0.0.191
 chromadb==0.3.22
@@ -27,7 +28,7 @@ click
 flask
 flask-cors
 requests
-uWSGI==2.0.21
+uWSGI
 
 # Streamlit related
 streamlit
