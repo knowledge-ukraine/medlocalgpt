@@ -1,6 +1,8 @@
 import logging
 import os, json, re
 
+from waitress import serve
+
 os.environ["no_proxy"] = "*"
 
 __author__ = "Kyrylo Malakhov <malakhovks@nas.gov.ua>"
@@ -498,4 +500,5 @@ def index():
     return render_template('index.html')
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080)
+    # app.run(host='0.0.0.0', port=8080)
+    serve(app, host='0.0.0.0', port=8080)

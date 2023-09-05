@@ -9,7 +9,7 @@ COPY . /medlocalgpt
 WORKDIR /medlocalgpt
 
 # Expose the port uWSGI will listen on
-EXPOSE 5000
+# EXPOSE 5000
 
 RUN apt-get -y clean \
     && apt-get -y update \
