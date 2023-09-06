@@ -42,7 +42,7 @@ const loadDataFromLocalstorage = () => {
 
     const defaultText = `<div class="default-text">
                             <h1>⚕️ MedLocalGPT Demo</h1>
-                            <p>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients. <br> Ask your (medical EBSCO) dataset using LLMs and Embeddings. <br> Optionally you can use local LLMs, OpenAI GPT models or other SaaS solutions. <br> Your chat history will be displayed here.</p>
+                            <p>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients. <br> Ask your (medical EBSCO) dataset using LLMs and Embeddings. <br> Optionally you can use local LLMs, OpenAI GPT models or other SaaS solutions.</p>
                         </div>`
 
     chatContainer.innerHTML = localStorage.getItem("all-chats") || defaultText;
@@ -98,29 +98,36 @@ const getChatResponse = async (incomingChatDiv) => {
             pElement.textContent = response['response'].trim();
         }
         if (sampleOptions.value == "option3") {
-            // Handle option3 response with hidden content
-            const answerText = response['Answer'].trim();
-            pElement.innerHTML = answerText;
-        
+            const answer = response['Answer'].trim();
+            pElement.textContent = answer;
+
+            const answerLine = document.createElement("hr"); // Create a horizontal line
+            pElement.appendChild(answerLine); // Append the line after the "Answer" content
+
+            const sourcesContainer = document.createElement("div");
+            sourcesContainer.classList.add("hidden-sources");
+
             response['Sources'].forEach((textArray) => {
-              textArray.forEach((text) => {
-                const textWithLinks = makeUrlsClickable(text);
-                pElement.innerHTML += "<br>" + textWithLinks; // Append the text with links to the <p> element
-              });
+                textArray.forEach((text) => {
+                    // Make URLs clickable within each source
+                    const textWithLinks = makeUrlsClickable(text);
+                    sourcesContainer.innerHTML += textWithLinks + "<br>"; // Append the text with links to the sources container
+                });
             });
-        
-            // Add "Read More" link
+
+            pElement.appendChild(sourcesContainer);
+
             const readMoreLink = document.createElement("span");
-            readMoreLink.classList.add("read-more-link");
-            readMoreLink.textContent = 'Read More';
-            pElement.appendChild(readMoreLink);
-        
-            // Add click event listener to "Read More" link
-            readMoreLink.addEventListener('click', () => {
-              toggleHiddenContent(pElement, readMoreLink);
+            readMoreLink.classList.add("read-more-sources");
+            readMoreLink.textContent = "Read More";
+
+            readMoreLink.addEventListener("click", () => {
+                sourcesContainer.classList.toggle("hidden-sources");
             });
-          }
-        
+
+            pElement.appendChild(readMoreLink);
+        }
+
     } catch (error) {
         console.log(error);
         pElement.classList.add("error");
