@@ -144,10 +144,10 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
-prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=SYSTEM_TEMPLATE_BASIC)
-memory = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
-memory_adv = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
-memory_loc = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=5)
+prompt = PromptTemplate(input_variables=["context", "question", "subject"], template=SYSTEM_TEMPLATE_BASIC)
+# memory = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
+# memory_adv = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
+# memory_loc = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=5)
 
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 DB = Chroma(
@@ -172,7 +172,7 @@ elif MODEL == 'openai':
         LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
         QA_OPENAI = RetrievalQA.from_chain_type(
             llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-            chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
+            chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT)}
             )
 
 app = Flask(__name__)
@@ -185,74 +185,6 @@ $ python -c 'import os; print(os.urandom(16))'
 b'_5#y2L"F4Q8z\n\xec]/'
 """
 app.secret_key = os.urandom(42)
-
-# @app.route("/medlocalgpt/api/v1/delete_source", methods=["GET"])
-# def delete_source_route():
-#     folder_name = "SOURCE_DOCUMENTS"
-
-#     if os.path.exists(folder_name):
-#         shutil.rmtree(folder_name)
-
-#     os.makedirs(folder_name)
-
-#     return jsonify({"message": f"Folder '{folder_name}' successfully deleted and recreated."})
-
-# add route to delete PERSIST_DIRECTORY
-
-# @app.route("/medlocalgpt/api/v1/admin/save_document", methods=["GET", "POST"])
-# def save_document_route():
-#     if "document" not in request.files:
-#         return "No document part", 400
-#     file = request.files["document"]
-#     if file.filename == "":
-#         return "No selected file", 400
-#     if file:
-#         filename = secure_filename(file.filename)
-#         folder_path = "SOURCE_DOCUMENTS"
-#         if not os.path.exists(folder_path):
-#             os.makedirs(folder_path)
-#         file_path = os.path.join(folder_path, filename)
-#         file.save(file_path)
-#         return "File saved successfully", 200
-
-
-# @app.route("/medlocalgpt/api/v1/admin/ingest", methods=["GET"])
-# def run_ingest_route():
-#     global DB
-#     global RETRIEVER
-#     global QA
-
-#     try:
-#         if os.path.exists(PERSIST_DIRECTORY):
-#             try:
-#                 shutil.rmtree(PERSIST_DIRECTORY)
-#             except OSError as e:
-#                 logging.error(f"Error: {e.filename} - {e.strerror}.")
-#         else:
-#             logging.info(PERSIST_DIRECTORY + " directory does not exist")
-
-#         run_langest_commands = ["python", "ingest.py"]
-#         if DEVICE_TYPE == "cpu":
-#             run_langest_commands.append("--device_type")
-#             run_langest_commands.append(DEVICE_TYPE)
-            
-#         result = subprocess.run(run_langest_commands, capture_output=True)
-#         if result.returncode != 0:
-#             return "Script execution failed: {}".format(result.stderr.decode("utf-8")), 500
-#         # load the vectorstore
-#         DB = Chroma(
-#             persist_directory=PERSIST_DIRECTORY,
-#             embedding_function=EMBEDDINGS,
-#             client_settings=CHROMA_SETTINGS,
-#         )
-#         RETRIEVER = DB.as_retriever(5)
-
-#         QA = RetrievalQA.from_chain_type(
-#             llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
-#         )
-#         return "Script executed successfully: {}".format(result.stdout.decode("utf-8")), 200
-#     except Exception as e:
-#         return f"Error occurred: {str(e)}", 500
 
 # Tuning prompt (with selected domain knowledge) for query to OpenAI model in English
 @app.route("/medlocalgpt/api/v1/en/advanced/openai/ask", methods=["GET", "POST"])
@@ -282,7 +214,7 @@ def process_en_advanced_openai_query_v1():
                     [system_message_prompt_template, human_message_prompt_template]
                 )
         # initialize LLMChain by passing LLM and prompt template
-        llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template, memory=memory_adv)
+        llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template)
         res = llm_chain.run(question=user_prompt, subject=SUBJECT)
 
         logging.debug(f"RESULTS: {res}")
@@ -423,7 +355,7 @@ def process_gt_dataset_openai_query_v1():
         logging.debug(f"Use QA_OPENAI")
         qa_openai = RetrievalQA.from_chain_type(
                 llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-                chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
+                chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT)}
             )
         qa = qa_openai
     else:

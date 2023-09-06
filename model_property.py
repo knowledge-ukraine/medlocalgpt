@@ -210,8 +210,6 @@ Use only the following context to answer the question: \
 
 {context}
 
-Chat History:
-{history}
 Question: {question}
 Answer:
 """
@@ -226,8 +224,6 @@ Your responses should be informative and logical. \
 Your responses should be for knowledgeable and expert audience. \
 If the question is not about {subject}, politely inform User that you are tuned to only answer questions about {subject}. \
 
-Chat History:
-{history}
 Question: {question}
 Answer:
 """
