@@ -10,10 +10,11 @@ let API_URL = "/medlocalgpt/api/v1/en/advanced/openai/ask"; // Default API URL
 
 const sampleOptions = document.querySelector("#sample-options");
 
+
 sampleOptions.addEventListener("change", () => {
     // Update the API_URL based on the selected option
     const selectedOption = sampleOptions.value;
-    
+
     switch (selectedOption) {
         case "option1":
             API_URL = "/medlocalgpt/api/v1/en/advanced/openai/ask";
@@ -56,9 +57,28 @@ const createChatElement = (content, className) => {
     return chatDiv; // Return the created chat div
 }
 
+
 const getChatResponse = async (incomingChatDiv) => {
-    // const API_URL = "/medlocalgpt/api/v1/en/advanced/openai/ask";
     const pElement = document.createElement("p");
+
+    // Function to make URLs clickable
+    function makeUrlsClickable(text) {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.replace(urlRegex, (url) => {
+            return `<a href="${url}" target="_blank">${url}</a>`;
+        });
+    }
+
+    // Function to toggle visibility of hidden content
+    function toggleHiddenContent(pElement, readMoreLink) {
+        if (pElement.classList.contains('show-hidden-content')) {
+            pElement.classList.remove('show-hidden-content');
+            readMoreLink.textContent = 'Read More';
+        } else {
+            pElement.classList.add('show-hidden-content');
+            readMoreLink.textContent = 'Read Less';
+        }
+    }
 
     // Define the properties and data for the API request
     const requestOptions = {
@@ -71,19 +91,38 @@ const getChatResponse = async (incomingChatDiv) => {
         })
     }
 
-    // Send POST request to API, get response and set the reponse as paragraph element text
+    // Send POST request to API, get response and set the response as paragraph element text
     try {
         const response = await (await fetch(API_URL, requestOptions)).json();
-        if (sampleOptions.value == "option1") {
-            pElement.textContent = response['response'].trim();
-        }
-        if (sampleOptions.value == "option2") {
+        if (sampleOptions.value == "option1" || sampleOptions.value == "option2") {
             pElement.textContent = response['response'].trim();
         }
         if (sampleOptions.value == "option3") {
-            pElement.textContent = response['Answer'].trim();
-        }
-    } catch (error) { // Add error class to the paragraph element and set error text
+            // Handle option3 response with hidden content
+            const answerText = response['Answer'].trim();
+            pElement.innerHTML = answerText;
+        
+            response['Sources'].forEach((textArray) => {
+              textArray.forEach((text) => {
+                const textWithLinks = makeUrlsClickable(text);
+                pElement.innerHTML += "<br>" + textWithLinks; // Append the text with links to the <p> element
+              });
+            });
+        
+            // Add "Read More" link
+            const readMoreLink = document.createElement("span");
+            readMoreLink.classList.add("read-more-link");
+            readMoreLink.textContent = 'Read More';
+            pElement.appendChild(readMoreLink);
+        
+            // Add click event listener to "Read More" link
+            readMoreLink.addEventListener('click', () => {
+              toggleHiddenContent(pElement, readMoreLink);
+            });
+          }
+        
+    } catch (error) {
+        console.log(error);
         pElement.classList.add("error");
         pElement.textContent = "Oops! Something went wrong while retrieving the response. Please try again.";
     }
@@ -94,6 +133,7 @@ const getChatResponse = async (incomingChatDiv) => {
     localStorage.setItem("all-chats", chatContainer.innerHTML);
     chatContainer.scrollTo(0, chatContainer.scrollHeight);
 }
+
 
 const copyResponse = (copyBtn) => {
     // Copy the text content of the response to the clipboard
@@ -125,7 +165,7 @@ const showTypingAnimation = () => {
 
 const handleOutgoingChat = () => {
     userText = chatInput.value.trim(); // Get chatInput value and remove extra spaces
-    if(!userText) return; // If chatInput is empty return from here
+    if (!userText) return; // If chatInput is empty return from here
 
     // Clear the input field and reset its height
     chatInput.value = "";
@@ -148,7 +188,7 @@ const handleOutgoingChat = () => {
 
 deleteButton.addEventListener("click", () => {
     // Remove the chats from local storage and call loadDataFromLocalstorage function
-    if(confirm("Are you sure you want to delete all the chats?")) {
+    if (confirm("Are you sure you want to delete all the chats?")) {
         localStorage.removeItem("all-chats");
         loadDataFromLocalstorage();
     }
@@ -163,9 +203,9 @@ themeButton.addEventListener("click", () => {
 
 const initialInputHeight = chatInput.scrollHeight;
 
-chatInput.addEventListener("input", () => {   
+chatInput.addEventListener("input", () => {
     // Adjust the height of the input field dynamically based on its content
-    chatInput.style.height =  `${initialInputHeight}px`;
+    chatInput.style.height = `${initialInputHeight}px`;
     chatInput.style.height = `${chatInput.scrollHeight}px`;
 });
 

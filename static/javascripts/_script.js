@@ -6,6 +6,31 @@ const deleteButton = document.querySelector("#delete-btn");
 
 let userText = null;
 const API_KEY = "PASTE-YOUR-API-KEY-HERE"; // Paste your API key here
+let API_URL = "/medlocalgpt/api/v1/en/advanced/openai/ask"; // Default API URL
+
+const sampleOptions = document.querySelector("#sample-options");
+
+sampleOptions.addEventListener("change", () => {
+    // Update the API_URL based on the selected option
+    const selectedOption = sampleOptions.value;
+    
+    switch (selectedOption) {
+        case "option1":
+            API_URL = "/medlocalgpt/api/v1/en/advanced/openai/ask";
+            break;
+        case "option2":
+            API_URL = "/medlocalgpt/api/v1/uk/advanced/openai/ask";
+            break;
+        case "option3":
+            API_URL = "/medlocalgpt/api/v1/en/dataset/openai/ask";
+            break;
+        // Add more cases for other options as needed
+        default:
+            // Use the default API URL
+            API_URL = "/medlocalgpt/api/v1/en/advanced/openai/ask";
+            break;
+    }
+});
 
 const loadDataFromLocalstorage = () => {
     // Load saved chats and theme from local storage and apply/add on the page
@@ -32,7 +57,7 @@ const createChatElement = (content, className) => {
 }
 
 const getChatResponse = async (incomingChatDiv) => {
-    const API_URL = "/medlocalgpt/api/v1/en/advanced/openai/ask";
+    // const API_URL = "/medlocalgpt/api/v1/en/advanced/openai/ask";
     const pElement = document.createElement("p");
 
     // Define the properties and data for the API request
@@ -49,7 +74,15 @@ const getChatResponse = async (incomingChatDiv) => {
     // Send POST request to API, get response and set the reponse as paragraph element text
     try {
         const response = await (await fetch(API_URL, requestOptions)).json();
-        pElement.textContent = response['response'].trim();
+        if (sampleOptions.value == "option1") {
+            pElement.textContent = response['response'].trim();
+        }
+        if (sampleOptions.value == "option2") {
+            pElement.textContent = response['response'].trim();
+        }
+        if (sampleOptions.value == "option3") {
+            pElement.textContent = response['Answer'].trim();
+        }
     } catch (error) { // Add error class to the paragraph element and set error text
         pElement.classList.add("error");
         pElement.textContent = "Oops! Something went wrong while retrieving the response. Please try again.";

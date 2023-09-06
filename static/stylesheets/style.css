@@ -402,3 +402,22 @@ span.material-symbols-rounded {
     font-size: 1.25rem!important;
   }
 }
+
+/* Add the following styles for hidden content and "Read More" link */
+.chat-details p.show-hidden-content {
+  overflow: visible;
+  white-space: normal;
+  max-height: none;
+}
+
+.chat-details .read-more-link {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+  display: block;
+  margin-top: 10px;
+}
+
+.chat-details .read-more-link:hover {
+  text-decoration: none;
+}
