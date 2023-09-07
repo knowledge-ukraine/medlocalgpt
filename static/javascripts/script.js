@@ -44,7 +44,7 @@ const loadDataFromLocalstorage = () => {
                             <h1>⚕️ MedLocalGPT Demo</h1>
                             <p>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients. <br> Ask your (medical EBSCO) dataset using LLMs and Embeddings. <br> Optionally you can use local LLMs, OpenAI GPT models or other SaaS solutions.</p>
                         </div>`
-
+// <br> Ask your (medical EBSCO) dataset using LLMs and Embeddings.
     chatContainer.innerHTML = localStorage.getItem("all-chats") || defaultText;
     chatContainer.scrollTo(0, chatContainer.scrollHeight); // Scroll to bottom of the chat container
 }
