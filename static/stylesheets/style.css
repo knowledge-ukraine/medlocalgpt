@@ -374,7 +374,9 @@ span.material-symbols-rounded {
     display: flex;
     flex-direction: column; /* Stack elements vertically on mobile */
     align-items: center; /* Center elements horizontally */
-    margin-bottom: 5px; /* Add a 5px margin between elements */
+    /* Add a 5px margin between elements */
+    /* margin-bottom: 5px;  */
+    
   }
 
   .typing-textarea textarea {
