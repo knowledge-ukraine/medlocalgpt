@@ -1,9 +1,10 @@
 import logging
 import os, json, re
-import shutil
-import subprocess
 
 os.environ["no_proxy"] = "*"
+
+__author__ = "Kyrylo Malakhov <malakhovks@nas.gov.ua>"
+__copyright__ = "Copyright (C) 2023 Kyrylo Malakhov <malakhovks@nas.gov.ua>"
 
 import torch
 from auto_gptq import AutoGPTQForCausalLM
