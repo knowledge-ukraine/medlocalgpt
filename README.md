@@ -188,7 +188,7 @@ Endpoint: `/medlocalgpt/api/v1/en/advanced/openai/ask`
 
 ------
 
-### Query to OpenAI models with tuning prompt (domain knowledge, OpenAI model, max tokens generation, temperature - all this sets up with `medlocalgpt.env`) using EBSCO articles dataset
+### Query to EBSCO articles dataset with tuning prompt (domain knowledge, OpenAI model, max tokens generation, temperature - all this sets up with `medlocalgpt.env`) using OpenAI models
 
 **Request:**
 
