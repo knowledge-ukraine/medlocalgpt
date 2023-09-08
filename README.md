@@ -1,9 +1,9 @@
 # ⚕️ medlocalgpt
 
 Applying LLM-powered (OpenAI GPT-4, Vicuna, Orca-mini, etc.) AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients.
-Ask your EBSCO dataset (domain knowledge: rehabilitation medicine) using LLMs and Embeddings. Optionally you can use local LLMs, OpenAI GPT models or other SaaS solutions via [LangChain](https://github.com/hwchase17/langchain).
+Ask your EBSCO dataset (domain knowledge: rehabilitation medicine) using LLMs and Embeddings. Optionally you can use local LLMs, OpenAI GPT models or other SaaS solutions via [🦜️🔗 LangChain](https://github.com/hwchase17/langchain).
 
-This project is part of the R&D on intelligent data analysis and computational linguistics for digital health (telerehabilitation an rehabilitation medicines). Read more: [Letter to the Editor–Update from Ukraine: Development of the Cloud-based Platform for Patient-centered Telerehabilitation of Oncology Patients with Mathematical-related Modeling](https://doi.org/10.5195/ijt.2023.6562).
+This project is part of the R&D on intelligent data analysis and computational linguistics for digital health (telerehabilitation and rehabilitation medicines). Read more: [Letter to the Editor–Update from Ukraine: Development of the Cloud-based Platform for Patient-centered Telerehabilitation of Oncology Patients with Mathematical-related Modeling](https://doi.org/10.5195/ijt.2023.6562).
 
 Supported languges: English, Ukrainian
 
