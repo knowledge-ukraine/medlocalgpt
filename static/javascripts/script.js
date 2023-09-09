@@ -45,8 +45,8 @@ const loadDataFromLocalstorage = () => {
                             <p>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients.</p>
                             </p>
                             <hr>
-                            <p>API 1: Query to gpt-3.5-turbo-16k with tuning prompt (in English)</p>
-                            <p>API 2: Query to gpt-3.5-turbo-16k with tuning prompt (in Ukrainian)</p>
+                            <p>API 1: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in English)</p>
+                            <p>API 2: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in Ukrainian)</p>
                             <p>API 3: Query to <a href="https://doi.org/10.5281/zenodo.8308214">EBSCO dataset</a> with tuning prompt using gpt-3.5-turbo-16k (in English)</p>
                         </div>`
 // <br> Ask your (medical EBSCO) dataset using LLMs and Embeddings.
