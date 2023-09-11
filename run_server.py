@@ -168,8 +168,7 @@ if MODEL == 'local':
 elif MODEL == 'openai':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS_OPENAI), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
-        # LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=MAX_TOKENS_FOR_TRANSLATION, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
-        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS_FOR_TRANSLATION), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
         QA_OPENAI = RetrievalQA.from_chain_type(
             llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
             chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT)}
@@ -273,18 +272,6 @@ def process_uk_advanced_openai_query_v1():
         Question: {translated_question}
         Answer:
         """
-        # ask_template = """I want you to act as an AI assistant for healthcare professionals in medicine, physical rehabilitation medicine, telerehabilitation, breast canser, cardiovascular system, arterial oscillography, telemedicine, health informatics, digital health, computer sciences, transdisciplinary research. \
-        # Correct spelling and grammar mistakes of the User question using domain knowledge from medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research: {translated_question} \
-        # Do not include corrected version of User's question in your response. \
-        # The subject areas of your responses should be: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
-        # The domain of your responses should be academic. \
-        # Provide a very detailed comprehensive academic answer. \
-        # Your responses should be logical. \
-        # Your responses should be for knowledgeable and expert audience. \
-        # If the question is not about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research, politely inform User that you are tuned to only answer questions about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
-        # Question: {translated_question}
-        # Answer:
-        # """
         system_prompt_ask_template = PromptTemplate.from_template(ask_template)
         llm_chain_2 = LLMChain(
             llm=LLM_OPENAI_TR,
