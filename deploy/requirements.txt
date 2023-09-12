@@ -32,8 +32,8 @@ requests
 waitress==2.1.2
 
 # Streamlit related
-streamlit
-Streamlit-extras
+# streamlit
+# Streamlit-extras
 
 # Excel File Manipulation
 openpyxl
