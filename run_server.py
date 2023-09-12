@@ -149,6 +149,9 @@ prompt = PromptTemplate(input_variables=["context", "question", "subject"], temp
 # memory_adv = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
 # memory_loc = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=5)
 
+# from langchain.embeddings.openai import OpenAIEmbeddings
+# embedding = OpenAIEmbeddings(openai_api_key=api_key)
+# db = Chroma(persist_directory="embeddings\\",embedding_function=embedding)
 EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
 DB = Chroma(
     persist_directory=PERSIST_DIRECTORY,
