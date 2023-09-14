@@ -15,16 +15,6 @@ if 'OPENAI_MODEL' in os.environ:
 else:
     OPENAI_MODEL="gpt-3.5-turbo-16k"
 
-if 'EMBEDDING_MODEL_NAME' in os.environ:
-    EMBEDDING_MODEL_NAME = os.environ['EMBEDDING_MODEL_NAME']
-else:
-    EMBEDDING_MODEL_NAME = "hkunlp/instructor-base"
-
-if 'DEVICE_TYPE' in os.environ:
-    DEVICE_TYPE = os.environ['DEVICE_TYPE']
-else:
-    DEVICE_TYPE = "cpu"
-
 if 'MAX_TOKENS' in os.environ:
     MAX_TOKENS = os.environ['MAX_TOKENS']
 else:
@@ -40,15 +30,15 @@ if 'MAX_TOKENS_FOR_TRANSLATION' in os.environ:
 else:
     MAX_TOKENS_FOR_TRANSLATION = 3024
 
-if 'DOC_NUMBER' in os.environ:
-    DOC_NUMBER = os.environ['DOC_NUMBER']
-else:
-    DOC_NUMBER = 6
-
 if 'SUBJECT' in os.environ:
     SUBJECT = os.environ['SUBJECT']
 else:
     SUBJECT = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, health informatics, digital health, computer sciences, transdisciplinary research"
+
+if 'SUBJECT_UK' in os.environ:
+    SUBJECT_UK = os.environ['SUBJECT_UK']
+else:
+    SUBJECT_UK = "медицина, фізична реабілітаційна медицина, телереабілітація, рак молочної залози, серцево-судинна система, медична інформатика, телемедицина, цифрова медицина, комп'ютерні науки, трансдисциплінарні дослідження"
 
 if 'MODEL' in os.environ:
     MODEL = os.environ['MODEL']
@@ -59,29 +49,6 @@ if 'TEMPERATURE' in os.environ:
     TEMPERATURE = os.environ['TEMPERATURE']
 else:
     TEMPERATURE = 0.5
-
-# from langchain.embeddings import HuggingFaceInstructEmbeddings
-ROOT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
-
-# Define the folder for storing database
-SOURCE_DIRECTORY = f"{ROOT_DIRECTORY}/SOURCE_DOCUMENTS"
-
-PERSIST_DIRECTORY = f"{ROOT_DIRECTORY}/DB"
-
-# DOCUMENT_MAP = {
-#     ".txt": TextLoader,
-#     ".md": TextLoader,
-#     ".py": TextLoader,
-#     ".pdf": PDFMinerLoader,
-#     ".csv": CSVLoader,
-#     ".xls": UnstructuredExcelLoader,
-#     ".xlsx": UnstructuredExcelLoader,
-#     ".docx": Docx2txtLoader,
-#     ".doc": Docx2txtLoader,
-# }
-
-# Can be changed to a specific number
-INGEST_THREADS = os.cpu_count()
 
 SYSTEM_TEMPLATE_FOR_TRANSLATION = """I want you to act as an translator, spelling and grammar corrector. \
             You will provided with the sample text. \
@@ -122,4 +89,18 @@ If the question is not about {subject}, politely inform User that you are tuned 
 
 Question: {question}
 Answer:
+"""
+
+SYSTEM_TEMPLATE_ADVANCED_UK = """Я хочу, щоб ви діяли як ШІ-асистент для медичних працівників у галузях: {subject} \
+Виправте орфографічні та граматичні помилки у запитанні користувача, використовуючи предметні галузі {subject}: {question} \
+Не включайте виправлену версію запитання користувача у свою відповідь. \
+Предметні галузі ваших відповідей повинні бути: {subject}. \
+Тематика ваших відповідей повинна бути академічною. \
+Надайте дуже детальну всебічну академічну відповідь. \
+Ваші відповіді повинні бути інформативними та логічними. \
+Ваші відповіді повинні бути розраховані на досвідчену та експертну аудиторію. \
+Якщо питання не стосується газузей {subject}, ввічливо повідомте Користувачеві, що ви налаштовані відповідати лише на питання у галузях {subject}
+
+Питання: {question}
+Відповідь:
 """

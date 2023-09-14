@@ -23,7 +23,7 @@ sampleOptions.addEventListener("change", () => {
             API_URL = "/medlocalgpt/api/v1/uk/advanced/openai/ask";
             break;
         case "option3":
-            API_URL = "/medlocalgpt/api/v1/en/dataset/openai/ask";
+            API_URL = "/medlocalgpt/api/v1/uk/direct/openai/ask";
             break;
         // Add more cases for other options as needed
         default:
@@ -46,8 +46,8 @@ const loadDataFromLocalstorage = () => {
                             </p>
                             <hr>
                             <p>API 1: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in English)</p>
-                            <p>API 2: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in Ukrainian)</p>
-                            <p>API 3: Query to <a href="https://doi.org/10.5281/zenodo.8308214">EBSCO dataset</a> with tuning prompt using gpt-3.5-turbo-16k (in English)</p>
+                            <p>API 2: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in Ukrainian, advanced chain for more precise responses)</p>
+                            <p>API 3: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in Ukrainian, direct query)</p>
                         </div>`
 // <br> Ask your (medical EBSCO) dataset using LLMs and Embeddings.
     chatContainer.innerHTML = localStorage.getItem("all-chats") || defaultText;
@@ -66,25 +66,6 @@ const createChatElement = (content, className) => {
 const getChatResponse = async (incomingChatDiv) => {
     const pElement = document.createElement("p");
 
-    // Function to make URLs clickable
-    function makeUrlsClickable(text) {
-        const urlRegex = /(https?:\/\/[^\s]+)/g;
-        return text.replace(urlRegex, (url) => {
-            return `<a href="${url}" target="_blank">${url}</a>`;
-        });
-    }
-
-    // Function to toggle visibility of hidden content
-    function toggleHiddenContent(pElement, readMoreLink) {
-        if (pElement.classList.contains('show-hidden-content')) {
-            pElement.classList.remove('show-hidden-content');
-            readMoreLink.textContent = 'Read More';
-        } else {
-            pElement.classList.add('show-hidden-content');
-            readMoreLink.textContent = 'Read Less';
-        }
-    }
-
     // Define the properties and data for the API request
     const requestOptions = {
         method: "POST",
@@ -99,38 +80,8 @@ const getChatResponse = async (incomingChatDiv) => {
     // Send POST request to API, get response and set the response as paragraph element text
     try {
         const response = await (await fetch(API_URL, requestOptions)).json();
-        if (sampleOptions.value == "option1" || sampleOptions.value == "option2") {
+        if (sampleOptions.value == "option1" || sampleOptions.value == "option2" || sampleOptions.value == "option3") {
             pElement.textContent = response['response'].trim();
-        }
-        if (sampleOptions.value == "option3") {
-            const answer = response['Answer'].trim();
-            pElement.textContent = answer;
-
-            const answerLine = document.createElement("hr"); // Create a horizontal line
-            pElement.appendChild(answerLine); // Append the line after the "Answer" content
-
-            const sourcesContainer = document.createElement("div");
-            sourcesContainer.classList.add("hidden-sources");
-
-            response['Sources'].forEach((textArray) => {
-                textArray.forEach((text) => {
-                    // Make URLs clickable within each source
-                    const textWithLinks = makeUrlsClickable(text);
-                    sourcesContainer.innerHTML += textWithLinks + "<br>"; // Append the text with links to the sources container
-                });
-            });
-
-            pElement.appendChild(sourcesContainer);
-
-            const readMoreLink = document.createElement("span");
-            readMoreLink.classList.add("read-more-sources");
-            readMoreLink.textContent = "Read More";
-
-            readMoreLink.addEventListener("click", () => {
-                sourcesContainer.classList.toggle("hidden-sources");
-            });
-
-            pElement.appendChild(readMoreLink);
         }
 
     } catch (error) {

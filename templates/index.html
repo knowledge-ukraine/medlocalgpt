@@ -60,13 +60,16 @@
   <div class="chat-container">
     <div class="default-text">
       <h1>⚕️ MedLocalGPT Demo</h1>
-      <p>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation &amp; Telerehabilitation
-        Therapists, Students, and Patients.
+      <p>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists,
+        Students, and Patients.</p>
       </p>
-      <br>
-      <p>API-1: Query to gpt-3.5-turbo-16k with tuning prompt (in English)</p>
-      <p>API-2: Query to gpt-3.5-turbo-16k with tuning prompt (in Ukrainian)</p>
-      <!-- <p>API-3: Query to gpt-3.5-turbo-16k with tuning prompt using EBSCO dataset (in English)</p> -->
+      <hr>
+      <p>API 1: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning
+        prompt (in English)</p>
+      <p>API 2: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning
+        prompt (in Ukrainian, advanced chain for more precise responses)</p>
+      <p>API 3: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning
+        prompt (in Ukrainian, direct query)</p>
     </div>
   </div>
 
@@ -85,11 +88,11 @@
               title="Query to OpenAI models with tuning prompt (EN) => /medlocalgpt/api/v1/en/advanced/openai/ask">API-1
             </option>
             <option value="option2"
-              title="Query to OpenAI models with tuning prompt (UA) =>/medlocalgpt/api/v1/uk/advanced/openai/ask">API-2
+              title="Query to OpenAI models with tuning prompt (UA, advanced chain for more precise responses) =>/medlocalgpt/api/v1/uk/advanced/openai/ask">API-2
             </option>
-            <!-- <option value="option3"
-              title="Query to EBSCO dataset with tuning prompt using gpt-3.5-turbo-16k (EN) => /medlocalgpt/api/v1/en/dataset/openai/ask">
-              API-3</option> -->
+            <option value="option3"
+              title="Query to OpenAI models with tuning prompt (UA, direct query) => /medlocalgpt/api/v1/uk/direct/openai/ask">
+              API-3</option>
           </select>
         </div>
         <span id="theme-btn" class="material-symbols-rounded">light_mode</span>

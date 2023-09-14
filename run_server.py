@@ -18,7 +18,9 @@ from model_property import (
     TEMPERATURE,
     OPENAI_MODEL,
     SUBJECT,
+    SUBJECT_UK,
     SYSTEM_TEMPLATE_ADVANCED_EN,
+    SYSTEM_TEMPLATE_ADVANCED_UK,
     MAX_TOKENS_FOR_TRANSLATION,
     MAX_TOKENS_OPENAI)
 
@@ -81,6 +83,42 @@ def process_en_advanced_openai_query_v1():
     else:
         return "No user prompt received", 400
 
+@app.route("/medlocalgpt/api/v1/uk/direct/openai/ask", methods=["GET", "POST"])
+def process_uk_direct_openai_query_v1():
+    # user_prompt = request.form.get("prompt")
+    content_type = request.headers.get('Content-Type')
+    if content_type == 'application/json':
+        request_json = request.get_json()
+        user_prompt = request_json.get('prompt')
+    else:
+        return 'Content-Type not supported!', 400
+
+    if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+        logging.debug(f"Use LLM_OPENAI")
+    else:
+        return "No OPENAI cridentials received", 400
+
+    if user_prompt:
+        logging.debug(f"Get the answer from the chain")
+
+        system_message_prompt_template = SystemMessagePromptTemplate.from_template(
+                    SYSTEM_TEMPLATE_ADVANCED_UK
+                )
+        human_template = "{question}"
+        human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
+        chat_prompt_template = ChatPromptTemplate.from_messages(
+                    [system_message_prompt_template, human_message_prompt_template]
+                )
+        # initialize LLMChain by passing LLM and prompt template
+        llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template)
+        res = llm_chain.run(question=user_prompt, subject=SUBJECT_UK)
+
+        logging.debug(f"RESULTS: {res}")
+
+        return jsonify({"response": res, "prompt": user_prompt}), 200
+    else:
+        return "No user prompt received", 400
+
 @app.route("/medlocalgpt/api/v1/uk/advanced/openai/ask", methods=["GET", "POST"])
 def process_uk_advanced_openai_query_v1():
     # user_prompt = request.form.get("prompt")
@@ -102,7 +140,7 @@ def process_uk_advanced_openai_query_v1():
         # This is an LLMChain to translate text -----------------------------------------------------------------------------
         translate_template = """I want you to act as an translator, spelling and grammar corrector. \
             You will provided with the sample text. \
-            Your task is to correct spelling and grammar mistakes using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+            Your task is to correct spelling and grammar mistakes using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, breast cancer, health informatics, digital health, computer sciences, transdisciplinary research. \
             Next step of your task is to translate the sample text from Ukrainian into English language using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
             Sample text: {sample_text} \
             Translation:
