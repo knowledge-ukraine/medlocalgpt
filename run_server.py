@@ -11,7 +11,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
 from langchain.chains import LLMChain, SimpleSequentialChain
 
-from model_property import (
+from property import (
     MODEL,
     OPENAI_API_KEY,
     OPENAI_ORGANIZATION,
