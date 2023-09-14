@@ -6,16 +6,10 @@ __author__ = "Kyrylo Malakhov <malakhovks@nas.gov.ua>"
 __copyright__ = "Copyright (C) 2023 Kyrylo Malakhov <malakhovks@nas.gov.ua>"
 
 from flask import Flask, jsonify, request, render_template
-from langchain.chains import RetrievalQA
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory
 from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
-from langchain.chains import LLMChain, ConversationalRetrievalChain, SequentialChain, SimpleSequentialChain
-
-# from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from langchain.vectorstores import Chroma
+from langchain.chains import LLMChain, SimpleSequentialChain
 
 from model_property import (
     MODEL,
@@ -24,7 +18,6 @@ from model_property import (
     TEMPERATURE,
     OPENAI_MODEL,
     SUBJECT,
-    SYSTEM_TEMPLATE_BASIC,
     SYSTEM_TEMPLATE_ADVANCED_EN,
     MAX_TOKENS_FOR_TRANSLATION,
     MAX_TOKENS_OPENAI)
@@ -34,10 +27,6 @@ SHOW_SOURCES = True
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.DEBUG)
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
-
-prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=SYSTEM_TEMPLATE_BASIC)
-memory = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
-memory_adv = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
 
 if MODEL == 'openai':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
@@ -83,7 +72,7 @@ def process_en_advanced_openai_query_v1():
                     [system_message_prompt_template, human_message_prompt_template]
                 )
         # initialize LLMChain by passing LLM and prompt template
-        llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template, memory=memory_adv)
+        llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template)
         res = llm_chain.run(question=user_prompt, subject=SUBJECT)
 
         logging.debug(f"RESULTS: {res}")
