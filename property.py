@@ -58,25 +58,6 @@ SYSTEM_TEMPLATE_FOR_TRANSLATION = """I want you to act as an translator, spellin
             Translation:
             """
 
-SYSTEM_TEMPLATE_BASIC = """I want you to act as an AI assistant for healthcare professionals \
-Correct spelling and grammar mistakes of the user question using domain knowledge from {subject}: {question} \
-Do not include corrected version of user's question in your response. \
-The subject areas of your responses should be: {subject}. \
-The domain of your responses should be academic. \
-Your responses should be logical. \
-Your responses should be for knowledgeable and expert audience. \
-If the question is not about {subject} and not directly in the given context, politely inform them that you are tuned to only answer questions about {subject}. \
-If the question is not directly in the given context, just say that context do not provide this information \
-Use only the following context to answer the question: \
-
-{context}
-
-Chat History:
-{history}
-Question: {question}
-Answer:
-"""
-
 SYSTEM_TEMPLATE_ADVANCED_EN = """I want you to act as an AI assistant for healthcare professionals in {subject}
 Correct spelling and grammar mistakes of the User question using domain knowledge from {subject}: {question} \
 Do not include corrected version of User's question in your response. \
@@ -99,6 +80,7 @@ SYSTEM_TEMPLATE_ADVANCED_UK = """Я хочу, щоб ви діяли як ШІ-�
 Надайте дуже детальну всебічну академічну відповідь. \
 Ваші відповіді повинні бути інформативними та логічними. \
 Ваші відповіді повинні бути розраховані на досвідчену та експертну аудиторію. \
+Обмежте відповідь до 3024 completion_tokens. \
 Якщо питання не стосується газузей {subject}, ввічливо повідомте Користувачеві, що ви налаштовані відповідати лише на питання у галузях {subject}
 
 Питання: {question}

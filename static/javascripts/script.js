@@ -49,7 +49,6 @@ const loadDataFromLocalstorage = () => {
                             <p>API 2: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in Ukrainian, advanced chain for more precise responses)</p>
                             <p>API 3: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in Ukrainian, direct query)</p>
                         </div>`
-// <br> Ask your (medical EBSCO) dataset using LLMs and Embeddings.
     chatContainer.innerHTML = localStorage.getItem("all-chats") || defaultText;
     chatContainer.scrollTo(0, chatContainer.scrollHeight); // Scroll to bottom of the chat container
 }
