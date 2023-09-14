@@ -15,7 +15,7 @@ Supported languges: English, Ukrainian
   * [💻 Setup for Production](#-setup-for-production)
   * [🎈 API usage](#-api-usage)
   * [📕 Dataset](#-dataset)
-  * [openAI](medlocalgpt/blob/platform/openai-platform/README.md)
+  * [openAI](/platform/openai-platform/README.md)
 
 ## 🚀 Sponsor this project
 
