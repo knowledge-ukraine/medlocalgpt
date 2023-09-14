@@ -1,5 +1,4 @@
-import logging
-import os, json, re
+import logging, os
 
 os.environ["no_proxy"] = "*"
 
@@ -11,25 +10,19 @@ from langchain.chains import RetrievalQA
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory
 from langchain.prompts import PromptTemplate
-# from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
 from langchain.chains import LLMChain, ConversationalRetrievalChain, SequentialChain, SimpleSequentialChain
-
-from googletrans import Translator
 
 # from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.vectorstores import Chroma
 
 from model_property import (
-    CHROMA_SETTINGS,
-    PERSIST_DIRECTORY,
     MODEL,
     OPENAI_API_KEY,
     OPENAI_ORGANIZATION,
     TEMPERATURE,
     OPENAI_MODEL,
-    DOC_NUMBER,
     SUBJECT,
     SYSTEM_TEMPLATE_BASIC,
     SYSTEM_TEMPLATE_ADVANCED_EN,
@@ -46,22 +39,10 @@ prompt = PromptTemplate(input_variables=["history", "context", "question", "subj
 memory = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
 memory_adv = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
 
-EMBEDDINGS = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, model="text-embedding-ada-002")
-DB = Chroma(
-    persist_directory=PERSIST_DIRECTORY,
-    embedding_function=EMBEDDINGS,
-    client_settings=CHROMA_SETTINGS,
-)
-RETRIEVER = DB.as_retriever(search_kwargs={"k": int(DOC_NUMBER)})
-
 if MODEL == 'openai':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS_OPENAI), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
         LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS_FOR_TRANSLATION), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
-        QA_OPENAI = RetrievalQA.from_chain_type(
-            llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-            chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
-            )
 
 app = Flask(__name__)
 
@@ -188,96 +169,6 @@ def process_uk_advanced_openai_query_v1():
         output = overall_chain.run(user_prompt)
 
         return jsonify({"response": output, "prompt": user_prompt}), 200
-    else:
-        return "No user prompt received", 400
-
-# Tuning prompt (with selected domain knowledge, local dataset) for query to OpenAI model in English
-@app.route("/medlocalgpt/api/v1/en/dataset/openai/ask", methods=["GET", "POST"])
-def process_en_dataset_openai_query_v1():
-    # user_prompt = request.form.get("prompt")
-    content_type = request.headers.get('Content-Type')
-    if content_type == 'application/json':
-        request_json = request.get_json()
-        user_prompt = request_json.get('prompt')
-    else:
-        return 'Content-Type not supported!', 400
-
-    if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-        logging.debug(f"Use QA_OPENAI")
-    else:
-        return "No OPENAI cridentials received", 400
-
-    if user_prompt:
-        logging.debug(f"Get the answer from the chain")
-
-        res = QA_OPENAI(user_prompt)
-        answer, docs = res["result"], res["source_documents"]
-
-        prompt_response_dict = {
-            "Prompt": user_prompt,
-            "Answer": answer,
-        }
-
-        prompt_response_dict["Sources"] = []
-        for document in docs:
-            prompt_response_dict["Sources"].append(
-                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
-            )
-
-        logging.debug(f"RESULTS: {json.dumps(prompt_response_dict, indent=4)}")
-
-        return jsonify(prompt_response_dict), 200
-    else:
-        return "No user prompt received", 400
-
-# Tuning prompt (with selected domain knowledge, local dataset) for query to OpenAI model in English with translating feature via googletrans package
-@app.route("/medlocalgpt/api/v1/gt/dataset/openai/ask", methods=["GET", "POST"])
-def process_gt_dataset_openai_query_v1():
-
-    translator = Translator()
-
-    lang_src = request.args.get('lang_src', default = 'uk', type = str)
-    lang_dest = request.args.get('lang_dest', default = 'en', type = str)
-
-
-    if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-        logging.debug(f"Use QA_OPENAI")
-        qa_openai = RetrievalQA.from_chain_type(
-                llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
-                chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
-            )
-        qa = qa_openai
-    else:
-        return "No OPENAI cridentials received", 400
-
-    user_prompt = request.form.get("prompt")
-    if user_prompt:
-        #Translation uk to en
-        # logging.info(translator.translate(user_prompt, src='uk', dest='en'))
-        # tr_prompt = translator.translate(user_prompt, src='uk', dest='en')
-        logging.debug(f"Translation from {lang_src} to {lang_dest}")
-        tr_prompt = translator.translate(user_prompt, src=lang_src, dest=lang_dest)
-        logging.debug(f"Get the answer from the chain")
-        res = qa(tr_prompt.text)
-        answer, docs = res["result"], res["source_documents"]
-        #Translation en to uk
-        logging.debug(f"Translation from en to uk")
-        tr_response = translator.translate(answer, src='en', dest='uk')
-
-        prompt_response_dict = {
-            "Prompt": user_prompt,
-            "Answer": tr_response.text,
-        }
-
-        prompt_response_dict["Sources"] = []
-        for document in docs:
-            prompt_response_dict["Sources"].append(
-                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
-            )
-
-        logging.debug(f"RESULTS: {json.dumps(prompt_response_dict, indent=4)}")
-
-        return jsonify(prompt_response_dict), 200
     else:
         return "No user prompt received", 400
 

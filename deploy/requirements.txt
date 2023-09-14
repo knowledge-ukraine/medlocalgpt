@@ -1,25 +1,22 @@
 # Natural Language Processing
 # pyarrow==11.0.0
 # pandas==2.0.1
-pyarrow==11.0.0
-pandas==2.0.1
 langchain==0.0.191
-chromadb==0.3.22
-# llama-cpp-python==0.1.78
+llama-cpp-python==0.1.78
 pdfminer.six==20221105
-googletrans==4.0.0rc1
-InstructorEmbedding
-sentence-transformers
+# googletrans==4.0.0rc1
+# InstructorEmbedding
+# sentence-transformers
 # faiss-cpu
 # huggingface_hub
 openai
 # transformers
-protobuf==3.20.0; sys_platform != 'darwin'
-protobuf==3.20.0; sys_platform == 'darwin' and platform_machine != 'arm64'
-protobuf==3.20.3; sys_platform == 'darwin' and platform_machine == 'arm64'
+# protobuf==3.20.0; sys_platform != 'darwin'
+# protobuf==3.20.0; sys_platform == 'darwin' and platform_machine != 'arm64'
+# protobuf==3.20.3; sys_platform == 'darwin' and platform_machine == 'arm64'
 # auto-gptq==0.2.2
-docx2txt
-unstructured
+# docx2txt
+# unstructured
 
 # Utilities
 urllib3==1.26.6
