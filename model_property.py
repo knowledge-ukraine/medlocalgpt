@@ -89,17 +89,17 @@ INGEST_THREADS = os.cpu_count()
 # )
 
 # https://python.langchain.com/en/latest/_modules/langchain/document_loaders/excel.html#UnstructuredExcelLoader
-DOCUMENT_MAP = {
-    ".txt": TextLoader,
-    ".md": TextLoader,
-    ".py": TextLoader,
-    ".pdf": PDFMinerLoader,
-    ".csv": CSVLoader,
-    ".xls": UnstructuredExcelLoader,
-    ".xlsx": UnstructuredExcelLoader,
-    ".docx": Docx2txtLoader,
-    ".doc": Docx2txtLoader,
-}
+# DOCUMENT_MAP = {
+#     ".txt": TextLoader,
+#     ".md": TextLoader,
+#     ".py": TextLoader,
+#     ".pdf": PDFMinerLoader,
+#     ".csv": CSVLoader,
+#     ".xls": UnstructuredExcelLoader,
+#     ".xlsx": UnstructuredExcelLoader,
+#     ".docx": Docx2txtLoader,
+#     ".doc": Docx2txtLoader,
+# }
 
 # DEVICE_TYPE = "cpu"
 # EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"
