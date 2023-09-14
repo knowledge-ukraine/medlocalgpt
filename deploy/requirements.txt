@@ -8,15 +8,15 @@ chromadb==0.3.22
 # llama-cpp-python==0.1.78
 pdfminer.six==20221105
 googletrans==4.0.0rc1
-# InstructorEmbedding
-# sentence-transformers
+InstructorEmbedding
+sentence-transformers
 # faiss-cpu
 # huggingface_hub
-# openai
+openai
 # transformers
-# protobuf==3.20.0; sys_platform != 'darwin'
-# protobuf==3.20.0; sys_platform == 'darwin' and platform_machine != 'arm64'
-# protobuf==3.20.3; sys_platform == 'darwin' and platform_machine == 'arm64'
+protobuf==3.20.0; sys_platform != 'darwin'
+protobuf==3.20.0; sys_platform == 'darwin' and platform_machine != 'arm64'
+protobuf==3.20.3; sys_platform == 'darwin' and platform_machine == 'arm64'
 # auto-gptq==0.2.2
 docx2txt
 unstructured
