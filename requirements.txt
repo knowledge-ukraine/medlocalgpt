@@ -29,9 +29,5 @@ flask
 flask-cors
 requests
 
-# Streamlit related
-streamlit
-Streamlit-extras
-
 # Excel File Manipulation
 openpyxl

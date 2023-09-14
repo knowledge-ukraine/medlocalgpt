@@ -6,15 +6,11 @@ os.environ["no_proxy"] = "*"
 __author__ = "Kyrylo Malakhov <malakhovks@nas.gov.ua>"
 __copyright__ = "Copyright (C) 2023 Kyrylo Malakhov <malakhovks@nas.gov.ua>"
 
-import torch
-from auto_gptq import AutoGPTQForCausalLM
-from huggingface_hub import hf_hub_download
 from flask import Flask, jsonify, request, render_template
 from langchain.chains import RetrievalQA
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory
 from langchain.prompts import PromptTemplate
-from langchain.llms import HuggingFacePipeline, LlamaCpp
 # from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
@@ -24,27 +20,14 @@ from googletrans import Translator
 
 # from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.vectorstores import Chroma
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    GenerationConfig,
-    LlamaForCausalLM,
-    LlamaTokenizer,
-    pipeline
-)
-from werkzeug.utils import secure_filename
 
 from model_property import (
     CHROMA_SETTINGS,
     PERSIST_DIRECTORY,
     MODEL,
-    MODEL_ID,
-    MODEL_BASENAME,
     OPENAI_API_KEY,
     OPENAI_ORGANIZATION,
     TEMPERATURE,
-    EMBEDDING_MODEL_NAME,
-    MAX_TOKENS,
     OPENAI_MODEL,
     DOC_NUMBER,
     SUBJECT,
@@ -52,89 +35,6 @@ from model_property import (
     SYSTEM_TEMPLATE_ADVANCED_EN,
     MAX_TOKENS_FOR_TRANSLATION,
     MAX_TOKENS_OPENAI)
-
-def load_model(device_type, model_id, model_basename=None):
-    logging.info(f"Loading Model: {model_id}, on: {device_type}")
-    logging.info("This action can take a few minutes!")
-
-    if model_basename is not None:
-        if ".ggml" in model_basename:
-            logging.info("Using Llamacpp for GGML quantized models")
-            model_path = hf_hub_download(repo_id=model_id, filename=model_basename)
-            max_ctx_size = 2048
-            kwargs = {
-                "model_path": model_path,
-                "n_ctx": max_ctx_size,
-                "max_tokens": max_ctx_size,
-            }
-            if device_type.lower() == "mps":
-                kwargs["n_gpu_layers"] = 1000
-            if device_type.lower() == "cuda":
-                kwargs["n_gpu_layers"] = 1000
-                kwargs["n_batch"] = max_ctx_size
-            return LlamaCpp(**kwargs)
-
-        else:
-            # The code supports all huggingface models that ends with GPTQ and have some variation
-            # of .no-act.order or .safetensors in their HF repo.
-            logging.info("Using AutoGPTQForCausalLM for quantized models")
-
-            if ".safetensors" in model_basename:
-                # Remove the ".safetensors" ending if present
-                model_basename = model_basename.replace(".safetensors", "")
-
-            tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=True)
-            logging.info("Tokenizer loaded")
-
-            model = AutoGPTQForCausalLM.from_quantized(
-                model_id,
-                model_basename=model_basename,
-                use_safetensors=True,
-                trust_remote_code=True,
-                device="cuda:0",
-                use_triton=False,
-                quantize_config=None,
-            )
-    elif (
-        device_type.lower() == "cuda"
-    ):  # The code supports all huggingface models that ends with -HF or which have a .bin
-        logging.info("Using AutoModelForCausalLM for full models")
-        tokenizer = AutoTokenizer.from_pretrained(model_id)
-        logging.info("Tokenizer loaded")
-
-        model = AutoModelForCausalLM.from_pretrained(
-            model_id,
-            device_map="auto",
-            torch_dtype=torch.float16,
-            low_cpu_mem_usage=True,
-            trust_remote_code=True,
-            # max_memory={0: "15GB"} # Uncomment this line with you encounter CUDA out of memory errors
-        )
-        model.tie_weights()
-    else:
-        logging.info("Using LlamaTokenizer")
-        tokenizer = LlamaTokenizer.from_pretrained(model_id)
-        model = LlamaForCausalLM.from_pretrained(model_id)
-
-    # Load configuration from the model to avoid warnings
-    generation_config = GenerationConfig.from_pretrained(model_id)
-
-    # Create a pipeline for text generation
-    pipe = pipeline(
-        "text-generation",
-        model=model,
-        tokenizer=tokenizer,
-        max_length=MAX_TOKENS,
-        temperature=0,
-        top_p=0.95,
-        repetition_penalty=1.15,
-        generation_config=generation_config,
-    )
-
-    local_llm = HuggingFacePipeline(pipeline=pipe)
-    logging.info("Local LLM Loaded")
-
-    return local_llm
 
 DEVICE_TYPE = "cpu"
 SHOW_SOURCES = True
@@ -145,9 +45,8 @@ logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 prompt = PromptTemplate(input_variables=["history", "context", "question", "subject"], template=SYSTEM_TEMPLATE_BASIC)
 memory = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
 memory_adv = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=10)
-memory_loc = ConversationBufferWindowMemory(input_key="question", memory_key="history", return_messages=True, k=5)
 
-EMBEDDINGS = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": DEVICE_TYPE})
+EMBEDDINGS = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, model="text-embedding-ada-002")
 DB = Chroma(
     persist_directory=PERSIST_DIRECTORY,
     embedding_function=EMBEDDINGS,
@@ -155,19 +54,10 @@ DB = Chroma(
 )
 RETRIEVER = DB.as_retriever(search_kwargs={"k": int(DOC_NUMBER)})
 
-if MODEL == 'local':
-    LLM_LOCAL = load_model(device_type=DEVICE_TYPE, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
-    QA_LOCAL = RetrievalQA.from_chain_type(
-        llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
-    )
-    # QA_LOCAL = RetrievalQA.from_chain_type(
-    #     llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES, chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory_loc}
-    # )
-elif MODEL == 'openai':
+if MODEL == 'openai':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS_OPENAI), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
-        # LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=MAX_TOKENS_FOR_TRANSLATION, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
-        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS_FOR_TRANSLATION), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
         QA_OPENAI = RetrievalQA.from_chain_type(
             llm=LLM_OPENAI, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES,
             chain_type_kwargs={"prompt": prompt.partial(subject=SUBJECT), "memory": memory}
@@ -183,74 +73,6 @@ $ python -c 'import os; print(os.urandom(16))'
 b'_5#y2L"F4Q8z\n\xec]/'
 """
 app.secret_key = os.urandom(42)
-
-# @app.route("/medlocalgpt/api/v1/delete_source", methods=["GET"])
-# def delete_source_route():
-#     folder_name = "SOURCE_DOCUMENTS"
-
-#     if os.path.exists(folder_name):
-#         shutil.rmtree(folder_name)
-
-#     os.makedirs(folder_name)
-
-#     return jsonify({"message": f"Folder '{folder_name}' successfully deleted and recreated."})
-
-# add route to delete PERSIST_DIRECTORY
-
-# @app.route("/medlocalgpt/api/v1/admin/save_document", methods=["GET", "POST"])
-# def save_document_route():
-#     if "document" not in request.files:
-#         return "No document part", 400
-#     file = request.files["document"]
-#     if file.filename == "":
-#         return "No selected file", 400
-#     if file:
-#         filename = secure_filename(file.filename)
-#         folder_path = "SOURCE_DOCUMENTS"
-#         if not os.path.exists(folder_path):
-#             os.makedirs(folder_path)
-#         file_path = os.path.join(folder_path, filename)
-#         file.save(file_path)
-#         return "File saved successfully", 200
-
-
-# @app.route("/medlocalgpt/api/v1/admin/ingest", methods=["GET"])
-# def run_ingest_route():
-#     global DB
-#     global RETRIEVER
-#     global QA
-
-#     try:
-#         if os.path.exists(PERSIST_DIRECTORY):
-#             try:
-#                 shutil.rmtree(PERSIST_DIRECTORY)
-#             except OSError as e:
-#                 logging.error(f"Error: {e.filename} - {e.strerror}.")
-#         else:
-#             logging.info(PERSIST_DIRECTORY + " directory does not exist")
-
-#         run_langest_commands = ["python", "ingest.py"]
-#         if DEVICE_TYPE == "cpu":
-#             run_langest_commands.append("--device_type")
-#             run_langest_commands.append(DEVICE_TYPE)
-            
-#         result = subprocess.run(run_langest_commands, capture_output=True)
-#         if result.returncode != 0:
-#             return "Script execution failed: {}".format(result.stderr.decode("utf-8")), 500
-#         # load the vectorstore
-#         DB = Chroma(
-#             persist_directory=PERSIST_DIRECTORY,
-#             embedding_function=EMBEDDINGS,
-#             client_settings=CHROMA_SETTINGS,
-#         )
-#         RETRIEVER = DB.as_retriever(5)
-
-#         QA = RetrievalQA.from_chain_type(
-#             llm=LLM_LOCAL, chain_type="stuff", retriever=RETRIEVER, return_source_documents=SHOW_SOURCES
-#         )
-#         return "Script executed successfully: {}".format(result.stdout.decode("utf-8")), 200
-#     except Exception as e:
-#         return f"Error occurred: {str(e)}", 500
 
 # Tuning prompt (with selected domain knowledge) for query to OpenAI model in English
 @app.route("/medlocalgpt/api/v1/en/advanced/openai/ask", methods=["GET", "POST"])
@@ -329,11 +151,12 @@ def process_uk_advanced_openai_query_v1():
         ask_template = """I want you to act as an AI assistant for healthcare professionals in medicine, physical rehabilitation medicine, telerehabilitation, breast canser, cardiovascular system, arterial oscillography, telemedicine, health informatics, digital health, computer sciences, transdisciplinary research. \
         Correct spelling and grammar mistakes of the User question using domain knowledge from medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research: {translated_question} \
         Do not include corrected version of User's question in your response. \
-        The subject areas of your responses should be: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+        The subject areas of your responses should be: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, health informatics, digital health, computer sciences, transdisciplinary research. \
         The domain of your responses should be academic. \
-        Provide a very detailed comprehensive academic answer. \
+        Provide a detailed comprehensive academic answer. \
         Your responses should be logical. \
         Your responses should be for knowledgeable and expert audience. \
+        Limit your response up to 1024 completion_tokens. \
         If the question is not about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research, politely inform User that you are tuned to only answer questions about medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
         Question: {translated_question}
         Answer:
@@ -444,41 +267,6 @@ def process_gt_dataset_openai_query_v1():
         prompt_response_dict = {
             "Prompt": user_prompt,
             "Answer": tr_response.text,
-        }
-
-        prompt_response_dict["Sources"] = []
-        for document in docs:
-            prompt_response_dict["Sources"].append(
-                (os.path.basename(str(document.metadata["source"])), 'https://cdn.e-rehab.pp.ua/u/' + re.sub(r"\s+", '%20', os.path.basename(str(document.metadata["source"]))), str(document.page_content))
-            )
-
-        logging.debug(f"RESULTS: {json.dumps(prompt_response_dict, indent=4)}")
-
-        return jsonify(prompt_response_dict), 200
-    else:
-        return "No user prompt received", 400
-
-# Tuning prompt (with selected domain knowledge, local dataset) for query to Local selected model in English
-@app.route("/medlocalgpt/api/v1/en/dataset/local/ask", methods=["GET", "POST"])
-def process_en_dataset_local_query_v1():
-    user_prompt = request.form.get("prompt")
-
-    if MODEL != 'local':
-        logging.debug(f"Local model is not loaded")
-        return "Local model is not loaded", 400
-
-    logging.debug(f"Use QA_LOCAL")
-
-    if user_prompt:
-        logging.debug(f"Get the answer from the chain")
-
-        res = QA_LOCAL(user_prompt)
-
-        answer, docs = res["result"], res["source_documents"]
-
-        prompt_response_dict = {
-            "Prompt": user_prompt,
-            "Answer": answer,
         }
 
         prompt_response_dict["Sources"] = []

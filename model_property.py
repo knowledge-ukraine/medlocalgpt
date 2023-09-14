@@ -20,16 +20,6 @@ if 'EMBEDDING_MODEL_NAME' in os.environ:
 else:
     EMBEDDING_MODEL_NAME = "hkunlp/instructor-base"
 
-if 'MODEL_ID' in os.environ:
-    MODEL_ID = os.environ['MODEL_ID']
-else:
-    MODEL_ID = "TheBloke/orca_mini_3B-GGML"
-
-if 'MODEL_BASENAME' in os.environ:
-    MODEL_BASENAME = os.environ['MODEL_BASENAME']
-else:
-    MODEL_BASENAME = "orca-mini-3b.ggmlv3.q4_0.bin"
-
 if 'DEVICE_TYPE' in os.environ:
     DEVICE_TYPE = os.environ['DEVICE_TYPE']
 else:
@@ -48,7 +38,7 @@ else:
 if 'MAX_TOKENS_FOR_TRANSLATION' in os.environ:
     MAX_TOKENS_FOR_TRANSLATION = os.environ['MAX_TOKENS']
 else:
-    MAX_TOKENS_FOR_TRANSLATION = 5024
+    MAX_TOKENS_FOR_TRANSLATION = 3024
 
 if 'DOC_NUMBER' in os.environ:
     DOC_NUMBER = os.environ['DOC_NUMBER']
@@ -58,7 +48,7 @@ else:
 if 'SUBJECT' in os.environ:
     SUBJECT = os.environ['SUBJECT']
 else:
-    SUBJECT = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research"
+    SUBJECT = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, health informatics, digital health, computer sciences, transdisciplinary research"
 
 if 'MODEL' in os.environ:
     MODEL = os.environ['MODEL']
