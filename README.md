@@ -15,7 +15,7 @@ Supported languges: English, Ukrainian
   * [💻 Setup for Production](#-setup-for-production)
   * [🎈 API usage](#-api-usage)
   * [📕 Dataset](#-dataset)
-  * [openAI](platform/openai-platform/README.md)
+  * [openAI](tree/splatform/openai-platform/README.md)
 
 ## 🚀 Sponsor this project
 
