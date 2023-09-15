@@ -25,10 +25,8 @@ from property import (
     MAX_TOKENS_OPENAI)
 
 DEVICE_TYPE = "cpu"
-SHOW_SOURCES = True
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.DEBUG)
 logging.info(f"Running on: {DEVICE_TYPE}")
-logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
 
 if MODEL == 'openai':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:

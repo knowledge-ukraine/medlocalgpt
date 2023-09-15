@@ -21,15 +21,9 @@ RUN apt-get -y clean \
     && curl https://getmic.ro | bash \
     # ------------------------------------------------------------------
     && pip install -r ./deploy/requirements.txt --src /usr/local/src \
-    # && wget -O ./ebsco-rehabilitation-dataset.zip https://cdn.e-rehab.pp.ua/u/ebsco-rehabilitation-dataset.zip \
-    # && unzip ./ebsco-rehabilitation-dataset.zip -d ./SOURCE_DOCUMENTS \
-    # && rm -r ./ebsco-rehabilitation-dataset.zip \
-    # empty directory named “.cache”
     && rm -rf /root/.cache/* \
     && apt-get -y clean \
     && apt-get -y autoremove
-    # && chmod 777 /var/run/docker.sock
-    # && chmod 777 /root/.cache
 
 RUN chmod +x ./start.sh
 CMD ["./start.sh"]
