@@ -41,7 +41,8 @@ const loadDataFromLocalstorage = () => {
     themeButton.innerText = document.body.classList.contains("light-mode") ? "dark_mode" : "light_mode";
 
     const defaultText = `<div class="default-text">
-                            <h1>⚕️ MedLocalGPT Demo</h1>
+                            <h1>⚕️ MedLocalGPT</h1>
+                            <h2>Demo OpenAI Platform Only</h2>
                             <p>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients.</p>
                             </p>
                             <hr>
