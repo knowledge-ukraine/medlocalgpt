@@ -1,6 +1,6 @@
 langchain==0.0.331
 llama-cpp-python==0.1.78
-openai
+openai<1.0.0
 transformers
 # protobuf==3.20.0; sys_platform != 'darwin'
 # protobuf==3.20.0; sys_platform == 'darwin' and platform_machine != 'arm64'

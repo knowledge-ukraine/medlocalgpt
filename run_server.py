@@ -32,8 +32,8 @@ logging.info(f"Running on: {PLATFORM}")
 
 if MODEL == 'OpenAI':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-        OPENAI_CHAT = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
-        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        OPENAI_CHAT = ChatOpenAI(model_name=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        LLM_OPENAI_TR = ChatOpenAI(model_name=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
 
 app = Flask(__name__)
 
@@ -72,11 +72,13 @@ def process_en_advanced_openai_query_v1():
                     [system_message_prompt, human_message_prompt]
         )
         # initialize LLMChain by passing LLM and prompt template
-        res = OPENAI_CHAT(
-            chat_prompt.format_prompt(
-                question=user_prompt, subject=SUBJECT
-            ).to_messages()
-        )
+        # res = OPENAI_CHAT(
+        #     chat_prompt.format_prompt(
+        #         question=user_prompt, subject=SUBJECT
+        #     ).to_messages()
+        # )
+        chain = LLMChain(llm=OPENAI_CHAT, prompt=chat_prompt)
+        res = chain.run(question=user_prompt, subject=SUBJECT)
         # llm_chain = LLMChain(llm=OPENAI_CHAT, prompt=chat_prompt_template)
         # res = llm_chain.run(question=user_prompt, subject=SUBJECT)
 
