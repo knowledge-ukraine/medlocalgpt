@@ -39,11 +39,12 @@ const loadDataFromLocalstorage = () => {
 
     const defaultText = `<div class="default-text">
                             <h1>⚕️ MedLocalGPT Demo</h1>
-                            <p>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients.</p>
+                            <h2>Applying LLM-powered AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients</h2>
+                            <h3>OpenAI platform</h3>
                             </p>
                             <hr>
-                            <p>API 1: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in English)</p>
-                            <p>API 2: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in Ukrainian)</p>
+                            <p>API 1: Query to <a href="https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo">GPT-4 Turbo (gpt-4-1106-preview)</a> with tuning prompt (in English)</p>
+                            <p>API 2: Query to <a href="https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo">GPT-4 Turbo (gpt-4-1106-preview)</a> with tuning prompt (in Ukrainian)</p>
                         </div>`
 // <br> Ask your (medical EBSCO) dataset using LLMs and Embeddings.
     chatContainer.innerHTML = localStorage.getItem("all-chats") || defaultText;
