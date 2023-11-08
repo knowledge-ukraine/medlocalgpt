@@ -8,7 +8,12 @@ __copyright__ = "Copyright (C) 2023 Kyrylo Malakhov <malakhovks@nas.gov.ua>"
 from flask import Flask, jsonify, request, render_template
 from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
-from langchain.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    AIMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
 from langchain.chains import LLMChain, SimpleSequentialChain
 
 from model_property import (
@@ -19,19 +24,16 @@ from model_property import (
     OPENAI_MODEL,
     SUBJECT,
     SYSTEM_TEMPLATE_ADVANCED_EN,
-    MAX_TOKENS_FOR_TRANSLATION,
-    MAX_TOKENS_OPENAI)
+    MAX_TOKENS)
 
-DEVICE_TYPE = "cpu"
-SHOW_SOURCES = True
+PLATFORM = "OpenAI PLATFORM"
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.DEBUG)
-logging.info(f"Running on: {DEVICE_TYPE}")
-logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
+logging.info(f"Running on: {PLATFORM}")
 
-if MODEL == 'openai':
+if MODEL == 'OpenAI':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-        LLM_OPENAI = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS_OPENAI), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
-        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS_FOR_TRANSLATION), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        OPENAI_CHAT = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
+        LLM_OPENAI_TR = ChatOpenAI(model=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
 
 app = Flask(__name__)
 
@@ -63,17 +65,20 @@ def process_en_advanced_openai_query_v1():
     if user_prompt:
         logging.debug(f"Get the answer from the chain")
 
-        system_message_prompt_template = SystemMessagePromptTemplate.from_template(
-                    SYSTEM_TEMPLATE_ADVANCED_EN
-                )
+        system_message_prompt = SystemMessagePromptTemplate.from_template(SYSTEM_TEMPLATE_ADVANCED_EN)
         human_template = "{question}"
-        human_message_prompt_template = HumanMessagePromptTemplate.from_template(human_template)
-        chat_prompt_template = ChatPromptTemplate.from_messages(
-                    [system_message_prompt_template, human_message_prompt_template]
-                )
+        human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
+        chat_prompt = ChatPromptTemplate.from_messages(
+                    [system_message_prompt, human_message_prompt]
+        )
         # initialize LLMChain by passing LLM and prompt template
-        llm_chain = LLMChain(llm=LLM_OPENAI, prompt=chat_prompt_template)
-        res = llm_chain.run(question=user_prompt, subject=SUBJECT)
+        res = OPENAI_CHAT(
+            chat_prompt.format_prompt(
+                question=user_prompt, subject=SUBJECT
+            ).to_messages()
+        )
+        # llm_chain = LLMChain(llm=OPENAI_CHAT, prompt=chat_prompt_template)
+        # res = llm_chain.run(question=user_prompt, subject=SUBJECT)
 
         logging.debug(f"RESULTS: {res}")
 

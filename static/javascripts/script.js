@@ -22,9 +22,6 @@ sampleOptions.addEventListener("change", () => {
         case "option2":
             API_URL = "/medlocalgpt/api/v1/uk/advanced/openai/ask";
             break;
-        case "option3":
-            API_URL = "/medlocalgpt/api/v1/en/dataset/openai/ask";
-            break;
         // Add more cases for other options as needed
         default:
             // Use the default API URL
@@ -47,7 +44,6 @@ const loadDataFromLocalstorage = () => {
                             <hr>
                             <p>API 1: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in English)</p>
                             <p>API 2: Query to <a href="https://platform.openai.com/docs/models/gpt-3-5">gpt-3.5-turbo-16k</a> with tuning prompt (in Ukrainian)</p>
-                            <p>API 3: Query to <a href="https://doi.org/10.5281/zenodo.8308214">EBSCO dataset</a> with tuning prompt using gpt-3.5-turbo-16k (in English)</p>
                         </div>`
 // <br> Ask your (medical EBSCO) dataset using LLMs and Embeddings.
     chatContainer.innerHTML = localStorage.getItem("all-chats") || defaultText;
@@ -101,36 +97,6 @@ const getChatResponse = async (incomingChatDiv) => {
         const response = await (await fetch(API_URL, requestOptions)).json();
         if (sampleOptions.value == "option1" || sampleOptions.value == "option2") {
             pElement.textContent = response['response'].trim();
-        }
-        if (sampleOptions.value == "option3") {
-            const answer = response['Answer'].trim();
-            pElement.textContent = answer;
-
-            const answerLine = document.createElement("hr"); // Create a horizontal line
-            pElement.appendChild(answerLine); // Append the line after the "Answer" content
-
-            const sourcesContainer = document.createElement("div");
-            sourcesContainer.classList.add("hidden-sources");
-
-            response['Sources'].forEach((textArray) => {
-                textArray.forEach((text) => {
-                    // Make URLs clickable within each source
-                    const textWithLinks = makeUrlsClickable(text);
-                    sourcesContainer.innerHTML += textWithLinks + "<br>"; // Append the text with links to the sources container
-                });
-            });
-
-            pElement.appendChild(sourcesContainer);
-
-            const readMoreLink = document.createElement("span");
-            readMoreLink.classList.add("read-more-sources");
-            readMoreLink.textContent = "Read More";
-
-            readMoreLink.addEventListener("click", () => {
-                sourcesContainer.classList.toggle("hidden-sources");
-            });
-
-            pElement.appendChild(readMoreLink);
         }
 
     } catch (error) {
