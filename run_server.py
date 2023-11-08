@@ -158,7 +158,7 @@ def process_uk_advanced_openai_query_v1():
     else:
         return "No user prompt received", 400
 
-@app.route('/platform/openai')
+@app.route('/')
 def index():
     return render_template('index.html')
 
