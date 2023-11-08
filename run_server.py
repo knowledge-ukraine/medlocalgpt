@@ -49,7 +49,6 @@ app.secret_key = os.urandom(42)
 # Tuning prompt (with selected domain knowledge) for query to OpenAI model in English
 @app.route("/medlocalgpt/api/v1/en/advanced/openai/ask", methods=["GET", "POST"])
 def process_en_advanced_openai_query_v1():
-    # user_prompt = request.form.get("prompt")
     content_type = request.headers.get('Content-Type')
     if content_type == 'application/json':
         request_json = request.get_json()
@@ -58,7 +57,7 @@ def process_en_advanced_openai_query_v1():
         return 'Content-Type not supported!', 400
 
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
-        logging.debug(f"Use LLM_OPENAI")
+        logging.debug(f"Use OpenAI PLATFORM")
     else:
         return "No OPENAI cridentials received", 400
 
@@ -71,12 +70,6 @@ def process_en_advanced_openai_query_v1():
         chat_prompt = ChatPromptTemplate.from_messages(
                     [system_message_prompt, human_message_prompt]
         )
-        # initialize LLMChain by passing LLM and prompt template
-        # res = OPENAI_CHAT(
-        #     chat_prompt.format_prompt(
-        #         question=user_prompt, subject=SUBJECT
-        #     ).to_messages()
-        # )
         chain = LLMChain(llm=OPENAI_CHAT, prompt=chat_prompt)
         res = chain.run(question=user_prompt, subject=SUBJECT)
 
@@ -88,7 +81,6 @@ def process_en_advanced_openai_query_v1():
 
 @app.route("/medlocalgpt/api/v1/uk/advanced/openai/ask", methods=["GET", "POST"])
 def process_uk_advanced_openai_query_v1():
-    # user_prompt = request.form.get("prompt")
     content_type = request.headers.get('Content-Type')
     if content_type == 'application/json':
         request_json = request.get_json()
@@ -166,7 +158,7 @@ def process_uk_advanced_openai_query_v1():
     else:
         return "No user prompt received", 400
 
-@app.route('/')
+@app.route('/platform/openai')
 def index():
     return render_template('index.html')
 
