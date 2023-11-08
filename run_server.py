@@ -33,7 +33,6 @@ logging.info(f"Running on: {PLATFORM}")
 if MODEL == 'OpenAI':
     if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
         OPENAI_CHAT = ChatOpenAI(model_name=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
-        LLM_OPENAI_TR = ChatOpenAI(model_name=OPENAI_MODEL, max_tokens=int(MAX_TOKENS), openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=TEMPERATURE)
 
 app = Flask(__name__)
 
@@ -99,7 +98,7 @@ def process_uk_advanced_openai_query_v1():
         # This is an LLMChain to translate text -----------------------------------------------------------------------------
         translate_template = """I want you to act as an translator, spelling and grammar corrector. \
             You will provided with the sample text. \
-            Your task is to correct spelling and grammar mistakes using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+            Your task is to correct spelling and grammar mistakes using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, health informatics, digital health, computer science, transdisciplinary research. \
             Next step of your task is to translate the sample text from Ukrainian into English language using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
             Sample text: {sample_text} \
             Translation:
@@ -111,11 +110,11 @@ def process_uk_advanced_openai_query_v1():
                     [system_prompt_translate_template, human_prompt_translate_template]
                 )
         llm_chain_1 = LLMChain(
-            llm=LLM_OPENAI_TR,
+            llm=OPENAI_CHAT,
             prompt=chat_prompt_translate_template
             )
          # This is an LLMChain to ask question -----------------------------------------------------------------------------
-        ask_template = """I want you to act as an AI assistant for healthcare professionals in medicine, physical rehabilitation medicine, telerehabilitation, breast canser, cardiovascular system, arterial oscillography, telemedicine, health informatics, digital health, computer sciences, transdisciplinary research. \
+        ask_template = """I want you to act as an AI assistant for healthcare professionals in medicine, physical rehabilitation medicine, telerehabilitation, breast canser, cardiovascular system, health informatics, digital health, computer science, transdisciplinary research. \
         Correct spelling and grammar mistakes of the User question using domain knowledge from medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research: {translated_question} \
         Do not include corrected version of User's question in your response. \
         The subject areas of your responses should be: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, health informatics, digital health, computer sciences, transdisciplinary research. \
@@ -130,14 +129,14 @@ def process_uk_advanced_openai_query_v1():
         """
         system_prompt_ask_template = PromptTemplate.from_template(ask_template)
         llm_chain_2 = LLMChain(
-            llm=LLM_OPENAI_TR,
+            llm=OPENAI_CHAT,
             prompt=system_prompt_ask_template
             )
 
         # This is an LLMChain to translate text -----------------------------------------------------------------------------
         translate_template_2 = """I want you to act as an translator, spelling and grammar corrector. \
             You will provided with the sample text. \
-            Your task is to correct spelling and grammar mistakes using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
+            Your task is to correct spelling and grammar mistakes using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, health informatics, digital health, computer science, transdisciplinary research. \
             Next step of your task is to translate the sample text from English into Ukrainian language using domain knowledge from: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
             Sample text: {sample_text} \
             Translation:
@@ -148,7 +147,7 @@ def process_uk_advanced_openai_query_v1():
                     [system_prompt_translate_template, human_prompt_translate_template]
                 )
         llm_chain_3 = LLMChain(
-            llm=LLM_OPENAI_TR,
+            llm=OPENAI_CHAT,
             prompt=chat_prompt_translate_template_2
             )
         overall_chain = SimpleSequentialChain(chains=[llm_chain_1, llm_chain_2, llm_chain_3], verbose=True)
