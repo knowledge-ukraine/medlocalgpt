@@ -79,8 +79,6 @@ def process_en_advanced_openai_query_v1():
         # )
         chain = LLMChain(llm=OPENAI_CHAT, prompt=chat_prompt)
         res = chain.run(question=user_prompt, subject=SUBJECT)
-        # llm_chain = LLMChain(llm=OPENAI_CHAT, prompt=chat_prompt_template)
-        # res = llm_chain.run(question=user_prompt, subject=SUBJECT)
 
         logging.debug(f"RESULTS: {res}")
 
