@@ -23,7 +23,9 @@ from model_property import (
     TEMPERATURE,
     OPENAI_MODEL,
     SUBJECT,
+    SUBJECT_UA,
     SYSTEM_TEMPLATE_ADVANCED_EN,
+    SYSTEM_TEMPLATE_ADVANCED_UA,
     MAX_TOKENS)
 
 PLATFORM = "OpenAI PLATFORM"
@@ -78,7 +80,40 @@ def process_en_advanced_openai_query_v1():
     else:
         return "No user prompt received", 400
 
-@app.route("/medlocalgpt/api/v1/uk/advanced/openai/ask", methods=["GET", "POST"])
+# Tuning prompt (with selected domain knowledge) for query to OpenAI model in English
+@app.route("/medlocalgpt/api/v1/ua/advanced/openai/ask", methods=["GET", "POST"])
+def process_ua_advanced_openai_query_v1():
+    content_type = request.headers.get('Content-Type')
+    if content_type == 'application/json':
+        request_json = request.get_json()
+        user_prompt = request_json.get('prompt')
+    else:
+        return 'Content-Type not supported!', 400
+
+    if OPENAI_API_KEY and OPENAI_ORGANIZATION is not None:
+        logging.debug(f"Use OpenAI PLATFORM")
+    else:
+        return "No OPENAI cridentials received", 400
+
+    if user_prompt:
+        logging.debug(f"Get the answer from the chain")
+
+        system_message_prompt = SystemMessagePromptTemplate.from_template(SYSTEM_TEMPLATE_ADVANCED_UA)
+        human_template = "{question}"
+        human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
+        chat_prompt = ChatPromptTemplate.from_messages(
+                    [system_message_prompt, human_message_prompt]
+        )
+        chain = LLMChain(llm=OPENAI_CHAT, prompt=chat_prompt)
+        res = chain.run(question=user_prompt, subject=SUBJECT_UA)
+
+        logging.debug(f"RESULTS: {res}")
+
+        return jsonify({"response": res, "prompt": user_prompt}), 200
+    else:
+        return "No user prompt received", 400
+
+@app.route("/medlocalgpt/api/v1/ua/translate/advanced/openai/ask", methods=["GET", "POST"])
 def process_uk_advanced_openai_query_v1():
     content_type = request.headers.get('Content-Type')
     if content_type == 'application/json':

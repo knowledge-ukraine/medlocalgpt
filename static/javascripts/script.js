@@ -20,7 +20,7 @@ sampleOptions.addEventListener("change", () => {
             API_URL = "/medlocalgpt/api/v1/en/advanced/openai/ask";
             break;
         case "option2":
-            API_URL = "/medlocalgpt/api/v1/uk/advanced/openai/ask";
+            API_URL = "/medlocalgpt/api/v1/ua/advanced/openai/ask";
             break;
         // Add more cases for other options as needed
         default:

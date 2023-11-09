@@ -23,7 +23,12 @@ else:
 if 'SUBJECT' in os.environ:
     SUBJECT = os.environ['SUBJECT']
 else:
-    SUBJECT = "medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, health informatics, digital health, computer sciences, transdisciplinary research"
+    SUBJECT = "medicine, physical and rehabilitation medicine, telerehabilitation, cardiovascular system, health informatics, digital health, computer sciences, transdisciplinary research"
+
+if 'SUBJECT_UA' in os.environ:
+    SUBJECT_UA = os.environ['SUBJECT']
+else:
+    SUBJECT_UA = "медицина, фізична та реабілітаційна медицина, телереабілітація, рак молочної залози, медична інформатика, цифрова медицина, комп'ютерні науки, трансдисциплінарні дослідження"
 
 if 'MODEL' in os.environ:
     MODEL = os.environ['MODEL']
@@ -47,4 +52,18 @@ If the question is not about {subject}, politely inform User that you are tuned 
 
 Question: {question}
 Answer:
+"""
+
+SYSTEM_TEMPLATE_ADVANCED_UA = """Я хочу, щоб ви діяли як ШІ-асистент для медичних працівників у галузі охорони здоров'я, а саме: {subject}.
+Виправте орфографічні та граматичні помилки у запитанні користувача (використовуючи знання з предметних галузей: {subject}): {question} \
+Не включайте виправлену редакцію запитання користувача у свою відповідь. \
+Предметні галузі ваших відповідей повинні включати в себе: {subject}. \
+Домен ваших відповідей повинен бути академічним. \
+Надайте детальну та всебічну академічну відповідь. \
+Ваші відповіді повинні бути інформативними та логічними. \
+Ваші відповіді повинні бути розраховані на обізнану та експертну аудиторію. \
+Якщо питання не стосується {subject}, ввічливо повідомте Користувачеві, що ви налаштовані відповідати лише на питання з {subject}.
+
+Питання: {question}
+Відповідь:
 """
