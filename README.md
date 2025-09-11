@@ -15,6 +15,7 @@ Supported languges: English, Ukrainian
   * [💻 Setup for Production](#-setup-for-production)
   * [🎈 API usage](#-api-usage)
   * [📕 Dataset](#-dataset)
+  * [🏥 MedLocalGPT Project Case: CPU-only Multi-Agent Deployment for Telerehabilitation](#medlocalgpt-project-case-cpu-only-multi-agent-deployment-for-telerehabilitation)
 
 ## 🚀 Sponsor this project
 
@@ -260,3 +261,18 @@ EBSCO articles dataset (domain knowledge: rehabilitation medicine) + JSON of eve
 ```bash
 wget -O ./ebsco-rehabilitation-dataset.zip https://cdn.e-rehab.pp.ua/u/ebsco-rehabilitation-dataset.zip
 ```
+
+## MedLocalGPT Project Case: CPU-only Multi-Agent Deployment for Telerehabilitation
+
+The MedLocalGPT system (Figure 1) serves therapists, students, and patients through a web application that orchestrates two llama.cpp–based agents and a vector database. The first agent performs bidirectional English↔Ukrainian translation using Phi-4-mini-instruct (3.8B, Q4 GGUF). The second agent handles domain Q&A and lightweight reasoning using Gemma-3-1B-it (Q4 GGUF). A semantic index built with a high-quality Instructor embedding model feeds a ChromaDB vector store; the retrieval layer operates over a curated EBSCO rehabilitation-medicine dataset (peer-reviewed articles), enabling RAG for grounded responses.
+
+![C4 context/container diagram for the MedLocalGPT system. The web application orchestrates two llama.cpp agents (EN↔UK translation with Phi-4-mini-instruct; Q&A and reasoning with Gemma-3-1B-it) and a RAG pipeline over a ChromaDB vector store populated from an EBSCO rehabilitation-medicine corpus.](static/images/medlocalgpt_c4_diagram.png)
+
+**Models selection.** *Phi-4-mini-instruct* offers strong instruction following and competitive small-model translation quality under CPU constraints; at 4-bit it fits in ~1.9 GB RAM and sustains ~15 tok/s on an E5-2695 v2–class host and ~40–80 tok/s on modern laptop/new-Xeon CPUs. This makes sentence-level EN↔UK translation responsive while preserving headroom for concurrent services. *Gemma-3-1B-it* (~0.6 GB at Q4) is selected for Q&A to maximize throughput tok/s and minimize latency for short, fact-seeking prompts; typical rates are ~30 tok/s (E5-class) and 70–100 tok/s (laptop/new-Xeon), adequate for interactive clinical-education use. The small memory footprints allow both agents, the embedding service, and the database to co-reside on a 16-vCPU/32 GB KVM VM without swapping, while the *Intel oneAPI (oneMKL)* build of *llama.cpp* provides consistent BLAS performance in the containerized runtime.
+
+**RAG over EBSCO dataset.** The ingestion pipeline extracts text from EBSCO articles, normalizes typography, and applies domain-aware chunking (target 512–768 tokens with 15–20 % overlap) to preserve local cohesion around methods and results sections. Each chunk is embedded with an Instructor-large model; the store maintains cosine similarity vectors and metadata (journal, year, DOI, MeSH-like tags). Prompts given to the Q&A agent include: the user question, top-k chunks with citations, a grounding instruction (answer strictly from the provided passages; otherwise say – insufficient evidence), and formatting constraints suitable for clinical or educational contexts. For bilingual sessions, the translation agent post-processes answers to the target language and preserves clinical terminology via a prompt-level glossary.
+
+**Latency and concurrency on CPU.** On the 16-vCPU VM, practical allocation dedicates 6 vCPUs to the Q&A agent and 7 vCPUs to the translation agent, leaving the remainder to the embedding/query layer and the web API. With this partitioning and Q4 quantization, median end-to-end latency for short, grounded answers (~80–120 generated tokens, k=8 context chunks) is typically ~2.5–4.5 s on an E5-class host and <2 s on a newer Xeon. For translation, sentence-level round-trips (15–25 tokens) complete in ~1–3 s depending on CPU class. To sustain multi-user access, the deployment favors multi-process concurrency (one llama.cpp server per agent) with CPU affinity and NUMA pinning; for small prompts, running two parallel Q&A workers can increase throughput more than a single worker using all cores.
+
+The CPU-only design simplifies procurement and on-premises deployment for sensitive data, while the small-model agents lower energy draw and cost. Overall, the architecture delivers grounded, bilingual assistance for rehabilitation medicine with predictable latency on commodity CPUs, matching the project’s privacy and cost constraints.
+
