@@ -3,7 +3,12 @@
 Applying LLM-powered (OpenAI GPT-4, Vicuna, Orca-mini, etc.) AI Assistant to Enhance Support for Physical Rehabilitation & Telerehabilitation Therapists, Students, and Patients.
 Ask your EBSCO dataset (domain knowledge: rehabilitation medicine) using LLMs and Embeddings. Optionally you can use local LLMs, OpenAI GPT models or other SaaS solutions via [🦜️🔗 LangChain](https://github.com/hwchase17/langchain).
 
-This project is part of the R&D on intelligent data analysis and computational linguistics for digital health (telerehabilitation and rehabilitation medicines). Read more: [Letter to the Editor–Update from Ukraine: Development of the Cloud-based Platform for Patient-centered Telerehabilitation of Oncology Patients with Mathematical-related Modeling](https://doi.org/10.5195/ijt.2023.6562).
+This research was funded under a contract with I. Ya. Horbachevsky Ternopil National Medical University, Ministry of Health of Ukraine, for the R&D project “Development of an AI-Based Decision-Support Expert-System Prototype” (https://prozorro.gov.ua/uk/contract/UA-2025-05-13-012069-a-c1). The study forms part of the broader national R&D initiative “Development of a Personalized Tele-Diagnostic Platform with AI for Physicians and Patients (TD + AI)”, carried out under contract between the Ministry of Education and Science of Ukraine and I. Ya. Horbachevsky TNMU (State registration No. 0125U001036).
+Additional support was provided by the R&D projects “To develop theoretical foundations and a functional model of a computer for processing complex information structures” (state registration No. 0124U002317, details are available at https://nrat.ukrintei.ua/searchdoc/0124U002317/) and “Develop Means of Supporting Virtualization Technologies and Their Use in Computer Engineering and Other Applications” (State registration No. 0124U001826; details are available at https://nrat.ukrintei.ua/en/searchdoc/0124U001826), funded by the National Academy of Sciences of Ukraine.
+
+Separately, it is worth noting the grant of the National Research Foundation of Ukraine: Development of the cloud-based platform for patient-centered telerehabilitation of oncology patients with mathematical-related modeling (Application ID: 2021.01/0136, https://nrat.ukrintei.ua/searchdoc/0225U001069/); look the Letter to the Editor – Update from Ukraine: Development of the cloud-based platform for patient-centered telerehabilitation of oncology patients with mathematical-related modeling. International Journal of Telerehabilitation, 15(1), 1–3. https://doi.org/10.5195/ijt.2023.6562
+
+All projects were conducted at the V. M. Glushkov Institute of Cybernetics, National Academy of Sciences of Ukraine (Kyiv, Ukraine).
 
 Supported languges: English, Ukrainian
 
