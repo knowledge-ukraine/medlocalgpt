@@ -91,4 +91,4 @@ def _chain():
     return Response(chain("# A koan story about AGI\n\n"), mimetype='text/plain')
 
 if __name__ == '__main__':
-    app.run(threaded=True, debug=True, host='0.0.0.0', port=8080)
+    app.run(threaded=True, debug=False, host='0.0.0.0', port=8080)

@@ -173,6 +173,11 @@ celerybeat.pid
 
 # Environments
 .env
+medlocalgpt.env
+
+# Source documents (user-provided, may contain PHI — do not track real documents)
+SOURCE_DOCUMENTS/
+!SOURCE_DOCUMENTS/.gitkeep
 .venv
 env/
 venv/
