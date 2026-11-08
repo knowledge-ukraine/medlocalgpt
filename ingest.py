@@ -54,8 +54,10 @@ def load_documents(source_dir: str) -> list[Document]:
             paths.append(source_file_path)
 
     # Have at least one worker and at most INGEST_THREADS workers
+    if not paths:
+        return []
     n_workers = min(INGEST_THREADS, max(len(paths), 1))
-    chunksize = round(len(paths) / n_workers)
+    chunksize = max(round(len(paths) / n_workers), 1)
     docs = []
     with ProcessPoolExecutor(n_workers) as executor:
         futures = []

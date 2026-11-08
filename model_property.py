@@ -41,12 +41,12 @@ else:
     MAX_TOKENS = 1024
 
 if 'MAX_TOKENS_OPENAI' in os.environ:
-    MAX_TOKENS_OPENAI = os.environ['MAX_TOKENS']
+    MAX_TOKENS_OPENAI = os.environ['MAX_TOKENS_OPENAI']
 else:
     MAX_TOKENS_OPENAI = 5024
 
 if 'MAX_TOKENS_FOR_TRANSLATION' in os.environ:
-    MAX_TOKENS_FOR_TRANSLATION = os.environ['MAX_TOKENS']
+    MAX_TOKENS_FOR_TRANSLATION = os.environ['MAX_TOKENS_FOR_TRANSLATION']
 else:
     MAX_TOKENS_FOR_TRANSLATION = 5024
 
@@ -91,7 +91,7 @@ SOURCE_DIRECTORY = f"{ROOT_DIRECTORY}/SOURCE_DOCUMENTS"
 PERSIST_DIRECTORY = f"{ROOT_DIRECTORY}/DB"
 
 # Can be changed to a specific number
-INGEST_THREADS = os.cpu_count()
+INGEST_THREADS = os.cpu_count() or 1
 
 # Define the Chroma settings
 CHROMA_SETTINGS = Settings(

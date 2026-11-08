@@ -1,7 +1,8 @@
 import logging
 import os, json, re
 
-os.environ["no_proxy"] = "*"
+# no_proxy="*" bypasses corporate proxies/firewalls; set explicitly in medlocalgpt.env only when intended
+# os.environ["no_proxy"] = "*"
 
 __author__ = "Kyrylo Malakhov <malakhovks@nas.gov.ua>"
 __copyright__ = "Copyright (C) 2023 Kyrylo Malakhov <malakhovks@nas.gov.ua>"
@@ -326,7 +327,7 @@ def process_uk_advanced_openai_query_v1():
             prompt=chat_prompt_translate_template
             )
          # This is an LLMChain to ask question -----------------------------------------------------------------------------
-        ask_template = """I want you to act as an AI assistant for healthcare professionals in medicine, physical rehabilitation medicine, telerehabilitation, breast canser, cardiovascular system, arterial oscillography, telemedicine, health informatics, digital health, computer sciences, transdisciplinary research. \
+        ask_template = """I want you to act as an AI assistant for healthcare professionals in medicine, physical rehabilitation medicine, telerehabilitation, breast cancer, cardiovascular system, arterial oscillography, telemedicine, health informatics, digital health, computer sciences, transdisciplinary research. \
         Correct spelling and grammar mistakes of the User question using domain knowledge from medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research: {translated_question} \
         Do not include corrected version of User's question in your response. \
         The subject areas of your responses should be: medicine, physical rehabilitation medicine, telerehabilitation, cardiovascular system, arterial oscillography, health informatics, digital health, computer sciences, transdisciplinary research. \
